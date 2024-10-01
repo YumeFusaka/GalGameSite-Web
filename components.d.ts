@@ -11,5 +11,6 @@ declare module 'vue' {
     ElCarouselItem: typeof import('element-plus/es')['ElCarouselItem']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TitleComponent: typeof import('./src/components/TitleComponent.vue')['default']
   }
 }

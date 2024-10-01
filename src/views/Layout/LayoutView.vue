@@ -38,7 +38,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  filter: blur(10px);
+  filter: blur(9.625rem);
   opacity: 0.5;
   /* 添加模糊效果 */
   z-index: -1;
@@ -49,7 +49,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 60px auto 100px;
+  grid-template-rows: 3.75rem auto 6.25rem;
   grid-template-columns: 1fr;
 }
 </style>
