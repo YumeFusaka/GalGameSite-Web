@@ -1,10 +1,12 @@
 <script setup lang="ts">
-
+import HomeCarousel from './Components/HomeCarousel.vue';
 </script>
 
 <template>
   <div class="home">
-    123
+    <div class="carousel">
+      <HomeCarousel />
+    </div>
   </div>
 </template>
 
@@ -12,5 +14,8 @@
 .home {
   height: 100%;
   width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 400px 1fr 1fr;
 }
 </style>

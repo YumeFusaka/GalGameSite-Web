@@ -28,7 +28,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
 
 .Layout::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -39,7 +39,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   background-attachment: fixed;
   background-size: cover;
   filter: blur(10px);
-  opacity: 0.7;
+  opacity: 0.5;
   /* 添加模糊效果 */
   z-index: -1;
   /* 让背景在内容下方 */
