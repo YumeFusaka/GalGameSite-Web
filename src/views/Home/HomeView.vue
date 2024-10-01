@@ -16,6 +16,6 @@ import HomeCarousel from './Components/HomeCarousel.vue';
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 400px 1fr 1fr;
+  grid-template-rows: 450px 1fr 1fr;
 }
 </style>
