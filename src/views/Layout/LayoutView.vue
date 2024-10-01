@@ -38,7 +38,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  filter: blur(9.625rem);
+  filter: blur(12px);
   opacity: 0.5;
   /* 添加模糊效果 */
   z-index: -1;

@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="info-box">
-      <div class="info">登录</div>
+      <div class="info">Login</div>
     </div>
 
   </div>
@@ -18,7 +18,7 @@
 
 <style scoped>
 div {
-  color: #000000CC;
+  color: #f0768b;
 }
 
 .box {
@@ -40,7 +40,7 @@ div {
 
 .info-box {
   margin-left: auto;
-  background-color: #D9D9D9;
+  background-color: #d9d9d97d;
   border-radius: 0.3125rem;
   display: flex;
   align-items: center;

@@ -16,7 +16,7 @@
   display: inline-block;
   width: 0.625rem;
   height: 2.375rem;
-  background-color: #81c2f3;
+  background-color: hsl(263, 83%, 73%);
   border-radius: 0.125rem;
 }
 
