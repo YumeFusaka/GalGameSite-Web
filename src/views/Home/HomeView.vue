@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  init
+  home
 </template>
 
 <style scoped></style>
