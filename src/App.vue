@@ -10,10 +10,8 @@
 
 <style scoped>
 .app {
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top: 0;
   position: absolute;
+  width: 100%;
+  height: 100%;
 }
 </style>

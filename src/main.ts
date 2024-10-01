@@ -4,6 +4,7 @@ import router from './router'
 import pinia from './stores'
 import { lazyPlugin } from '@/directives'
 import 'echarts'
+import '@/common/common.css'
 
 const app = createApp(App)
 

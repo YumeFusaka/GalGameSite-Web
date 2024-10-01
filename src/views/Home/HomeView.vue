@@ -3,7 +3,14 @@
 </script>
 
 <template>
-  home
+  <div class="home">
+    123
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.home {
+  height: 100%;
+  width: 100%;
+}
+</style>
