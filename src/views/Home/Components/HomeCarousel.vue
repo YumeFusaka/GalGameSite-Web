@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import TitleComponent from '@/components/TitleComponent.vue';
-
+import w1 from '@/images/Carouse/1.webp'
+import w2 from '@/images/Carouse/2.webp'
+import w3 from '@/images/Carouse/3.webp'
+import w4 from '@/images/Carouse/4.webp'
 const carouselItems = [
   {
     id: 1,
-    url: 'src/images/Carouse/1.webp',
+    url: w1
   },
   {
     id: 2,
-    url: 'src/images/Carouse/2.webp',
+    url: w2
   },
   {
     id: 3,
-    url: 'src/images/Carouse/3.webp',
+    url: w3
   },
   {
     id: 4,
-    url: 'src/images/Carouse/4.webp',
+    url: w4
   }
 ]
 </script>

@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import TitleComponent from '@/components/TitleComponent.vue';
+import w1 from '@/images/Recommend/1.webp'
+import w2 from '@/images/Recommend/2.webp'
+import w3 from '@/images/Recommend/3.webp'
+import w4 from '@/images/Recommend/4.webp'
+import w5 from '@/images/Recommend/5.webp'
 const recommondList = [
   {
     name: "白色相簿2",
-    url: "src/images/Recommend/1.webp"
+    url: w1
   },
   {
     name: "美好的每一天 不连续的存在",
-    url: "src/images/Recommend/2.webp"
+    url: w2
   },
   {
     name: "樱花萌放",
-    url: "src/images/Recommend/3.webp"
+    url: w3
   },
   {
     name: "甜蜜女友2+",
-    url: "src/images/Recommend/4.webp"
+    url: w4
   },
   {
     name: "樱之诗",
-    url: "src/images/Recommend/5.webp"
+    url: w5
   },
 ]
 </script>
