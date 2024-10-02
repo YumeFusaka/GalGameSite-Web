@@ -53,7 +53,27 @@ const recommondList = [
   margin-top: 1.5625rem;
   grid-template-rows: 1fr;
   column-gap: 1.5625rem;
-  grid-template-columns: repeat(5, 1fr);
+  row-gap: 1.5625rem;
+}
+
+@media (min-width: 600px) {
+  .box {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 当屏幕宽度大于900px时，每行显示3张图片 */
+@media (min-width: 900px) {
+  .box {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 当屏幕宽度大于1200px时，每行显示4张图片 */
+@media (min-width: 1200px) {
+  .box {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .box-item {
@@ -63,8 +83,8 @@ const recommondList = [
 
 img {
   width: 100%;
-  height: 100%;
-  border-radius: 0.4rem;
+  height: auto;
+  border-radius: 0.5rem;
   object-fit: cover;
 }
 
