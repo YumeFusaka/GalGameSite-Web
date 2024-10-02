@@ -48,10 +48,10 @@ const activityList = [
 
 <style scoped>
 .activity {
-  padding: 1.5rem 1.25rem 1.5rem 1.25rem;
   width: 100%;
   height: 100%;
-
+  padding: 1.5rem 1.25rem 1.5rem 1.25rem;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
   /* 半透明白色 */
   backdrop-filter: blur(10px);
