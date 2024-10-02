@@ -45,7 +45,16 @@ const recommondList = [
 
 <style scoped>
 .recommend {
-  margin: 0 6.25rem 0 6.25rem;
+  margin: 0 5rem 0 5rem;
+  padding: 1.5rem 1.25rem 1.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.3);
+  /* 半透明白色 */
+  backdrop-filter: blur(10px);
+  /* 模糊效果 */
+  border-radius: 0.625rem;
+  /* 圆角 */
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+  /* 轻微阴影 */
 }
 
 .box {
@@ -54,18 +63,19 @@ const recommondList = [
   grid-template-rows: 1fr;
   column-gap: 1.5625rem;
   row-gap: 1.5625rem;
+  grid-template-columns: repeat(2, 1fr);
 }
 
-@media (min-width: 600px) {
+
+@media (min-width: 768px) {
   .box {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* 当屏幕宽度大于900px时，每行显示3张图片 */
 @media (min-width: 900px) {
   .box {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -94,5 +104,6 @@ img {
   color: #f0767e;
   font-weight: 600;
   align-self: center;
+  text-align: center;
 }
 </style>

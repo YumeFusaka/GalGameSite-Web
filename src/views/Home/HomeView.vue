@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import HomeBody from './Components/HomeBody.vue';
 import HomeCarousel from './Components/HomeCarousel.vue';
 import HomeRecommend from './Components/HomeRecommend.vue';
 </script>
@@ -11,6 +12,9 @@ import HomeRecommend from './Components/HomeRecommend.vue';
     <div class="recommend">
       <HomeRecommend />
     </div>
+    <div class="body">
+      <HomeBody />
+    </div>
   </div>
 </template>
 
@@ -19,6 +23,7 @@ import HomeRecommend from './Components/HomeRecommend.vue';
   height: 100%;
   width: 100%;
   display: grid;
+  row-gap: 2rem;
   grid-template-columns: 1fr;
   grid-template-rows: 28.125rem 1fr 1fr;
 }
