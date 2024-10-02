@@ -6,13 +6,13 @@ import HomeRecommend from './Components/HomeRecommend.vue';
 
 <template>
   <div class="home">
-    <div class="carousel">
+    <div class="homeCarousel">
       <HomeCarousel />
     </div>
-    <div class="recommend">
+    <div class="homeRecommend">
       <HomeRecommend />
     </div>
-    <div class="body">
+    <div class="homeBody">
       <HomeBody />
     </div>
   </div>
@@ -25,6 +25,10 @@ import HomeRecommend from './Components/HomeRecommend.vue';
   display: grid;
   row-gap: 2rem;
   grid-template-columns: 1fr;
-  grid-template-rows: 28.125rem 1fr 1fr;
+  grid-template-rows: 28.125rem auto auto;
+}
+
+.homeBody {
+  margin: 0 5rem;
 }
 </style>
