@@ -30,8 +30,8 @@ const carouselItems = [
     </TitleComponent>
     <el-carousel :interval="4000" type="card" height="18.75rem" style="margin-top: 1.25rem;"
       indicator-position="outside">
-      <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id">
-        <img :src="item.url" alt="carousel">
+      <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id"
+        :style="{ backgroundImage: `url(${item.url})` }">
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -41,12 +41,6 @@ const carouselItems = [
 <style lang="less" scoped>
 .carousel {
   margin: 3.125rem 3.125rem 0 3.125rem;
-}
-
-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 :deep(.el-carousel__indicators--horizontal) {
@@ -66,5 +60,16 @@ img {
     opacity: 0.5;
     border-radius: 0.625rem;
   }
+}
+
+.el-carousel__item {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+.el-carousel__item.is-animating {
+  transition: opacity .2s ease-in-out !important;
 }
 </style>
