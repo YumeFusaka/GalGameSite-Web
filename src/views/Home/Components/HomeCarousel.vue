@@ -16,7 +16,7 @@ const carouselItems = [
   },
   {
     id: 4,
-    url: 'src/images/Carouse/4.jpg',
+    url: 'src/images/Carouse/4.webp',
   }
 ]
 </script>
