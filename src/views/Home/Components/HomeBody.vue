@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import HomeActivity from './HomeActivity.vue';
+import BodyActivity from './BodyActivity.vue';
+import BodyInfo from './BodyInfo.vue';
 </script>
 
 <template>
   <div class="body">
-    <div class="activity">
-      <HomeActivity />
+    <div class="bodyActivity">
+      <BodyActivity />
+    </div>
+    <div class="bodyInfo">
+      <BodyInfo />
     </div>
 
   </div>
@@ -17,12 +21,12 @@ import HomeActivity from './HomeActivity.vue';
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 5fr 2fr;
+
   column-gap: 1.25rem;
 }
 
-.activity {
+.bodyActivity {
   grid-column: 1;
   grid-row: 1/3;
   border-radius: 0.625rem;

@@ -25,10 +25,14 @@ import HomeRecommend from './Components/HomeRecommend.vue';
   display: grid;
   row-gap: 2rem;
   grid-template-columns: 1fr;
-  grid-template-rows: 28.125rem auto auto;
+  grid-template-rows: 25rem auto auto;
+}
+
+.homeRecommend {
+  margin: 0 5rem;
 }
 
 .homeBody {
-  margin: 0 5rem;
+  margin: 0 10rem;
 }
 </style>

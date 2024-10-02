@@ -23,11 +23,6 @@ const carouselItems = [
 
 <template>
   <div class="carousel">
-    <TitleComponent style="margin-left: 3.125rem;">
-      <template v-slot="title">
-        新作预览
-      </template>
-    </TitleComponent>
     <el-carousel :interval="4000" type="card" height="18.75rem" style="margin-top: 1.25rem;"
       indicator-position="outside">
       <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id"
@@ -40,7 +35,7 @@ const carouselItems = [
 
 <style lang="less" scoped>
 .carousel {
-  margin: 3.125rem 3.125rem 0 3.125rem;
+  margin: 3.125rem 0 0 0;
 }
 
 :deep(.el-carousel__indicators--horizontal) {

@@ -49,7 +49,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: 3.75rem auto 6.25rem;
+  grid-template-rows: 3.5rem auto 6.25rem;
   grid-template-columns: 1fr;
 }
 </style>
