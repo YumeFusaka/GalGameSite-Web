@@ -9,10 +9,10 @@ import HomeRecommend from './Components/HomeRecommend.vue';
     <div class="homeCarousel">
       <HomeCarousel />
     </div>
-    <div class="homeRecommend">
+    <div class="homeRecommend space">
       <HomeRecommend />
     </div>
-    <div class="homeBody">
+    <div class="homeBody space">
       <HomeBody />
     </div>
   </div>
@@ -28,11 +28,39 @@ import HomeRecommend from './Components/HomeRecommend.vue';
   grid-template-rows: 25rem auto auto;
 }
 
-.homeRecommend {
-  margin: 0 5rem;
+.space {
+  margin: 0 10rem;
 }
 
-.homeBody {
-  margin: 0 10rem;
+@media (max-width: 1200px) {
+  .space {
+    margin: 0 8rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .space {
+    margin: 0 6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .space {
+    margin: 0 4rem;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .space {
+    margin: 0 2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .space {
+    margin: 0 1rem;
+  }
 }
 </style>

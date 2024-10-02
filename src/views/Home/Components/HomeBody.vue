@@ -22,7 +22,6 @@ import BodyInfo from './BodyInfo.vue';
   width: 100%;
   display: grid;
   grid-template-columns: 5fr 2fr;
-
   column-gap: 1.25rem;
 }
 

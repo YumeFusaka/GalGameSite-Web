@@ -50,7 +50,6 @@ const recommondList = [
 
 <style scoped>
 .recommend {
-  margin: 0 5rem 0 5rem;
   padding: 1.5rem 1.25rem 1.5rem 1.25rem;
   background: rgba(255, 255, 255, 0.3);
   /* 半透明白色 */
