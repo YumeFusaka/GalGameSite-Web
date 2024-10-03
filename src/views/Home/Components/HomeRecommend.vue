@@ -100,7 +100,7 @@ img {
   margin-top: 0.625rem;
   font-size: 1rem;
   color: #f0767e;
-  font-weight: 600;
+  font-weight: 500;
   align-self: center;
   text-align: center;
 }
