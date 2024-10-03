@@ -11,9 +11,7 @@ import BodyInfo from './BodyInfo.vue';
     <div class="bodyInfo">
       <BodyInfo />
     </div>
-
   </div>
-
 </template>
 
 <style scoped>

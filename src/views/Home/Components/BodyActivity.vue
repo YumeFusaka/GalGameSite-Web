@@ -56,13 +56,9 @@ const activityList = [
   padding: 1.5rem 1.25rem 1.5rem 1.25rem;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
-  /* 半透明白色 */
   backdrop-filter: blur(10px);
-  /* 模糊效果 */
   border-radius: 0.625rem;
-  /* 圆角 */
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
-  /* 轻微阴影 */
 }
 
 .box {

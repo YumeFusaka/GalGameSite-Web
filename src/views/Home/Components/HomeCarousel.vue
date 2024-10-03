@@ -32,7 +32,6 @@ const carouselItems = [
       </el-carousel-item>
     </el-carousel>
   </div>
-
 </template>
 
 <style lang="less" scoped>

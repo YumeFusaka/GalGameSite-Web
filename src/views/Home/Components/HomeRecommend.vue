@@ -44,7 +44,6 @@ const recommondList = [
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -52,13 +51,9 @@ const recommondList = [
 .recommend {
   padding: 1.5rem 1.25rem 1.5rem 1.25rem;
   background: rgba(255, 255, 255, 0.3);
-  /* 半透明白色 */
   backdrop-filter: blur(10px);
-  /* 模糊效果 */
   border-radius: 0.625rem;
-  /* 圆角 */
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
-  /* 轻微阴影 */
 }
 
 .box {
@@ -83,7 +78,6 @@ const recommondList = [
   }
 }
 
-/* 当屏幕宽度大于1200px时，每行显示4张图片 */
 @media (min-width: 1200px) {
   .box {
     grid-template-columns: repeat(5, 1fr);

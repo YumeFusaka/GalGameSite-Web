@@ -40,9 +40,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   background-size: cover;
   filter: blur(12px);
   opacity: 0.5;
-  /* 添加模糊效果 */
   z-index: -1;
-  /* 让背景在内容下方 */
 }
 
 .content {

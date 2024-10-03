@@ -24,8 +24,6 @@
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 
-
-
   display: flex;
   flex-direction: column;
   justify-content: center;
