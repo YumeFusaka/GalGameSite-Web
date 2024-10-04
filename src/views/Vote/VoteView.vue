@@ -15,18 +15,37 @@ const getGalGameList = async () => {
   isMounted.value = true;
 }
 
-const changeScroll = (pre: number, next: number) => {
-  srcollIndex.value = next;
+const changeScroll = (current: number, prev: number) => {
+  srcollIndex.value = current;
 }
+
+const screenWidth = ref<number>(0);
+
+
+const updateScreenWidth = () => {
+  screenWidth.value = window.innerWidth;
+}
+
+window.addEventListener('resize', updateScreenWidth);
+
 
 onMounted(() => {
   getGalGameList();
+  updateScreenWidth();
 })
 </script>
 
 <template>
   <div class="box">
     <div class="box-content">
+      <div class="activity">
+        <div class="title">
+          湖北交通大学十二交器选拔
+        </div>
+        <div class="time">
+          2024-10-9 ~ 2024-10-15
+        </div>
+      </div>
       <div class="rank">
         <TitleComponent style="">
           <template v-slot="title">
@@ -36,7 +55,8 @@ onMounted(() => {
         <div class="rank-content" v-if="isMounted">
           <div class="scroll">
             <div class="scroll-image">
-              <el-carousel :interval="4000" type="card" height="300px" @change="changeScroll">
+              <el-carousel :interval="4000" :type="screenWidth >= 900 ? `card` : ` `" height="300px"
+                @change="changeScroll" indicator-position="none">
                 <el-carousel-item v-for="i in 12" :key="i">
                   <img :src="galgameList[i - 1].url" class="image" />
                 </el-carousel-item>
@@ -45,10 +65,11 @@ onMounted(() => {
             <div class="scroll-text">
               <div class="scroll-describe">
                 <div class="scroll-name">{{ galgameList[srcollIndex].name }}</div>
-                <div calss="scroll-rank">rank:{{ galgameList[srcollIndex].rank }} score:{{
-                  galgameList[srcollIndex].score
-                }}</div>
+                <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
               </div>
+            </div>
+            <div class="tip">
+
             </div>
           </div>
 
@@ -84,25 +105,46 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 5rem 20rem 5rem 20rem;
+  padding: 2rem 13rem 2rem 13rem;
 }
 
 .box-content {
   width: 100%;
   height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+  padding: 2rem 4rem 2rem 4rem;
+  box-sizing: border-box;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr 1fr;
+  row-gap: 3rem;
+}
+
+.activity {
+  text-align: center;
+
+  .title {
+    font-size: 2.4rem;
+    font-weight: 500;
+  }
+
+  .time {
+    margin-top: .5rem;
+    font-size: 1.2rem;
+  }
 }
 
 .rank {
   display: grid;
   grid-template-rows: 3rem 1fr;
+}
 
-  .rank-content {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    column-gap: 15rem;
-  }
+.rank-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  column-gap: 3rem;
 }
 
 .scroll {
@@ -112,6 +154,24 @@ onMounted(() => {
     height: 100%;
     width: 100%;
     object-fit: cover;
+  }
+}
+
+.scroll-describe {
+  margin-top: 0.8rem;
+  padding: 0 6.25rem;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+
+  .scroll-name {
+    font-size: 1.5rem;
+  }
+
+  .scroll-rank {
+    font-size: 1.2rem;
   }
 }
 
@@ -127,14 +187,83 @@ onMounted(() => {
   grid-template-columns: 1fr;
   grid-template-rows: repeat(auto, 1fr);
   row-gap: 1rem;
+}
+
+.static-row {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  column-gap: 1.25rem;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+
+@media (max-width: 1600px) {
+  .box {
+    padding: 2rem 8rem 2rem 8rem;
+  }
+
+  .box-content {
+    padding: 2rem 3rem 2rem 3rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .box {
+    padding: 2rem 4rem 2rem 4rem;
+  }
+
+  .box-content {
+    padding: 2rem 1.5rem 2rem 1.5rem;
+  }
+
+  .rank-content {
+    column-gap: 2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .box {
+    padding: 1rem 2rem 1rem 2rem;
+  }
+
+  .box-content {
+    padding: 2rem 1rem 2rem 1rem;
+  }
+
+  .rank-content {
+    column-gap: 1rem;
+  }
 
   .static-row {
-    display: grid;
-    grid-template-columns: 3.75rem 15.625rem 3.75rem;
-    column-gap: 1.25rem;
-    align-items: center;
-    justify-items: center;
-    text-align: center;
+    column-gap: 0.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .box {
+    padding: 1rem 1.5rem 1rem 1.5rem;
+  }
+
+  .box-content {
+    padding: 2rem 1rem 2rem 1rem;
+  }
+
+  .rank-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rank-content {
+    column-gap: 0.5rem;
+  }
+
+  .static-row {
+    column-gap: 0.2rem;
+  }
+
+  .scroll-describe {
+    padding: 0 1rem;
   }
 }
 </style>

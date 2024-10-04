@@ -76,11 +76,7 @@ const activityList = [
   }
 }
 
-@media screen and (max-width: 768px) {
-  .box {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
+
 
 .box-item {
   display: flex;

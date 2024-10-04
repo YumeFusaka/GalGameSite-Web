@@ -40,7 +40,7 @@ div {
 
 .info-box {
   margin-left: auto;
-  background-color: #d9d9d97d;
+  background-color: #d9d9d942;
   border-radius: 0.3125rem;
   display: flex;
   align-items: center;

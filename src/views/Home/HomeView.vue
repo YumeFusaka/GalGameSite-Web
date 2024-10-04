@@ -34,33 +34,31 @@ import HomeRecommend from './Components/HomeRecommend.vue';
 
 @media (max-width: 1200px) {
   .space {
-    margin: 0 8rem;
+    margin: 0 7rem;
   }
 }
 
 @media (max-width: 900px) {
   .space {
-    margin: 0 6rem;
+    margin: 0 5rem;
   }
 }
 
 @media (max-width: 768px) {
   .space {
-    margin: 0 4rem;
+    margin: 0 3rem;
   }
 }
 
-
-
 @media (max-width: 600px) {
   .space {
-    margin: 0 2rem;
+    margin: 0 1rem;
   }
 }
 
 @media (max-width: 400px) {
   .space {
-    margin: 0 1rem;
+    margin: 0 0.5rem;
   }
 }
 </style>

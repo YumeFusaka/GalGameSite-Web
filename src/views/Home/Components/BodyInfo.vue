@@ -39,12 +39,43 @@ div {
   font-weight: bold;
   text-align: center;
   margin-bottom: 1rem;
-  text-decoration: underline;
 }
 
 .info-content {
   padding: 0 0.5rem;
   font-size: 1.2rem;
   text-align: center;
+}
+
+@media (max-width: 1200px) {
+  .info {
+    padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .info {
+    padding: 0.8rem 0.8rem 0.8rem 0.8rem;
+  }
+
+  .info-title {
+    font-size: 1.4rem;
+  }
+
+  .info-content {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .info {
+    padding: 0.6rem 0.6rem 0.6rem 0.6rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .info {
+    padding: 0.6rem 0.4rem 0.6rem 0.4rem;
+  }
 }
 </style>

@@ -3,6 +3,7 @@ import w1 from '@/images/Carouse/1.webp'
 import w2 from '@/images/Carouse/2.webp'
 import w3 from '@/images/Carouse/3.webp'
 import w4 from '@/images/Carouse/4.webp'
+import { onMounted, ref } from 'vue';
 const carouselItems = [
   {
     id: 1,
@@ -21,12 +22,24 @@ const carouselItems = [
     url: w4
   }
 ]
+
+const screenWidth = ref<number>(0);
+
+const updateScreenWidth = () => {
+  screenWidth.value = window.innerWidth;
+}
+
+window.addEventListener('resize', updateScreenWidth);
+
+onMounted(() => {
+  updateScreenWidth();
+})
 </script>
 
 <template>
   <div class="carousel">
-    <el-carousel :interval="4000" type="card" height="18.75rem" style="margin-top: 1.25rem;"
-      indicator-position="outside">
+    <el-carousel :interval="4000" :type="screenWidth >= 768 ? `card` : ''" height="18.75rem"
+      style="margin-top: 1.25rem;" indicator-position="outside">
       <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id"
         :style="{ backgroundImage: `url(${item.url})` }">
       </el-carousel-item>
