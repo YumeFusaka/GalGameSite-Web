@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { getGalGameListAPI } from '@/apis/galgame';
 import type { GalGame } from '@/types/galgame';
 import TitleComponent from '@/components/TitleComponent.vue';
+import { Search } from '@element-plus/icons-vue';
 const galgameList = ref<GalGame[]>([]);
 
 const srcollIndex = ref<number>(0);
@@ -33,6 +34,8 @@ onMounted(() => {
   getGalGameList();
   updateScreenWidth();
 })
+
+const value = ref<number>(0);
 </script>
 
 <template>
@@ -43,7 +46,7 @@ onMounted(() => {
           湖北交通大学十二交器选拔
         </div>
         <div class="time">
-          2024-10-9 ~ 2024-10-15
+          2024-10-8 ~ 2024-10-15
         </div>
       </div>
       <div class="rank">
@@ -70,7 +73,7 @@ onMounted(() => {
 
             <div class="tip">
               活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。
-              每人拥有20张票，每张票可投给任意一个作品，每个作品最多可以投3票，支持退票重选。
+              每人拥有30张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。
               投票截止时间为2024年10月15日，最终排名以投票结果为准。
             </div>
           </div>
@@ -107,26 +110,38 @@ onMounted(() => {
         </TitleComponent>
         <div class="vote-content">
           <div class="search-box">
-          </div>
-          <div class="vote-list">
-            <el-card v-for="galgame in galgameList" :key="galgame.id" class="card" shadow="hover"
-              style="max-width: 30rem">
-              <template #header>
-                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
-              </template>
-              <img :src="galgame.url" class="vote-img" />
-              <template #footer>
-                <div class="vote-footer">
-                  <el-button type="primary" @click="">投票</el-button>
-                  <span>192 votes</span>
-                </div>
-              </template>
-            </el-card>
+            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">20</span>
+              票喵～(∠・ω< )⌒★</div>
+                <el-input class="search" placeholder="请输入GalGame名称" clearable>
+                  <template #suffix>
+                    <el-icon>
+                      <search />
+                    </el-icon>
+                  </template>
+                </el-input>
+            </div>
+            <div class="vote-list">
+              <el-card v-for="galgame in galgameList" :key="galgame.id" class="card" shadow="hover"
+                style="max-width: 30rem">
+                <template #header>
+                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
+                </template>
+                <img :src="galgame.url" class="vote-img" />
+                <template #footer>
+                  <div class="vote-footer">
+                    <el-rate v-model="value" />
+                    <span>192 votes</span>
+                  </div>
+                </template>
+              </el-card>
+            </div>
+            <div class="page">
+              <el-pagination background layout="prev, pager, next" :total="1000" class="pagination" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
@@ -259,6 +274,12 @@ onMounted(() => {
   height: 0.2rem !important;
 }
 
+.vote-content {
+  display: grid;
+  grid-template-rows: auto;
+  row-gap: 1.5rem;
+}
+
 .vote-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -270,7 +291,6 @@ onMounted(() => {
 .vote-img {
   width: 100%;
   height: 18rem;
-  border-radius: 0.5rem;
 }
 
 .card {
@@ -283,6 +303,38 @@ onMounted(() => {
   align-items: center;
 }
 
+.search-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.remainder {
+  height: auto;
+  padding: 0.625rem;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: .3125rem;
+  background-color: #f9c6cf46;
+  border-left: 0.425rem solid hwb(359 78% 2%);
+  font-weight: 400;
+}
+
+.search {
+  width: 25rem;
+  height: 3.125rem;
+}
+
+:deep(.el-input__wrapper) {
+  outline: 2px solid pink !important;
+  border-radius: 20px !important;
+}
+
+/* .search-box {
+  display: flex;
+  align-items: center;
+} */
+
 .el-card /deep/ .el-card__body {
   padding: 0px;
 }
@@ -293,7 +345,30 @@ onMounted(() => {
   text-align: center;
 }
 
+.el-card /deep/ .el-card__footer {
+  padding: 0.5rem;
+  text-align: center;
+}
 
+.page {
+  display: flex;
+}
+
+.pagination {
+  margin: 0 auto;
+}
+
+:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+  background-color: pink !important;
+}
+
+:deep(.el-pagination.is-background .el-pager li) {
+  background-color: white !important;
+}
+
+:deep(.el-pagination.is-background button) {
+  background-color: white !important;
+}
 
 @media (max-width: 1600px) {
   .box {
