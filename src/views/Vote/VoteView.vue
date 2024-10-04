@@ -55,21 +55,23 @@ onMounted(() => {
         <div class="rank-content" v-if="isMounted">
           <div class="scroll">
             <div class="scroll-image">
-              <el-carousel :interval="4000" :type="screenWidth >= 900 ? `card` : ` `" height="300px"
+              <el-carousel :interval="4000" :type="screenWidth >= 900 ? `card` : ` `" height="20rem"
                 @change="changeScroll" indicator-position="none">
                 <el-carousel-item v-for="i in 12" :key="i">
                   <img :src="galgameList[i - 1].url" class="image" />
                 </el-carousel-item>
               </el-carousel>
             </div>
-            <div class="scroll-text">
-              <div class="scroll-describe">
-                <div class="scroll-name">{{ galgameList[srcollIndex].name }}</div>
-                <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
-              </div>
-            </div>
-            <div class="tip">
 
+            <div class="scroll-describe">
+              <div class="scroll-name">{{ galgameList[srcollIndex].name }}</div>
+              <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
+            </div>
+
+            <div class="tip">
+              活动须知: 投票前请先登录,登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。
+              每人拥有20张票,每张票可投给任意一个作品，每个作品最多可以投3票，支持退票重选。
+              投票截止时间为2024年10月15日，最终排名以投票结果为准。
             </div>
           </div>
 
@@ -149,6 +151,9 @@ onMounted(() => {
 
 .scroll {
   width: 100%;
+  display: grid;
+  grid-template-rows: auto;
+  row-gap: .625rem;
 
   .image {
     height: 100%;
@@ -158,10 +163,9 @@ onMounted(() => {
 }
 
 .scroll-describe {
-  margin-top: 0.8rem;
   padding: 0 6.25rem;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto;
   align-items: center;
   justify-items: center;
   text-align: center;
@@ -196,6 +200,22 @@ onMounted(() => {
   align-items: center;
   justify-items: center;
   text-align: center;
+}
+
+.tip {
+  padding: 0.8rem 1rem 0.8rem 1rem;
+  box-sizing: border-box;
+  height: auto;
+  width: 100%;
+
+  border-radius: .3125rem;
+  background-color: #f9c6cf46;
+  border-left: 0.425rem solid hwb(359 78% 2%);
+
+  line-height: 1.8rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #444;
 }
 
 
