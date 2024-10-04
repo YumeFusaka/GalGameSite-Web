@@ -91,14 +91,39 @@ onMounted(() => {
       </div>
       <el-divider class="divider" />
       <div class="history">
-
+        <TitleComponent style="">
+          <template v-slot="title">
+            投票记录
+          </template>
+        </TitleComponent>
+        <el-empty :image-size="200" />
       </div>
       <el-divider class="divider" />
       <div class="vote">
-        3
-        <!-- <div v-for="galgame in galgameList" :key="galgame.id">
-          <img :src="galgame.url" class="icon"></img>
-        </div> -->
+        <TitleComponent style="margin-bottom: 1.25rem;">
+          <template v-slot="title">
+            投票列表
+          </template>
+        </TitleComponent>
+        <div class="vote-content">
+          <div class="search-box">
+          </div>
+          <div class="vote-list">
+            <el-card v-for="galgame in galgameList" :key="galgame.id" class="card" shadow="hover"
+              style="max-width: 30rem">
+              <template #header>
+                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
+              </template>
+              <img :src="galgame.url" class="vote-img" />
+              <template #footer>
+                <div class="vote-footer">
+                  <el-button type="primary" @click="">投票</el-button>
+                  <span>192 votes</span>
+                </div>
+              </template>
+            </el-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -122,7 +147,7 @@ onMounted(() => {
   padding: 2rem 4rem 2rem 4rem;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: auto 1fr auto 1fr auto 1fr;
+  grid-template-rows: auto;
   row-gap: 3rem;
 }
 
@@ -132,6 +157,13 @@ onMounted(() => {
   .title {
     font-size: 2.4rem;
     font-weight: 500;
+    display: inline-block;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: #0000;
+    white-space: nowrap;
+    background-image: linear-gradient(to right, #09c8ce, #eb2f96);
   }
 
   .time {
@@ -221,10 +253,46 @@ onMounted(() => {
 }
 
 .divider {
+  width: 95% !important;
   background-color: pink !important;
   border-radius: 1rem !important;
   height: 0.2rem !important;
 }
+
+.vote-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  row-gap: 2rem;
+  column-gap: 2rem;
+}
+
+.vote-img {
+  width: 100%;
+  height: 18rem;
+  border-radius: 0.5rem;
+}
+
+.card {
+  border-radius: 0.5rem;
+}
+
+.vote-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.el-card /deep/ .el-card__body {
+  padding: 0px;
+}
+
+
+.el-card /deep/ .el-card__header {
+  padding: 0.5rem;
+  text-align: center;
+}
+
 
 
 @media (max-width: 1600px) {
