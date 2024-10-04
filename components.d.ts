@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ElCarousel: typeof import('element-plus/es')['ElCarousel']
     ElCarouselItem: typeof import('element-plus/es')['ElCarouselItem']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TitleComponent: typeof import('./src/components/TitleComponent.vue')['default']

@@ -69,8 +69,8 @@ onMounted(() => {
             </div>
 
             <div class="tip">
-              活动须知: 投票前请先登录,登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。
-              每人拥有20张票,每张票可投给任意一个作品，每个作品最多可以投3票，支持退票重选。
+              活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。
+              每人拥有20张票，每张票可投给任意一个作品，每个作品最多可以投3票，支持退票重选。
               投票截止时间为2024年10月15日，最终排名以投票结果为准。
             </div>
           </div>
@@ -88,10 +88,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
-
+      </div>
+      <el-divider class="divider" />
+      <div class="history">
 
       </div>
-      <div class="history">2</div>
+      <el-divider class="divider" />
       <div class="vote">
         3
         <!-- <div v-for="galgame in galgameList" :key="galgame.id">
@@ -120,7 +122,7 @@ onMounted(() => {
   padding: 2rem 4rem 2rem 4rem;
   box-sizing: border-box;
   display: grid;
-  grid-template-rows: auto 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr auto 1fr auto 1fr;
   row-gap: 3rem;
 }
 
@@ -216,6 +218,12 @@ onMounted(() => {
   font-size: 1rem;
   font-weight: 400;
   color: #444;
+}
+
+.divider {
+  background-color: pink !important;
+  border-radius: 1rem !important;
+  height: 0.2rem !important;
 }
 
 
