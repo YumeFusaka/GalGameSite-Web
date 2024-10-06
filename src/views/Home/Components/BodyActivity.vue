@@ -8,7 +8,8 @@ const activityList = [
     start_time: '2024-10-9',
     end_time: '2024-10-15',
     state: '未开始',
-    url: w1
+    url: w1,
+    link: '/vote'
   },
   {
     name: '湖交GalGame十二神器实时榜单',
@@ -36,7 +37,7 @@ const activityList = [
       </template>
     </TitleComponent>
     <div class="box">
-      <div v-for="item in activityList" :key="item.name" class="box-item">
+      <div v-for="item in activityList" :key="item.name" class="box-item" @click="$router.push(item.link!)">
         <img :src="item.url">
         <div class="describe">
           <div class="name">{{ item.name }}</div>

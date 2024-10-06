@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI } from '@/apis/activity/vote';
+import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI } from '@/apis/activity/vote';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
 import type { Page } from '@/types/page';
-import type { GalGameVoteItemSearch, GalGameVoteResult } from '@/types/activity/vote';
+import type { GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteResult } from '@/types/activity/vote';
 
 const galGameVoteItemSearchList = ref<GalGameVoteItemSearch[]>([]);
 
@@ -63,17 +63,31 @@ const updateScreenWidth = () => {
   screenWidth.value = window.innerWidth;
 }
 
+const galGameVoteHistoryList = ref<GalGameVoteHistory[]>([]);
+
+const galGameVoteHistory = async () => {
+  const res = await galGameVoteHistoryAPI();
+  galGameVoteHistoryList.value = res.data;
+  console.log(galGameVoteHistoryList.value)
+}
+
 window.addEventListener('resize', updateScreenWidth);
 
+const voteDialogVisible = ref<boolean>(false);
 
 onMounted(() => {
   updateScreenWidth();
   galGameVoteItemSearch();
   galGameVoteByUseCount();
+  galGameVoteHistory();
   galGameVoteResult();
 })
 
-const value = ref<number>(0);
+const galgameVoteDialogInfo = ref<GalGameVoteResult>();
+
+const openGalGameVoteDialog = async (subjectId: number) => {
+  voteDialogVisible.value = true;
+}
 </script>
 
 <template>
@@ -156,13 +170,15 @@ const value = ref<number>(0);
               <el-card v-for="galgame in galGameVoteItemSearchList" :key="galgame.subjectId" class="card" shadow="hover"
                 style="max-width: 30rem">
                 <template #header>
-                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
+                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;color: #ff9ab5">{{ galgame.name
+                    }}</el-text>
                 </template>
                 <img :src="galgame.url" class="vote-img" />
                 <template #footer>
                   <div class="vote-footer">
-                    <el-rate v-model="value" />
-                    <span>192 votes</span>
+                    <el-button type="danger" style="background-color: #ff9ab5;"
+                      @click="openGalGameVoteDialog(galgame.subjectId)">投票</el-button>
+                    <span>{{ galgame.totalVote }} votes</span>
                   </div>
                 </template>
               </el-card>
@@ -183,13 +199,48 @@ const value = ref<number>(0);
               投票记录
             </template>
           </TitleComponent>
-          <el-empty :image-size="200" />
+          <div v-if="galGameVoteHistoryList.length > 0" class="vote-list" style="margin-top: 1.25rem;">
+            <el-card v-for="galgame in galGameVoteHistoryList" :key="galgame.subjectId" class="card" shadow="hover"
+              style="max-width: 30rem">
+              <template #header>
+                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
+              </template>
+              <img :src="galgame.url" class="vote-img" />
+              <template #footer>
+                <div class="vote-footer">
+                  <el-rate v-model="galgame.voteByMe" size="large" show-score text-color="#ff9900"
+                    score-template="{value} votes" disabled />
+                </div>
+              </template>
+            </el-card>
+          </div>
+          <el-empty :image-size="200" v-else />
         </div>
       </div>
     </div>
+
+
+    <el-dialog v-model="voteDialogVisible" title="投票面板" width="500" align-center class="vote-dialog">
+      <div>
+        <img src="" />
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="voteDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="voteDialogVisible = false">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
 </template>
 
 <style scoped>
+.vote-dialog {
+  border-radius: 1.25rem;
+}
+
+
 .box {
   width: 100%;
   height: 100%;

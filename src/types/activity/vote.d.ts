@@ -20,3 +20,11 @@ export type GalGameVoteResult = GalGame & {
 export type GalGameSearchTotalParams = {
   name: string
 }
+
+export type GalGameVoteHistory = {
+  id: number,
+  subjectId: number,
+  name: string,
+  url: string,
+  voteByMe: number,
+}

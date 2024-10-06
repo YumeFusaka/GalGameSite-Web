@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/Layout/LayoutView.vue'),
-      redirect: '/vote',
+      redirect: '/home',
       children: [
         {
           path: '/home',
