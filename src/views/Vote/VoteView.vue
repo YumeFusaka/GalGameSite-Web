@@ -282,8 +282,8 @@ const value = ref<number>(0);
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(13, minmax(0.9rem, auto));
-  row-gap: 1.5rem;
+  grid-template-rows: repeat(13, minmax(0.8rem, auto));
+  row-gap: 0.5rem;
 }
 
 .static-row {

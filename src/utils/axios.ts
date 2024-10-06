@@ -1,4 +1,4 @@
-import { useClientStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import axios from 'axios'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
@@ -12,9 +12,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const clientStore = useClientStore()
-    if (clientStore.token) {
-      config.headers.Authorization = 'bearer ' + clientStore.token;
+    const userStore = useUserStore()
+    if (userStore.token) {
+      config.headers.Authorization = 'bearer ' + userStore.token;
     }
     return config
   },
@@ -27,12 +27,11 @@ instance.interceptors.response.use(
     if (res.data.code === 200) {
       return res
     }
-    ElMessage({ message: res.data.message || '服务异常', type: 'error' })
+    ElMessage({ message: res.data.msg || '服务异常', type: 'error' })
     return Promise.reject(res.data)
   },
   (err) => {
-    ElMessage({ message: err.response.data.message || '服务异常', type: 'error' })
-    console.log(err)
+    ElMessage({ message: err.response.data.data || '服务异常', type: 'error' })
     if (err.response?.status === 401) {
       router.push('/login')
     }

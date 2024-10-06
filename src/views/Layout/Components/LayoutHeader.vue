@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const userStore = useUserStore();
 
 </script>
 
@@ -10,7 +16,8 @@
       </div>
     </div>
     <div class="info-box">
-      <div class="info">Login</div>
+      <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
+      <div class="info" @click="userStore.clearToken; router.push('/login')" v-else>Exit</div>
     </div>
 
   </div>

@@ -3,10 +3,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 // 定义 Store
-export const useClientStore = defineStore(
-  'client',
+export const useUserStore = defineStore(
+  'user',
   () => {
-    const token = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJxcSI6IjEzMzY2Nzk5NzEiLCJleHAiOjIxNjAxOTYyNDZ9.3pOtR531lY4hq07ni6de0nnMj3Zf74zvNyJ90RB1Czo')
+    const token = ref<string>('')
     const setToken = (val: string) => {
       token.value = val
     }
