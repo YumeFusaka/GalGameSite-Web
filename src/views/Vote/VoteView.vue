@@ -1,23 +1,59 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getGalGameListAPI } from '@/apis/galgame';
-import type { GalGame } from '@/types/galgame';
+import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI } from '@/apis/activity/vote';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
-const galgameList = ref<GalGame[]>([]);
+import type { Page } from '@/types/page';
+import type { GalGameVoteItemSearch, GalGameVoteResult } from '@/types/activity/vote';
+
+const galGameVoteItemSearchList = ref<GalGameVoteItemSearch[]>([]);
+
+const galGameVoteResultList = ref<GalGameVoteResult[]>([]);
 
 const srcollIndex = ref<number>(0);
 
 const isMounted = ref<boolean>(false);
 
-const getGalGameList = async () => {
-  const res = await getGalGameListAPI();
-  galgameList.value = res.data;
+const voteByUseSum = ref<number>(0);
+
+const searchTotal = ref<number>(0);
+
+const page = ref<Page>({
+  pageNo: 1,
+  pageSize: 20
+});
+
+const searchName = ref<string>('');
+
+const galGameVoteItemSearchChange = async () => {
+  page.value.pageNo = 1;
+  galGameVoteItemSearch();
+}
+
+const galGameVoteItemSearch = async () => {
+  const res = await galGameVoteItemSearchAPI({ ...page.value, searchName: searchName.value });
+  galGameVoteItemSearchList.value = res.data;
+  galGameSearchTotal();
+}
+
+const galGameVoteResult = async () => {
+  const res = await galGameVoteResultAPI();
+  galGameVoteResultList.value = res.data;
   isMounted.value = true;
+}
+
+const galGameVoteByUseCount = async () => {
+  const res = await galGameVoteByUseCountAPI();
+  voteByUseSum.value = res.data;
 }
 
 const changeScroll = (current: number, prev: number) => {
   srcollIndex.value = current;
+}
+
+const galGameSearchTotal = async () => {
+  const res = await galGameSearchTotalAPI({ name: searchName.value });
+  searchTotal.value = res.data;
 }
 
 const screenWidth = ref<number>(0);
@@ -31,8 +67,10 @@ window.addEventListener('resize', updateScreenWidth);
 
 
 onMounted(() => {
-  getGalGameList();
   updateScreenWidth();
+  galGameVoteItemSearch();
+  galGameVoteByUseCount();
+  galGameVoteResult();
 })
 
 const value = ref<number>(0);
@@ -60,14 +98,14 @@ const value = ref<number>(0);
             <div class="scroll-image">
               <el-carousel :interval="4000" :type="screenWidth >= 900 ? `card` : ` `" height="20rem"
                 @change="changeScroll" indicator-position="none">
-                <el-carousel-item v-for="i in 12" :key="i">
-                  <img :src="galgameList[i - 1].url" class="image" />
+                <el-carousel-item v-for="i in Math.min(12, galGameVoteResultList.length)" :key="i">
+                  <img :src="galGameVoteResultList[i - 1].url" class="image" />
                 </el-carousel-item>
               </el-carousel>
             </div>
 
             <div class="scroll-describe">
-              <div class="scroll-name">{{ galgameList[srcollIndex].name }}</div>
+              <div class="scroll-name">{{ galGameVoteResultList[srcollIndex].name }}</div>
               <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
             </div>
 
@@ -84,22 +122,13 @@ const value = ref<number>(0);
               <div class="static-name">Name</div>
               <div class="static-score">Votes</div>
             </div>
-            <div v-for="i in 12" key="i" class="static-row">
+            <div v-for="i in Math.min(12, galGameVoteResultList.length)" :key="i" class="static-row">
               <div class="static-icon">{{ i }}</div>
-              <div class="static-name">{{ galgameList[i - 1].name }}</div>
-              <div class="static-score"> {{ galgameList[i - 1].score }}</div>
+              <div class="static-name">{{ galGameVoteResultList[i - 1].name }}</div>
+              <div class="static-score"> {{ galGameVoteResultList[i - 1].myVote }}</div>
             </div>
           </div>
         </div>
-      </div>
-      <el-divider class="divider" />
-      <div class="history">
-        <TitleComponent style="">
-          <template v-slot="title">
-            投票记录
-          </template>
-        </TitleComponent>
-        <el-empty :image-size="200" />
       </div>
       <el-divider class="divider" />
       <div class="vote">
@@ -110,18 +139,21 @@ const value = ref<number>(0);
         </TitleComponent>
         <div class="vote-content">
           <div class="search-box">
-            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">20</span>
+            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">{{ 30 -
+              voteByUseSum
+                }}</span>
               票喵～(∠・ω< )⌒★</div>
-                <el-input class="search" placeholder="请输入GalGame名称" clearable>
+                <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
+                  @keyup.enter.native="galGameVoteItemSearchChange()" clearable>
                   <template #suffix>
-                    <el-icon>
+                    <el-icon @click="galGameVoteItemSearchChange()">
                       <search />
                     </el-icon>
                   </template>
                 </el-input>
             </div>
-            <div class="vote-list">
-              <el-card v-for="galgame in galgameList" :key="galgame.id" class="card" shadow="hover"
+            <div class="vote-list" v-if="galGameVoteItemSearchList.length > 0">
+              <el-card v-for="galgame in galGameVoteItemSearchList" :key="galgame.subjectId" class="card" shadow="hover"
                 style="max-width: 30rem">
                 <template #header>
                   <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
@@ -135,10 +167,23 @@ const value = ref<number>(0);
                 </template>
               </el-card>
             </div>
-            <div class="page">
-              <el-pagination background layout="prev, pager, next" :total="1000" class="pagination" />
+            <div v-else>
+              <el-empty :image-size="200" />
+            </div>
+            <div class="page" v-if="galGameVoteItemSearchList.length > 0">
+              <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
+                v-model:current-page="page.pageNo" @current-change="galGameVoteItemSearch()" class="pagination" />
             </div>
           </div>
+        </div>
+        <el-divider class="divider" />
+        <div class="history">
+          <TitleComponent style="">
+            <template v-slot="title">
+              投票记录
+            </template>
+          </TitleComponent>
+          <el-empty :image-size="200" />
         </div>
       </div>
     </div>
@@ -235,11 +280,10 @@ const value = ref<number>(0);
   border-radius: 0.625rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: repeat(auto, 1fr);
-  row-gap: 1rem;
+  grid-template-rows: repeat(13, minmax(0.9rem, auto));
+  row-gap: 1.5rem;
 }
 
 .static-row {
@@ -268,6 +312,7 @@ const value = ref<number>(0);
 }
 
 .divider {
+  margin: 0;
   width: 95% !important;
   background-color: pink !important;
   border-radius: 1rem !important;
@@ -326,8 +371,8 @@ const value = ref<number>(0);
 }
 
 :deep(.el-input__wrapper) {
-  outline: 2px solid pink !important;
-  border-radius: 20px !important;
+  outline: 0.125rem solid pink !important;
+  border-radius: 1.25rem !important;
 }
 
 /* .search-box {
@@ -336,7 +381,7 @@ const value = ref<number>(0);
 } */
 
 .el-card /deep/ .el-card__body {
-  padding: 0px;
+  padding: 0;
 }
 
 

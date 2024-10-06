@@ -14,7 +14,7 @@ instance.interceptors.request.use(
   (config) => {
     const clientStore = useClientStore()
     if (clientStore.token) {
-      config.headers.Authorization = clientStore.token
+      config.headers.Authorization = 'bearer ' + clientStore.token;
     }
     return config
   },
