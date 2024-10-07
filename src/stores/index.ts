@@ -11,4 +11,6 @@ pinia.use(persist)
 export default pinia
 
 // 模块统一导出
-export * from './modules/client'
+export * from './modules/user'
+
+export * from './modules/window'

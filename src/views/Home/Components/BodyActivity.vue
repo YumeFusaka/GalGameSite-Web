@@ -5,17 +5,17 @@ import w3 from '@/images/Activity/3.webp'
 const activityList = [
   {
     name: '湖交GalGame十二交器选拔',
-    start_time: '2024-10-9',
+    start_time: '2024-10-8',
     end_time: '2024-10-15',
-    state: '未开始',
+    state: '进行中',
     url: w1,
     link: '/vote'
   },
   {
     name: '湖交GalGame十二交器实时榜单',
-    start_time: '2024-10-9',
+    start_time: '2024-10-8',
     end_time: '2024-10-15',
-    state: '未开始',
+    state: '进行中',
     url: w2,
     link: '/rank'
   },
@@ -24,7 +24,8 @@ const activityList = [
     start_time: '2024-10-16',
     end_time: '永久',
     state: '未开始',
-    url: w3
+    url: w3,
+    link: '/result'
   },
 ]
 
@@ -43,7 +44,7 @@ const activityList = [
         <div class="describe">
           <div class="name">{{ item.name }}</div>
           <div class="time">活动时间：{{ item.start_time }} - {{ item.end_time }}</div>
-          <div class="state">{{ item.state }}</div>
+          <div class="state" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">{{ item.state }}</div>
         </div>
       </div>
     </div>

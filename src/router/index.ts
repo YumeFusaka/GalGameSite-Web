@@ -19,6 +19,10 @@ const router = createRouter({
         {
           path: '/rank',
           component: () => import('../views/Activity/Rank/RankView.vue'),
+        },
+        {
+          path: '/result',
+          component: () => import('../views/Activity/Result/ResultView.vue'),
         }
       ]
     },

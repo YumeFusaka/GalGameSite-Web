@@ -4,44 +4,50 @@ import w2 from '@/images/Carouse/2.webp'
 import w3 from '@/images/Carouse/3.webp'
 import w4 from '@/images/Carouse/4.webp'
 import { onMounted, ref } from 'vue';
+import { useWindowStore } from '@/stores';
+
+const windowStore = useWindowStore()
 const carouselItems = [
   {
     id: 1,
-    url: w1
+    url: w1,
+    link: 'https://mzh.moegirl.org.cn/%E9%81%A5%E3%81%8B%E3%81%AA%E3%82%8B%E3%83%8B%E3%83%A9%E3%82%A4%E3%82%AB%E3%83%8A%E3%82%A4'
   },
   {
     id: 2,
-    url: w2
+    url: w2,
+    link: 'https://metalogiq.jp/'
   },
   {
     id: 3,
-    url: w3
+    url: w3,
+    link: 'https://www.purplesoftware.jp/products/mg/'
   },
   {
     id: 4,
-    url: w4
+    url: w4,
+    link: 'https://mzh.moegirl.org.cn/%E5%B0%91%E5%A5%B3%E4%B8%96%E7%95%8C%E7%9A%84%E7%94%9F%E5%AD%98%E4%B9%8B%E9%81%93'
   }
 ]
 
-const screenWidth = ref<number>(0);
-
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth;
+const openLink = (link: string, index: number) => {
+  if (nowIndex.value + 1 === index)
+    window.open(link, '_blank')
 }
 
-window.addEventListener('resize', updateScreenWidth);
+const nowIndex = ref<number>(0)
 
-onMounted(() => {
-  updateScreenWidth();
-})
+function handleChange(currentIndex: number, prevIndex: number) {
+  nowIndex.value = currentIndex;
+}
 </script>
 
 <template>
   <div class="carousel">
-    <el-carousel :interval="4000" :type="screenWidth >= 768 ? `card` : ''" height="18.75rem"
-      style="margin-top: 1.25rem;" indicator-position="outside">
+    <el-carousel :interval="4000" :type="windowStore.windowSize >= 768 ? `card` : ''" height="18.75rem"
+      style="margin-top: 1.25rem;" indicator-position="outside" @change="handleChange">
       <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id"
-        :style="{ backgroundImage: `url(${item.url})` }">
+        :style="{ backgroundImage: `url(${item.url})` }" @click="openLink(item.link, item.id)">
       </el-carousel-item>
     </el-carousel>
   </div>

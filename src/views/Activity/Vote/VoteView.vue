@@ -5,6 +5,9 @@ import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
 import type { Page } from '@/types/page';
 import type { GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteResult } from '@/types/activity/vote';
+import { useWindowStore } from '@/stores';
+
+const windowStore = useWindowStore()
 
 const galGameVoteItemSearchList = ref<GalGameVoteItemSearch[]>([]);
 
@@ -57,13 +60,6 @@ const galGameSearchTotal = async () => {
   searchTotal.value = res.data;
 }
 
-const screenWidth = ref<number>(0);
-
-
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth;
-}
-
 const galGameVoteHistoryList = ref<GalGameVoteHistory[]>([]);
 
 const galGameVoteHistory = async () => {
@@ -72,12 +68,9 @@ const galGameVoteHistory = async () => {
   console.log(galGameVoteHistoryList.value)
 }
 
-window.addEventListener('resize', updateScreenWidth);
-
 const voteDialogVisible = ref<boolean>(false);
 
 onMounted(() => {
-  updateScreenWidth();
   galGameVoteItemSearch();
   galGameVoteByUseCount();
   galGameVoteHistory();
@@ -111,7 +104,7 @@ const openGalGameVoteDialog = async (subjectId: number) => {
         <div class="rank-content" v-if="isMounted">
           <div class="scroll">
             <div class="scroll-image">
-              <el-carousel :interval="4000" :type="screenWidth >= 900 ? `card` : ` `" height="20rem"
+              <el-carousel :interval="4000" :type="windowStore.windowSize >= 900 ? `card` : ` `" height="20rem"
                 @change="changeScroll" indicator-position="none">
                 <el-carousel-item v-for="i in Math.min(12, galGameVoteResultList.length)" :key="i">
                   <img :src="galGameVoteResultList[i - 1].url" class="image" />

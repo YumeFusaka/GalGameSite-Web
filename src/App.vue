@@ -1,4 +1,16 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { useWindowStore } from './stores';
+
+const windowStore = useWindowStore();
+const updateScreenWidth = () => {
+  windowStore.setWindowSize(window.innerWidth)
+}
+window.addEventListener('resize', updateScreenWidth);
+
+onMounted(() => {
+  updateScreenWidth();
+})
 </script>
 
 <template>
