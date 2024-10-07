@@ -17,7 +17,7 @@ const userStore = useUserStore();
     </div>
     <div class="info-box">
       <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
-      <div class="info" @click="userStore.clearToken; router.push('/login')" v-else>Logout</div>
+      <div class="info" @click="userStore.clearToken(); router.push('/login')" v-else>Logout</div>
     </div>
 
   </div>
