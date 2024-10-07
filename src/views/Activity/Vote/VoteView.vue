@@ -39,6 +39,7 @@ const galGameVoteItemSearch = async () => {
 const galGameVoteResult = async () => {
   const res = await galGameVoteResultAPI();
   galGameVoteResultList.value = res.data;
+  console.log(res.data)
   isMounted.value = true;
 }
 
@@ -87,7 +88,7 @@ const galgameVoteDialogInfo = ref<GalGameVoteResult>();
 
 const openGalGameVoteDialog = async (subjectId: number) => {
   voteDialogVisible.value = true;
-}
+}  
 </script>
 
 <template>

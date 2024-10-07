@@ -11,13 +11,13 @@ const userStore = useUserStore();
 <template>
   <div class="box">
     <div class="title-box">
-      <div class="title">
+      <div class="title" @click="router.push('/')">
         Game&Love
       </div>
     </div>
     <div class="info-box">
       <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
-      <div class="info" @click="userStore.clearToken; router.push('/login')" v-else>Exit</div>
+      <div class="info" @click="userStore.clearToken; router.push('/login')" v-else>Logout</div>
     </div>
 
   </div>
@@ -47,7 +47,7 @@ div {
 
 .info-box {
   margin-left: auto;
-  background-color: #d9d9d942;
+  background-color: #d9d9d92e;
   border-radius: 0.3125rem;
   display: flex;
   align-items: center;

@@ -4,7 +4,7 @@ import w2 from '@/images/Activity/2.webp'
 import w3 from '@/images/Activity/3.webp'
 const activityList = [
   {
-    name: '湖交GalGame十二神器大选',
+    name: '湖交GalGame十二交器选拔',
     start_time: '2024-10-9',
     end_time: '2024-10-15',
     state: '未开始',
@@ -12,11 +12,12 @@ const activityList = [
     link: '/vote'
   },
   {
-    name: '湖交GalGame十二神器实时榜单',
+    name: '湖交GalGame十二交器实时榜单',
     start_time: '2024-10-9',
     end_time: '2024-10-15',
     state: '未开始',
-    url: w2
+    url: w2,
+    link: '/rank'
   },
   {
     name: '湖交GalGame十二神器结果公示',

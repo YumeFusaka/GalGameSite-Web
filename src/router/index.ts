@@ -14,7 +14,11 @@ const router = createRouter({
         },
         {
           path: '/vote',
-          component: () => import('../views/Vote/VoteView.vue'),
+          component: () => import('../views/Activity/Vote/VoteView.vue'),
+        },
+        {
+          path: '/rank',
+          component: () => import('../views/Activity/Rank/RankView.vue'),
         }
       ]
     },
