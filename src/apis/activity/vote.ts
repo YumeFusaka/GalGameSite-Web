@@ -1,5 +1,5 @@
 
-import type { GalGameSearchTotalParams, GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteItemSearchParams, GalGameVoteResult } from '@/types/activity/vote'
+import type { GalGameSearchTotalParams, GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteItemSearchParams, GalGameVoteResult, GalGameVoteResultByUser, galGameVoteResultByUserParams } from '@/types/activity/vote'
 import request from '@/utils/axios'
 import type { Data } from '@/utils/axios'
 
@@ -38,4 +38,12 @@ export const galGameVoteHistoryAPI = (): Promise<Data<GalGameVoteHistory[]>> => 
     url: '/user/activity/galGameVoteHistory/list',
     method: 'get'
   }).then(res => res.data as Data<GalGameVoteHistory[]>)
+}
+
+export const galGameVoteResultByUserAPI = (data: galGameVoteResultByUserParams): Promise<Data<GalGameVoteResultByUser>> => {
+  return request({
+    url: '/user/activity/galGameVoteResultByUser',
+    method: 'post',
+    data
+  }).then(res => res.data as Data<GalGameVoteResultByUser>)
 }

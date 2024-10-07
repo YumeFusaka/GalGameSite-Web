@@ -28,3 +28,12 @@ export type GalGameVoteHistory = {
   url: string,
   voteByMe: number,
 }
+
+export type GalGameVoteResultByUser = GalGameVoteResult & {
+  id: number,
+  voteByUser: number
+}
+
+export type galGameVoteResultByUserParams = {
+  subjectId: number
+}

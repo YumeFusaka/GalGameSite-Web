@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI } from '@/apis/activity/vote';
+import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI, galGameVoteResultByUserAPI } from '@/apis/activity/vote';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
 import type { Page } from '@/types/page';
-import type { GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteResult } from '@/types/activity/vote';
+import type { GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteResult, GalGameVoteResultByUser } from '@/types/activity/vote';
 import { useWindowStore } from '@/stores';
 
 const windowStore = useWindowStore()
@@ -77,11 +77,19 @@ onMounted(() => {
   galGameVoteResult();
 })
 
-const galgameVoteDialogInfo = ref<GalGameVoteResult>();
+const galGameVoteDialogInfo = ref<GalGameVoteResultByUser>();
+const setVote = ref<number>(0);
 
 const openGalGameVoteDialog = async (subjectId: number) => {
+  const res = await galGameVoteResultByUserAPI({ subjectId });
+  console.log(res.data);
+  galGameVoteDialogInfo.value = res.data;
+  if (galGameVoteDialogInfo.value.voteByUser == null) {
+    galGameVoteDialogInfo.value.voteByUser = 0;
+  }
+  setVote.value = galGameVoteDialogInfo.value.voteByUser;
   voteDialogVisible.value = true;
-}  
+}
 </script>
 
 <template>
@@ -214,9 +222,14 @@ const openGalGameVoteDialog = async (subjectId: number) => {
     </div>
 
 
-    <el-dialog v-model="voteDialogVisible" title="投票面板" width="500" align-center class="vote-dialog">
-      <div>
-        <img src="" />
+    <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
+      <div class="dialog-box">
+        <img :src="galGameVoteDialogInfo?.url" />
+        <div> Name: {{ galGameVoteDialogInfo?.name }}</div>
+        <div> Nick: {{ galGameVoteDialogInfo?.nick ? galGameVoteDialogInfo?.nick : 'NULL' }}</div>
+        <div> Info: {{ galGameVoteDialogInfo?.info }} </div>
+        <div> Votes: {{ galGameVoteDialogInfo?.myVote }} Rank:{{ galGameVoteDialogInfo?.myRank }} </div>
+        <el-slider v-model="setVote" :min="0" :max="5" />
       </div>
       <template #footer>
         <div class="dialog-footer">
@@ -230,11 +243,6 @@ const openGalGameVoteDialog = async (subjectId: number) => {
 </template>
 
 <style scoped>
-.vote-dialog {
-  border-radius: 1.25rem;
-}
-
-
 .box {
   width: 100%;
   height: 100%;
@@ -420,22 +428,17 @@ const openGalGameVoteDialog = async (subjectId: number) => {
   border-radius: 1.25rem !important;
 }
 
-/* .search-box {
-  display: flex;
-  align-items: center;
-} */
-
-.el-card /deep/ .el-card__body {
+.el-card :deep(.el-card__body) {
   padding: 0;
 }
 
 
-.el-card /deep/ .el-card__header {
+.el-card :deep(.el-card__header) {
   padding: 0.5rem;
   text-align: center;
 }
 
-.el-card /deep/ .el-card__footer {
+.el-card :deep(.el-card__footer) {
   padding: 0.5rem;
   text-align: center;
 }
@@ -448,7 +451,23 @@ const openGalGameVoteDialog = async (subjectId: number) => {
   margin: 0 auto;
 }
 
-:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+.vote-dialog {
+  border-radius: 1.25rem;
+}
+
+.dialog-box {
+  display: grid;
+
+  img {
+    width: 20rem;
+    height: 20rem;
+    object-fit: cover;
+  }
+
+
+}
+
+.vote:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
   background-color: pink !important;
 }
 
