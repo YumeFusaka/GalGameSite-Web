@@ -17,7 +17,7 @@ const loginParams = ref<LoginParams>({
 const login = async () => {
   const res = await loginAPI(loginParams.value);
   userStore.setToken(res.data.token);
-  ElMessage({ message: '欢迎 ' + res.data.nick_name + ' 喵~', type: 'success' });
+  ElMessage({ message: '欢迎 ' + res.data.nickName + ' 喵~', type: 'success' });
   router.go(-1);
 }
 </script>

@@ -4,5 +4,5 @@ export type LoginParams = {
 
 export type LoginResult = {
   token: string;
-  nick_name: string
+  nickName: string
 }
