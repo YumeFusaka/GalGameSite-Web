@@ -63,10 +63,10 @@ body {
 
 .login-wrapper {
   background-color: #fff;
-  width: 358px;
-  height: 588px;
-  border-radius: 15px;
-  padding: 0 50px;
+  width: 22.375rem;
+  height: 36.75rem;
+  border-radius: .9375rem;
+  padding: 0 3.125rem;
   position: relative;
   left: 50%;
   top: 50%;
@@ -74,20 +74,20 @@ body {
 }
 
 .header {
-  font-size: 38px;
+  font-size: 2.375rem;
   font-weight: bold;
   text-align: center;
-  line-height: 200px;
+  line-height: 12.5rem;
 }
 
 .input-item {
   display: block;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   border: 0;
-  padding: 10px;
-  border-bottom: 1px solid rgb(128, 125, 125);
-  font-size: 15px;
+  padding: .625rem;
+  border-bottom: .0625rem solid rgb(128, 125, 125);
+  font-size: .9375rem;
   outline: none;
 }
 
@@ -97,16 +97,16 @@ body {
 
 .btn {
   text-align: center;
-  padding: 10px;
+  padding: .625rem;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 2.5rem;
   background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
   color: #fff;
 }
 
 .msg {
   text-align: center;
-  line-height: 88px;
+  line-height: 5.5rem;
 }
 
 a {
