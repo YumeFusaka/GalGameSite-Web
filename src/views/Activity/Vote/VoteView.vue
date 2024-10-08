@@ -15,8 +15,6 @@ const galGameVoteResultList = ref<GalGameVoteResult[]>([]);
 
 const srcollIndex = ref<number>(0);
 
-const isMounted = ref<boolean>(false);
-
 const voteByUseSum = ref<number>(0);
 
 const searchTotal = ref<number>(0);
@@ -43,7 +41,6 @@ const galGameVoteResult = async () => {
   const res = await galGameVoteResultAPI();
   galGameVoteResultList.value = res.data;
   console.log(res.data)
-  isMounted.value = true;
 }
 
 const galGameVoteByUseCount = async () => {
@@ -122,7 +119,7 @@ const galGameVoteSubmit = async () => {
             实时排行
           </template>
         </TitleComponent>
-        <div class="rank-content" v-if="isMounted">
+        <div class="rank-content" v-if="galGameVoteResultList.length > 0">
           <div class="scroll">
             <div class="scroll-image">
               <el-carousel :interval="4000" :type="windowStore.windowSize >= 900 ? `card` : ` `" height="20rem"
