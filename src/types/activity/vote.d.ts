@@ -37,3 +37,8 @@ export type GalGameVoteResultByUser = GalGameVoteResult & {
 export type galGameVoteResultByUserParams = {
   subjectId: number
 }
+
+export type GalGameVoteSubmitParams = {
+  subjectId: number,
+  vote: number
+}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI, galGameVoteResultByUserAPI } from '@/apis/activity/vote';
+import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI, galGameVoteResultByUserAPI, galGameVoteSubmitAPI } from '@/apis/activity/vote';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
 import type { Page } from '@/types/page';
@@ -89,6 +89,18 @@ const openGalGameVoteDialog = async (subjectId: number) => {
   }
   setVote.value = galGameVoteDialogInfo.value.voteByUser;
   voteDialogVisible.value = true;
+}
+
+const galGameVoteSubmit = async () => {
+  await galGameVoteSubmitAPI({
+    subjectId: galGameVoteDialogInfo!.value!.subjectId,
+    vote: setVote.value
+  });
+  galGameVoteHistory();
+  galGameVoteResult();
+  galGameVoteItemSearch();
+  galGameVoteByUseCount();
+  voteDialogVisible.value = false;
 }
 </script>
 
@@ -234,7 +246,8 @@ const openGalGameVoteDialog = async (subjectId: number) => {
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="voteDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="voteDialogVisible = false">
+          <el-button type="primary" @click="galGameVoteSubmit()"
+            :disabled="setVote == galGameVoteDialogInfo?.voteByUser">
             Confirm
           </el-button>
         </div>
