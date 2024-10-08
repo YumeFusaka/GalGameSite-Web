@@ -126,4 +126,51 @@ onMounted(() => {
 .galGameResult:nth-child(n+5):nth-child(-n+13) {
   background-color: #ffe9f4;
 }
+
+@media (max-width: 1600px) {
+  .box {
+    padding: 2rem 8rem 2rem 8rem;
+  }
+
+  .box-content {
+    padding: 2rem 3rem 2rem 3rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .box {
+    padding: 2rem 4rem 2rem 4rem;
+  }
+
+  .box-content {
+    padding: 2rem 1.5rem 2rem 1.5rem;
+  }
+
+
+}
+
+@media (max-width: 900px) {
+  .box {
+    padding: 1rem 2rem 1rem 2rem;
+  }
+
+  .box-content {
+    padding: 2rem 1rem 2rem 1rem;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .box {
+    padding: 1rem 1.5rem 1rem 1.5rem;
+  }
+
+  .box-content {
+    padding: 2rem 1rem 2rem 1rem;
+  }
+
+  .galGameResult {
+    grid-template-columns: 3rem 2fr 2fr 3fr 4rem;
+  }
+}
 </style>

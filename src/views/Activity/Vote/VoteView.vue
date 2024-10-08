@@ -87,6 +87,7 @@ const openGalGameVoteDialog = async (subjectId: number) => {
   if (galGameVoteDialogInfo.value.voteByUser == null) {
     galGameVoteDialogInfo.value.voteByUser = 0;
   }
+  console.log(res.data);
   setVote.value = galGameVoteDialogInfo.value.voteByUser;
   voteDialogVisible.value = true;
 }
@@ -172,7 +173,7 @@ const galGameVoteSubmit = async () => {
                 }}</span>
               票喵～(∠・ω< )⌒★</div>
                 <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-                  @keyup.enter.native="galGameVoteItemSearchChange()" clearable>
+                  @keyup.enter.native="galGameVoteItemSearchChange()" style="margin-left: .3125rem;" clearable>
                   <template #suffix>
                     <el-icon @click="galGameVoteItemSearchChange()">
                       <search />
@@ -237,11 +238,16 @@ const galGameVoteSubmit = async () => {
     <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
       <div class="dialog-box">
         <img :src="galGameVoteDialogInfo?.url" />
-        <div> Name: {{ galGameVoteDialogInfo?.name }}</div>
-        <div> Nick: {{ galGameVoteDialogInfo?.nick ? galGameVoteDialogInfo?.nick : 'NULL' }}</div>
-        <div> Info: {{ galGameVoteDialogInfo?.info }} </div>
-        <div> Votes: {{ galGameVoteDialogInfo?.myVote }} Rank:{{ galGameVoteDialogInfo?.myRank }} </div>
-        <el-slider v-model="setVote" :min="0" :max="5" />
+        <div> Name: <span>{{ galGameVoteDialogInfo?.name }}</span></div>
+        <div v-if="galGameVoteDialogInfo?.nick"> Nick: <span>{{ galGameVoteDialogInfo?.nick }}</span></div>
+        <div> Info: <span>{{ galGameVoteDialogInfo?.info }}</span> </div>
+        <div class="Vote-Rank">
+          <div>Votes: <span>{{ galGameVoteDialogInfo?.myVote ? galGameVoteDialogInfo?.myVote : 'N/A' }}</span></div>
+          <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.myRank ?
+            galGameVoteDialogInfo?.myRank
+            : 'N/A' }}</span> </div>
+        </div>
+        <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
       </div>
       <template #footer>
         <div class="dialog-footer">
@@ -394,7 +400,7 @@ const galGameVoteSubmit = async () => {
 .vote-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(auto, 1fr);
   row-gap: 2rem;
   column-gap: 2rem;
 }
@@ -470,14 +476,37 @@ const galGameVoteSubmit = async () => {
 
 .dialog-box {
   display: grid;
+  width: 25rem;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+  row-gap: .3125rem;
+  grid-template-rows: repeat(auto, 1fr);
+  text-align: center;
+  justify-items: center;
+  font-size: 0.9rem;
+  font-weight: 400;
+
+  color: #999;
+
+  .Vote-Rank {
+    display: flex;
+
+    span {
+      font-size: 1.2rem;
+    }
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 1rem;
+    color: #ff8daf;
+  }
 
   img {
     width: 20rem;
     height: 20rem;
     object-fit: cover;
   }
-
-
 }
 
 .vote:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
@@ -557,6 +586,12 @@ const galGameVoteSubmit = async () => {
 
   .scroll-describe {
     padding: 0 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .vote-list {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 </style>
