@@ -382,7 +382,7 @@ const galGameVoteSubmit = async () => {
 
 .divider {
   margin: 0;
-  width: 95% !important;
+  width: 100% !important;
   background-color: pink !important;
   border-radius: 1rem !important;
   height: 0.2rem !important;

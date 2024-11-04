@@ -6,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/Layout/LayoutView.vue'),
-      redirect: '/home',
+      redirect: '/tierMaker',
       children: [
         {
           path: '/home',
@@ -23,6 +23,10 @@ const router = createRouter({
         {
           path: '/result',
           component: () => import('../views/Activity/Result/ResultView.vue'),
+        },
+        {
+          path: '/tierMaker',
+          component: () => import('../views/Activity/TierMaker/TierMakerView.vue'),
         }
       ]
     },

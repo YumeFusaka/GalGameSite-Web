@@ -8,3 +8,9 @@ export type GalGame = {
   votes: string,
   url: string
 }
+
+export type GalGameSearchParams = {
+  pageNo: number,
+  pageSize: number,
+  searchName: string
+}
