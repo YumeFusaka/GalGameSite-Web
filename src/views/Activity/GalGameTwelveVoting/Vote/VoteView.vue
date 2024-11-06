@@ -1,21 +1,26 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { galGameVoteResultAPI, galGameVoteItemSearchAPI, galGameVoteByUseCountAPI, galGameSearchTotalAPI, galGameVoteHistoryAPI, galGameVoteResultByUserAPI, galGameVoteSubmitAPI } from '@/apis/activity/vote';
+import {
+  getGalGameTwelveVotingResultListAPI, getGalGameTwelveVotingGameInfoListAPI,
+  getGalGameTwelveVotingVotesCastCountTotalAPI, getGalGameTwelveVotingHistoryListAPI,
+  getGalGameTwelveVotingGameInfoByMyselfAPI, postGalGameTwelveVotingInitiateVoteAPI
+} from '@/apis/activity/galGameTwelveVoting';
 import TitleComponent from '@/components/TitleComponent.vue';
 import { Search } from '@element-plus/icons-vue';
-import type { Page } from '@/types/page';
-import type { GalGameVoteHistory, GalGameVoteItemSearch, GalGameVoteResult, GalGameVoteResultByUser } from '@/types/activity/vote';
+import type { Page } from '@/types/general/page';
 import { useWindowStore } from '@/stores';
+import { getGalGameSearchByTranslatedNameTotalAPI } from '@/apis/general/galgame';
+import type { GalGameTwelveVotingGameInfoByMyselfResponse, GalGameTwelveVotingGameInfoResponse, GalGameTwelveVotingHistoryResponse, GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
 
 const windowStore = useWindowStore()
 
-const galGameVoteItemSearchList = ref<GalGameVoteItemSearch[]>([]);
+const galGameTwelveVotingGameInfoList = ref<GalGameTwelveVotingGameInfoResponse[]>([]);
 
-const galGameVoteResultList = ref<GalGameVoteResult[]>([]);
+const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([]);
 
 const srcollIndex = ref<number>(0);
 
-const voteByUseSum = ref<number>(0);
+const votesCastCountTotal = ref<number>(0);
 
 const searchTotal = ref<number>(0);
 
@@ -26,78 +31,75 @@ const page = ref<Page>({
 
 const searchName = ref<string>('');
 
-const galGameVoteItemSearchChange = async () => {
+
+const galGameTwelveVotingGameInfoListChange = async () => {
   page.value.pageNo = 1;
-  galGameVoteItemSearch();
+  getGalGameTwelveVotingGameInfoList();
 }
 
-const galGameVoteItemSearch = async () => {
-  const res = await galGameVoteItemSearchAPI({ ...page.value, searchName: searchName.value });
-  galGameVoteItemSearchList.value = res.data;
-  galGameSearchTotal();
+const getGalGameTwelveVotingGameInfoList = async () => {
+  const res = await getGalGameTwelveVotingGameInfoListAPI({ ...page.value, translatedName: searchName.value });
+  galGameTwelveVotingGameInfoList.value = res.data;
+  getGalGameSearchByTranslatedNameTotal();
 }
 
-const galGameVoteResult = async () => {
-  const res = await galGameVoteResultAPI();
-  galGameVoteResultList.value = res.data;
-  console.log(res.data)
+const getGalGameTwelveVotingResultList = async () => {
+  const res = await getGalGameTwelveVotingResultListAPI();
+  galGameTwelveVotingResultList.value = res.data;
 }
 
-const galGameVoteByUseCount = async () => {
-  const res = await galGameVoteByUseCountAPI();
-  voteByUseSum.value = res.data;
+const getGalGameTwelveVotingVotesCastCountTotal = async () => {
+  const res = await getGalGameTwelveVotingVotesCastCountTotalAPI();
+  votesCastCountTotal.value = res.data;
 }
 
 const changeScroll = (current: number, prev: number) => {
   srcollIndex.value = current;
 }
 
-const galGameSearchTotal = async () => {
-  const res = await galGameSearchTotalAPI({ name: searchName.value });
+const getGalGameSearchByTranslatedNameTotal = async () => {
+  const res = await getGalGameSearchByTranslatedNameTotalAPI({ ...page.value, translatedName: searchName.value });
   searchTotal.value = res.data;
 }
 
-const galGameVoteHistoryList = ref<GalGameVoteHistory[]>([]);
+const galGameTwelveVotingHistoryList = ref<GalGameTwelveVotingHistoryResponse[]>([]);
 
-const galGameVoteHistory = async () => {
-  const res = await galGameVoteHistoryAPI();
-  galGameVoteHistoryList.value = res.data;
-  console.log(galGameVoteHistoryList.value)
+const getGalGameTwelveVotingHistoryList = async () => {
+  const res = await getGalGameTwelveVotingHistoryListAPI();
+  galGameTwelveVotingHistoryList.value = res.data;
 }
 
 const voteDialogVisible = ref<boolean>(false);
 
 onMounted(() => {
-  galGameVoteItemSearch();
-  galGameVoteByUseCount();
-  galGameVoteHistory();
-  galGameVoteResult();
+  getGalGameTwelveVotingGameInfoList();
+  getGalGameTwelveVotingVotesCastCountTotal();
+  getGalGameTwelveVotingHistoryList();
+  getGalGameTwelveVotingResultList();
 })
 
-const galGameVoteDialogInfo = ref<GalGameVoteResultByUser>();
+const galGameVoteDialogInfo = ref<GalGameTwelveVotingGameInfoByMyselfResponse>();
 const setVote = ref<number>(0);
 
 const openGalGameVoteDialog = async (subjectId: number) => {
-  const res = await galGameVoteResultByUserAPI({ subjectId });
-  console.log(res.data);
+  const res = await getGalGameTwelveVotingGameInfoByMyselfAPI({ subjectId });
   galGameVoteDialogInfo.value = res.data;
-  if (galGameVoteDialogInfo.value.voteByUser == null) {
-    galGameVoteDialogInfo.value.voteByUser = 0;
+  if (galGameVoteDialogInfo.value.votesCastCount == null) {
+    galGameVoteDialogInfo.value.votesCastCount = 0;
   }
-  console.log(res.data);
-  setVote.value = galGameVoteDialogInfo.value.voteByUser;
+  setVote.value = galGameVoteDialogInfo.value.votesCastCount;
   voteDialogVisible.value = true;
 }
 
-const galGameVoteSubmit = async () => {
-  await galGameVoteSubmitAPI({
+const galGameTwelveVotingInitiateVote = async () => {
+  await postGalGameTwelveVotingInitiateVoteAPI({
     subjectId: galGameVoteDialogInfo!.value!.subjectId,
-    vote: setVote.value
+    votesCastCount: setVote.value
   });
-  galGameVoteHistory();
-  galGameVoteResult();
-  galGameVoteItemSearch();
-  galGameVoteByUseCount();
+  getGalGameTwelveVotingHistoryList();
+  getGalGameTwelveVotingResultList();
+  getGalGameTwelveVotingGameInfoList();
+  getGalGameTwelveVotingVotesCastCountTotal();
   voteDialogVisible.value = false;
 }
 </script>
@@ -119,19 +121,19 @@ const galGameVoteSubmit = async () => {
             实时排行
           </template>
         </TitleComponent>
-        <div class="rank-content" v-if="galGameVoteResultList.length > 0">
+        <div class="rank-content" v-if="galGameTwelveVotingResultList.length > 0">
           <div class="scroll">
             <div class="scroll-image">
               <el-carousel :interval="4000" :type="windowStore.windowSize >= 900 ? `card` : ` `" height="20rem"
                 @change="changeScroll" indicator-position="none">
-                <el-carousel-item v-for="i in Math.min(12, galGameVoteResultList.length)" :key="i">
-                  <img :src="galGameVoteResultList[i - 1].url" class="image" />
+                <el-carousel-item v-for="i in Math.min(12, galGameTwelveVotingResultList.length)" :key="i">
+                  <img :src="galGameTwelveVotingResultList[i - 1].imgUrl" class="image" />
                 </el-carousel-item>
               </el-carousel>
             </div>
 
             <div class="scroll-describe">
-              <div class="scroll-name">{{ galGameVoteResultList[srcollIndex].name }}</div>
+              <div class="scroll-name">{{ galGameTwelveVotingResultList[srcollIndex].translatedName }}</div>
               <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
             </div>
 
@@ -148,10 +150,10 @@ const galGameVoteSubmit = async () => {
               <div class="static-name">Name</div>
               <div class="static-score">Votes</div>
             </div>
-            <div v-for="i in Math.min(12, galGameVoteResultList.length)" :key="i" class="static-row">
+            <div v-for="i in Math.min(12, galGameTwelveVotingResultList.length)" :key="i" class="static-row">
               <div class="static-icon">{{ i }}</div>
-              <div class="static-name">{{ galGameVoteResultList[i - 1].name }}</div>
-              <div class="static-score"> {{ galGameVoteResultList[i - 1].myVote }}</div>
+              <div class="static-name">{{ galGameTwelveVotingResultList[i - 1].translatedName }}</div>
+              <div class="static-score"> {{ galGameTwelveVotingResultList[i - 1].totalVotes }}</div>
             </div>
           </div>
         </div>
@@ -166,31 +168,32 @@ const galGameVoteSubmit = async () => {
         <div class="vote-content">
           <div class="search-box">
             <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">{{ 30 -
-              voteByUseSum
+              votesCastCountTotal
                 }}</span>
               票喵～(∠・ω< )⌒★</div>
                 <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-                  @keyup.enter.native="galGameVoteItemSearchChange()" style="margin-left: .3125rem;" clearable>
+                  @keyup.enter.native="galGameTwelveVotingGameInfoListChange()" style="margin-left: .3125rem;"
+                  clearable>
                   <template #suffix>
-                    <el-icon @click="galGameVoteItemSearchChange()">
+                    <el-icon @click="galGameTwelveVotingGameInfoListChange()">
                       <search />
                     </el-icon>
                   </template>
                 </el-input>
             </div>
-            <div class="vote-list" v-if="galGameVoteItemSearchList.length > 0">
-              <el-card v-for="galgame in galGameVoteItemSearchList" :key="galgame.subjectId" class="card" shadow="hover"
-                style="max-width: 30rem">
+            <div class="vote-list" v-if="galGameTwelveVotingGameInfoList.length > 0">
+              <el-card v-for="galgame in galGameTwelveVotingGameInfoList" :key="galgame.subjectId" class="card"
+                shadow="hover" style="max-width: 30rem">
                 <template #header>
-                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;color: #ff9ab5">{{ galgame.name
+                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;color: #ff9ab5">{{ galgame.translatedName
                     }}</el-text>
                 </template>
-                <img :src="galgame.url" class="vote-img" />
+                <img :src="galgame.imgUrl" class="vote-img" />
                 <template #footer>
                   <div class="vote-footer">
                     <el-button type="danger" style="background-color: #ff9ab5;"
                       @click="openGalGameVoteDialog(galgame.subjectId)">投票</el-button>
-                    <span>{{ galgame.totalVote }} votes</span>
+                    <span>{{ galgame.totalVotes }} votes</span>
                   </div>
                 </template>
               </el-card>
@@ -198,9 +201,10 @@ const galGameVoteSubmit = async () => {
             <div v-else>
               <el-empty :image-size="200" />
             </div>
-            <div class="page" v-if="galGameVoteItemSearchList.length > 0">
+            <div class="page" v-if="galGameTwelveVotingGameInfoList.length > 0">
               <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-                v-model:current-page="page.pageNo" @current-change="galGameVoteItemSearch()" class="pagination" />
+                v-model:current-page="page.pageNo" @current-change="getGalGameTwelveVotingGameInfoList()"
+                class="pagination" />
             </div>
           </div>
         </div>
@@ -211,16 +215,16 @@ const galGameVoteSubmit = async () => {
               投票记录
             </template>
           </TitleComponent>
-          <div v-if="galGameVoteHistoryList.length > 0" class="vote-list" style="margin-top: 1.25rem;">
-            <el-card v-for="galgame in galGameVoteHistoryList" :key="galgame.subjectId" class="card" shadow="hover"
-              style="max-width: 30rem">
+          <div v-if="galGameTwelveVotingHistoryList.length > 0" class="vote-list" style="margin-top: 1.25rem;">
+            <el-card v-for="galgame in galGameTwelveVotingHistoryList" :key="galgame.subjectId" class="card"
+              shadow="hover" style="max-width: 30rem">
               <template #header>
-                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.name }}</el-text>
+                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.translatedName }}</el-text>
               </template>
-              <img :src="galgame.url" class="vote-img" />
+              <img :src="galgame.imgUrl" class="vote-img" />
               <template #footer>
                 <div class="vote-footer">
-                  <el-rate v-model="galgame.voteByMe" size="large" show-score text-color="#ff9900"
+                  <el-rate v-model="galgame.votesCastCount" size="large" show-score text-color="#ff9900"
                     score-template="{value} votes" disabled />
                 </div>
               </template>
@@ -234,14 +238,16 @@ const galGameVoteSubmit = async () => {
 
     <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
       <div class="dialog-box">
-        <img :src="galGameVoteDialogInfo?.url" />
-        <div> Name: <span>{{ galGameVoteDialogInfo?.name }}</span></div>
-        <div v-if="galGameVoteDialogInfo?.nick"> Nick: <span>{{ galGameVoteDialogInfo?.nick }}</span></div>
+        <img :src="galGameVoteDialogInfo?.imgUrl" />
+        <div> Name: <span>{{ galGameVoteDialogInfo?.translatedName }}</span></div>
+        <div v-if="galGameVoteDialogInfo?.originalName"> Nick: <span>{{ galGameVoteDialogInfo?.originalName }}</span>
+        </div>
         <div> Info: <span>{{ galGameVoteDialogInfo?.info }}</span> </div>
         <div class="Vote-Rank">
-          <div>Votes: <span>{{ galGameVoteDialogInfo?.myVote ? galGameVoteDialogInfo?.myVote : 'N/A' }}</span></div>
-          <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.myRank ?
-            galGameVoteDialogInfo?.myRank
+          <div>Votes: <span>{{ galGameVoteDialogInfo?.totalVotes ? galGameVoteDialogInfo?.totalVotes : 'N/A' }}</span>
+          </div>
+          <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.totalRank ?
+            galGameVoteDialogInfo?.totalRank
             : 'N/A' }}</span> </div>
         </div>
         <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
@@ -249,8 +255,8 @@ const galGameVoteSubmit = async () => {
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="voteDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="galGameVoteSubmit()"
-            :disabled="setVote == galGameVoteDialogInfo?.voteByUser">
+          <el-button type="primary" @click="galGameTwelveVotingInitiateVote()"
+            :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
             Confirm
           </el-button>
         </div>

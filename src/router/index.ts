@@ -6,27 +6,23 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/Layout/LayoutView.vue'),
-      redirect: '/tierMaker',
+      redirect: '/home',
       children: [
         {
           path: '/home',
           component: () => import('../views/Home/HomeView.vue'),
         },
         {
-          path: '/vote',
-          component: () => import('../views/Activity/Vote/VoteView.vue'),
+          path: '/galGame-twelve-voting/vote',
+          component: () => import('../views/Activity/GalGameTwelveVoting/Vote/VoteView.vue'),
         },
         {
-          path: '/rank',
-          component: () => import('../views/Activity/Rank/RankView.vue'),
+          path: '/galGame-twelve-voting/tier',
+          component: () => import('../views/Activity/GalGameTwelveVoting/Tier/TierView.vue'),
         },
         {
-          path: '/result',
-          component: () => import('../views/Activity/Result/ResultView.vue'),
-        },
-        {
-          path: '/tierMaker',
-          component: () => import('../views/Activity/TierMaker/TierMakerView.vue'),
+          path: '/galgame-tier-maker',
+          component: () => import('../views/Activity/GalGameTierMaker/TierMakerView.vue'),
         }
       ]
     },

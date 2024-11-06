@@ -7,25 +7,25 @@ const activityList = [
     name: '湖交GalGame十二交器选拔',
     start_time: '2024-10-8',
     end_time: '2024-10-15',
-    state: '进行中',
+    state: '已结束',
     url: w1,
-    link: '/vote'
+    link: '/galGame-twelve-voting/vote'
   },
   {
-    name: '湖交GalGame十二交器实时榜单',
-    start_time: '2024-10-8',
-    end_time: '2024-10-15',
-    state: '进行中',
-    url: w2,
-    link: '/rank'
-  },
-  {
-    name: '湖交GalGame十二神器结果公示',
-    start_time: '2024-10-16',
+    name: '湖交GalGame十二交器榜单',
+    start_time: '2024-10-15',
     end_time: '永久',
-    state: '未开始',
+    state: '已结束',
+    url: w2,
+    link: '/galGame-twelve-voting/tier'
+  },
+  {
+    name: 'GalGame TierMaker',
+    start_time: '2024-11-8',
+    end_time: '永久',
+    state: '进行中',
     url: w3,
-    link: '/result'
+    link: '/galgame-tier-maker'
   },
 ]
 

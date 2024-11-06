@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getGalGameListAPI } from '@/apis/galgame';
-import type { Page } from '@/types/page';
-import { galGameSearchTotalAPI } from '@/apis/galgame';
-import type { GalGame } from '@/types/galgame';
+import { getGalGameSearchByTranslatedNameTotalAPI, getGalGameSearchByTranslatedNameListAPI } from '@/apis/general/galgame';
+import type { Page } from '@/types/general/page';
+import type { GalGame } from '@/types/general/galgame';
 import { Search } from '@element-plus/icons-vue';
 
 const tierRef = ref<HTMLElement>()
@@ -20,7 +19,7 @@ const colorForTierRank = () => {
 
 const page = ref<Page>({
   pageNo: 1,
-  pageSize: 60
+  pageSize: 68
 });
 
 const searchName = ref<string>('');
@@ -29,26 +28,25 @@ const searchTotal = ref<number>(0);
 
 const galGameSearchChange = async () => {
   page.value.pageNo = 1;
-  getGalGameList();
+  getGalGameSearchByTranslatedNameList();
 }
 
-const galGameSearchTotal = async () => {
-  const res = await galGameSearchTotalAPI({ name: searchName.value });
+const getGalGameSearchByTranslatedNameTotal = async () => {
+  const res = await getGalGameSearchByTranslatedNameTotalAPI({ ...page.value, translatedName: searchName.value });
   searchTotal.value = res.data;
 }
 
-const galGameSearchList = ref<GalGame[]>([]);
+const galGameList = ref<GalGame[]>([]);
 
-const getGalGameList = async () => {
-  const res = await getGalGameListAPI({ ...page.value, searchName: searchName.value });
-  galGameSearchList.value = res.data;
-  console.log(res.data);
-  galGameSearchTotal();
+const getGalGameSearchByTranslatedNameList = async () => {
+  const res = await getGalGameSearchByTranslatedNameListAPI({ ...page.value, translatedName: searchName.value });
+  galGameList.value = res.data;
+  getGalGameSearchByTranslatedNameTotal();
 }
 
 onMounted(() => {
   colorForTierRank();
-  getGalGameList();
+  getGalGameSearchByTranslatedNameList();
 })
 </script>
 
@@ -95,17 +93,18 @@ onMounted(() => {
               </template>
             </el-input>
           </div>
-          <div class="select-list" v-if="galGameSearchList.length > 0">
-            <div v-for="galgame in galGameSearchList" :key="galgame.subjectId">
-              <img :src="galgame.url" class="select-img" />
+          <div class="select-list" v-if="galGameList.length > 0">
+            <div v-for="galgame in galGameList" :key="galgame.subjectId">
+              <img :src="galgame.imgUrl" class="select-img" />
             </div>
           </div>
           <div v-else>
             <el-empty :image-size="200" />
           </div>
-          <div class="page" v-if="galGameSearchList.length > 0">
+          <div class="page" v-if="galGameList.length > 0">
             <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-              v-model:current-page="page.pageNo" @current-change="getGalGameList()" class="pagination" />
+              v-model:current-page="page.pageNo" @current-change="getGalGameSearchByTranslatedNameList()"
+              class="pagination" />
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 export type LoginParams = {
-  qq: string;
+  uin: string;
 }
 
 export type LoginResult = {
   token: string;
-  nickName: string
+  nick: string
 }

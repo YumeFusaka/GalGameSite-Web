@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { galGameVoteResultAPI } from '@/apis/activity/vote';
-import type { GalGameVoteResult } from '@/types/activity/vote';
+import { getGalGameTwelveVotingResultListAPI } from '@/apis/activity/galGameTwelveVoting';
+import type { GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
 import { onMounted, ref } from 'vue';
 
-const galGameVoteResultList = ref<GalGameVoteResult[]>([])
+const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
 
-const galGameVoteResult = async () => {
-  const res = await galGameVoteResultAPI()
-  galGameVoteResultList.value = res.data
-  console.log(res)
+const getGalGameTwelveVotingResultList = async () => {
+  const res = await getGalGameTwelveVotingResultListAPI()
+  galGameTwelveVotingResultList.value = res.data
 }
 
 onMounted(() => {
-  galGameVoteResult()
+  getGalGameTwelveVotingResultList()
 })
 </script>
 
@@ -33,12 +32,12 @@ onMounted(() => {
           <div>信息</div>
           <div>票数</div>
         </div>
-        <div class="galGameResult" v-for="(galGame, index) in galGameVoteResultList" :key="galGame.subjectId">
+        <div class="galGameResult" v-for="(galGame, index) in galGameTwelveVotingResultList" :key="galGame.subjectId">
           <div> {{ index + 1 }}</div>
-          <div> {{ galGame.name }}</div>
-          <div> {{ galGame.nick }}</div>
+          <div> {{ galGame.translatedName }}</div>
+          <div> {{ galGame.originalName }}</div>
           <div>{{ galGame.info }}</div>
-          <div>{{ galGame.myVote }}</div>
+          <div>{{ galGame.totalVotes }}</div>
         </div>
       </div>
     </div>

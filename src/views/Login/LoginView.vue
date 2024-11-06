@@ -11,13 +11,13 @@ const router = useRouter();
 const userStore = useUserStore();
 
 const loginParams = ref<LoginParams>({
-  qq: '',
+  uin: '',
 })
 
 const login = async () => {
   const res = await loginAPI(loginParams.value);
   userStore.setToken(res.data.token);
-  ElMessage({ message: '欢迎 ' + res.data.nickName + ' 喵~', type: 'success' });
+  ElMessage({ message: '欢迎 ' + res.data.nick + ' 喵~', type: 'success' });
   router.go(-1);
 }
 </script>
@@ -28,7 +28,7 @@ const login = async () => {
     <div class="login-wrapper">
       <div class="header">Login</div>
       <div class="form-wrapper">
-        <input type="text" name="username" v-model="loginParams.qq" placeholder="username" class="input-item">
+        <input type="text" name="username" v-model="loginParams.uin" placeholder="username" class="input-item">
         <input type="password" name="password" placeholder="password" class="input-item">
         <div class="btn" @click="login">Login</div>
       </div>
