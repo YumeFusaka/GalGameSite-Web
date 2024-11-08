@@ -3,12 +3,14 @@ import { onMounted, ref } from 'vue';
 import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
 import type { Page } from '@/types/general/page';
 import type { GalGame } from '@/types/general/galgame';
-import { Search } from '@element-plus/icons-vue';
+import { Search, Tools, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue';
 import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus'
 
 const tierRef = ref<HTMLElement>()
 
-const ranks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
+const defaultRanks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
+const ranks: string[] = ['EX', 'S', 'A', 'B', 'C', 'D'];
 
 const tierList = ref<GalGame[][]>([]);
 
@@ -54,7 +56,26 @@ const galGameList = ref<GalGame[]>([]);
 const getGalGameSearchByNameList = async () => {
   const res = await getGalGameSearchByNameListAPI({ ...page.value, name: searchName.value });
   galGameList.value = res.data;
+  isSelected();
   getGalGameSearchByNameTotal();
+}
+
+const isSelected = () => {
+  for (let t = 0; t < galGameList.value.length; t++) {
+    var isDelete = false;
+    for (let i = 0; i < tierList.value.length; i++) {
+      if (isDelete)
+        break;
+      for (let j = 0; j < tierList.value[i].length; j++) {
+        if (isDelete)
+          break;
+        if (tierList.value[i][j].subjectId === galGameList.value[t].subjectId) {
+          galGameList.value.splice(t, 1);
+          isDelete = true;
+        }
+      }
+    }
+  }
 }
 
 onMounted(async () => {
@@ -88,7 +109,23 @@ onMounted(async () => {
               <img :src="galgame.imgUrl" class="select-img" />
             </div>
           </VueDraggable>
-          <div class="tier-btn">设置</div>
+          <div class="tier-btn">
+            <div class="btn-tools">
+              <el-icon>
+                <Tools />
+              </el-icon>
+            </div>
+            <div class="btn-arrow">
+              <el-icon>
+                <ArrowUpBold />
+              </el-icon>
+            </div>
+            <div class="btn-arrow">
+              <el-icon>
+                <ArrowDownBold />
+              </el-icon>
+            </div>
+          </div>
         </div>
       </div>
       <el-divider class="divider" />
@@ -205,19 +242,34 @@ onMounted(async () => {
 }
 
 .tier-btn {
+  background-color: #ffdbe6;
+  border-left: .0938rem solid pink;
+  padding: 0 0.5rem 0 0.5rem;
   display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
   align-items: center;
-  justify-content: center;
+}
+
+.btn-tools {
+  grid-row: span 2;
+  grid-column: span 1;
+  font-size: 1.8rem;
+}
+
+.btn-arrow {
+  font-size: 1.2rem;
 }
 
 .search-box {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .search {
   margin-left: auto !important;
-  width: 25rem;
-  height: 3.125rem;
+  width: 15rem;
+  height: 2.7rem;
   display: flex;
 }
 
