@@ -19,3 +19,7 @@ export type GalGameSearchByTranslatedNameRequest = Page & {
 export type GalGameSearchBySubjectIdRequest = {
   subjectId: number
 }
+
+export type GalGameSearchByNameRequest = Page & {
+  name: string
+}

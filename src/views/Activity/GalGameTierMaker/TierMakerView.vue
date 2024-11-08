@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getGalGameSearchByTranslatedNameTotalAPI, getGalGameSearchByTranslatedNameListAPI } from '@/apis/general/galgame';
+import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
 import type { Page } from '@/types/general/page';
 import type { GalGame } from '@/types/general/galgame';
 import { Search } from '@element-plus/icons-vue';
+import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus'
 
 const tierRef = ref<HTMLElement>()
 
-const ranks = ['S', 'A', 'B', 'C', 'D', 'E'];
+const ranks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
+
+const tierList = ref<GalGame[][]>([]);
+
+const initTierList = () => {
+  tierList.value = [];
+  for (let i = 0; i < ranks.length; i++) {
+    tierList.value.push([]);
+  }
+  isFinishedLoading.value = true;
+}
+
+const isFinishedLoading = ref<boolean>(false);
 
 const colorForTierRank = () => {
   const tierRankElements = tierRef.value?.querySelectorAll('.tier-rank') as NodeListOf<HTMLElement>;
@@ -19,7 +32,7 @@ const colorForTierRank = () => {
 
 const page = ref<Page>({
   pageNo: 1,
-  pageSize: 68
+  pageSize: 65
 });
 
 const searchName = ref<string>('');
@@ -28,25 +41,26 @@ const searchTotal = ref<number>(0);
 
 const galGameSearchChange = async () => {
   page.value.pageNo = 1;
-  getGalGameSearchByTranslatedNameList();
+  getGalGameSearchByNameList();
 }
 
-const getGalGameSearchByTranslatedNameTotal = async () => {
-  const res = await getGalGameSearchByTranslatedNameTotalAPI({ ...page.value, translatedName: searchName.value });
+const getGalGameSearchByNameTotal = async () => {
+  const res = await getGalGameSearchByNameTotalAPI({ ...page.value, name: searchName.value });
   searchTotal.value = res.data;
 }
 
 const galGameList = ref<GalGame[]>([]);
 
-const getGalGameSearchByTranslatedNameList = async () => {
-  const res = await getGalGameSearchByTranslatedNameListAPI({ ...page.value, translatedName: searchName.value });
+const getGalGameSearchByNameList = async () => {
+  const res = await getGalGameSearchByNameListAPI({ ...page.value, name: searchName.value });
   galGameList.value = res.data;
-  getGalGameSearchByTranslatedNameTotal();
+  getGalGameSearchByNameTotal();
 }
 
-onMounted(() => {
-  colorForTierRank();
-  getGalGameSearchByTranslatedNameList();
+onMounted(async () => {
+  getGalGameSearchByNameList();
+  await initTierList();
+  await colorForTierRank();
 })
 </script>
 
@@ -67,11 +81,13 @@ onMounted(() => {
             Tier
           </template>
         </TitleComponent>
-        <div class="tier-row" v-for="i in 6" :key="i">
+        <div class="tier-row" v-for="i in ranks.length" :key="i" v-if="isFinishedLoading">
           <div class="tier-rank">{{ ranks[i - 1] }}</div>
-          <div class="tier-content">
-            1
-          </div>
+          <VueDraggable class="tier-content" group="galgame" v-model="tierList[i - 1]" :animation="100">
+            <div v-for="galgame in tierList[i - 1]" :key="galgame.subjectId">
+              <img :src="galgame.imgUrl" class="select-img" />
+            </div>
+          </VueDraggable>
           <div class="tier-btn">设置</div>
         </div>
       </div>
@@ -84,27 +100,27 @@ onMounted(() => {
         </TitleComponent>
         <div class="select-content">
           <div class="search-box">
-            <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName" @keyup.enter.native=""
-              style="margin-left: .3125rem;" clearable>
+            <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
+              @keyup.enter.native="getGalGameSearchByNameList()" style="margin-left: .3125rem;" clearable>
               <template #suffix>
-                <el-icon @click="">
+                <el-icon @click="getGalGameSearchByNameList()">
                   <search />
                 </el-icon>
               </template>
             </el-input>
           </div>
-          <div class="select-list" v-if="galGameList.length > 0">
+          <VueDraggable class="select-list" ref="selectBoxRef" group="galgame" v-model="galGameList" :animation="100"
+            v-if="galGameList.length > 0">
             <div v-for="galgame in galGameList" :key="galgame.subjectId">
               <img :src="galgame.imgUrl" class="select-img" />
             </div>
-          </div>
+          </VueDraggable>
           <div v-else>
             <el-empty :image-size="200" />
           </div>
           <div class="page" v-if="galGameList.length > 0">
             <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-              v-model:current-page="page.pageNo" @current-change="getGalGameSearchByTranslatedNameList()"
-              class="pagination" />
+              v-model:current-page="page.pageNo" @current-change="getGalGameSearchByNameList()" class="pagination" />
           </div>
         </div>
       </div>
@@ -115,7 +131,7 @@ onMounted(() => {
 <style scoped>
 .box {
   width: 100%;
-  height: auto;
+  height: 100%;
   box-sizing: border-box;
   padding: 2rem 13rem 2rem 13rem;
 }
@@ -130,6 +146,8 @@ onMounted(() => {
   padding: 2rem 4rem 2rem 4rem;
   box-sizing: border-box;
 }
+
+
 
 .activity {
   text-align: center;
@@ -158,17 +176,18 @@ onMounted(() => {
   grid-auto-rows: auto;
 }
 
+
 .tier-row {
   display: grid;
   grid-template-columns: 6rem auto 5rem;
   grid-template-rows: minmax(5rem, auto);
-  border-bottom: 1.5px solid pink;
-  border-left: 1px solid pink;
-  border-right: 1px solid pink;
+  border-top: .0938rem solid pink;
+  border-left: .0625rem solid pink;
+  border-right: .0625rem solid pink;
 }
 
-.tier-row:nth-child(1) {
-  border-top: 1.5px solid pink;
+.tier-row:last-of-type {
+  border-bottom: .0938rem solid pink;
 }
 
 .tier-rank {
@@ -178,6 +197,11 @@ onMounted(() => {
   font-size: 1.2rem;
   font-weight: 400;
   color: #333;
+}
+
+.tier-content {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .tier-btn {

@@ -47,7 +47,6 @@ div {
 
 .info-box {
   margin-left: auto;
-  background-color: #d9d9d92e;
   border-radius: 0.3125rem;
   display: flex;
   align-items: center;
