@@ -101,9 +101,9 @@ onMounted(async () => {
         <div class="select-content">
           <div class="search-box">
             <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-              @keyup.enter.native="getGalGameSearchByNameList()" style="margin-left: .3125rem;" clearable>
+              @keyup.enter.native="galGameSearchChange()" style="margin-left: .3125rem;" clearable>
               <template #suffix>
-                <el-icon @click="getGalGameSearchByNameList()">
+                <el-icon @click="galGameSearchChange()">
                   <search />
                 </el-icon>
               </template>
