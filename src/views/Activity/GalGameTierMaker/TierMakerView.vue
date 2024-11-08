@@ -3,8 +3,9 @@ import { onMounted, ref } from 'vue';
 import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
 import type { Page } from '@/types/general/page';
 import type { GalGame } from '@/types/general/galgame';
-import { Search, Tools, ArrowUpBold, ArrowDownBold } from '@element-plus/icons-vue';
-import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus'
+import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload } from '@element-plus/icons-vue';
+import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
+import download from '@/utils/html2canvas';
 
 const tierRef = ref<HTMLElement>()
 
@@ -71,6 +72,7 @@ const isSelected = () => {
           break;
         if (tierList.value[i][j].subjectId === galGameList.value[t].subjectId) {
           galGameList.value.splice(t, 1);
+          t--;
           isDelete = true;
         }
       }
@@ -96,12 +98,28 @@ onMounted(async () => {
           2024-10-16 ~ 永久
         </div>
       </div>
-      <div class="tier" ref="tierRef">
-        <TitleComponent style="margin-bottom: 2rem;">
+      <div class="feature">
+        <TitleComponent>
           <template v-slot="title">
             Tier
           </template>
         </TitleComponent>
+        <div class="feature-box">
+          <el-button type="primary">
+            Save
+            <el-icon>
+              <Upload />
+            </el-icon>
+          </el-button>
+          <el-button type="primary" @click="download(tierRef)">
+            download
+            <el-icon>
+              <Download />
+            </el-icon>
+          </el-button>
+        </div>
+      </div>
+      <div class="tier" ref="tierRef">
         <div class="tier-row" v-for="i in ranks.length" :key="i" v-if="isFinishedLoading">
           <div class="tier-rank">{{ ranks[i - 1] }}</div>
           <VueDraggable class="tier-content" group="galgame" v-model="tierList[i - 1]" :animation="100">
@@ -109,18 +127,18 @@ onMounted(async () => {
               <img :src="galgame.imgUrl" class="select-img" />
             </div>
           </VueDraggable>
-          <div class="tier-btn">
-            <div class="btn-tools">
+          <div class="tier-btn" data-html2canvas-ignore="true">
+            <div class="btn-tools btn">
               <el-icon>
                 <Tools />
               </el-icon>
             </div>
-            <div class="btn-arrow">
+            <div class="btn-arrow btn">
               <el-icon>
                 <ArrowUpBold />
               </el-icon>
             </div>
-            <div class="btn-arrow">
+            <div class="btn-arrow btn">
               <el-icon>
                 <ArrowDownBold />
               </el-icon>
@@ -207,8 +225,19 @@ onMounted(async () => {
   }
 }
 
-.tier {
+.feature {
   padding: 2rem 3rem 2rem 3rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.feature-box {
+  display: flex;
+  align-items: center;
+}
+
+.tier {
+  margin: 0 3rem 2rem 3rem;
   display: grid;
   grid-auto-rows: auto;
 }
@@ -218,13 +247,13 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: 6rem auto 5rem;
   grid-template-rows: minmax(5rem, auto);
-  border-top: .0938rem solid pink;
-  border-left: .0625rem solid pink;
-  border-right: .0625rem solid pink;
+  border-top: .0938rem solid #999;
+  border-left: .0625rem solid #999;
+  border-right: .0625rem solid #999;
 }
 
 .tier-row:last-of-type {
-  border-bottom: .0938rem solid pink;
+  border-bottom: .0938rem solid #999;
 }
 
 .tier-rank {
@@ -234,6 +263,7 @@ onMounted(async () => {
   font-size: 1.2rem;
   font-weight: 400;
   color: #333;
+  border-right: .0625rem solid #999;
 }
 
 .tier-content {
@@ -243,13 +273,13 @@ onMounted(async () => {
 
 .tier-btn {
   background-color: #ffdbe6;
-  border-left: .0938rem solid pink;
   padding: 0 0.5rem 0 0.5rem;
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   align-items: center;
+  border-left: .0625rem solid #999;
 }
 
 .btn-tools {
@@ -260,6 +290,14 @@ onMounted(async () => {
 
 .btn-arrow {
   font-size: 1.2rem;
+}
+
+.btn {
+  transition: color 0.1s ease;
+}
+
+.btn:hover {
+  color: #ff8181;
 }
 
 .search-box {
