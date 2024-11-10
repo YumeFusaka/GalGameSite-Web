@@ -20,7 +20,7 @@ const tierToolsIndex = ref<number>(0);
 
 const initTierList = async () => {
   const galGameTierMakerRecord = await getGalGameTierMakerRecord();
-  if (galGameTierMakerRecord == null) {
+  if (galGameTierMakerRecord.rankNameList.length == 0) {
     ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
     tierList.value = [];
     for (let i = 0; i < ranks.value.length; i++) {
@@ -156,7 +156,7 @@ const postGalGameTierMakerRecord = async () => {
 
 
 onMounted(async () => {
-  getGalGameSearchByNameList();
+  await getGalGameSearchByNameList();
   await initTierList();
   await colorForTierRank();
 })
