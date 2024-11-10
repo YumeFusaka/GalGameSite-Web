@@ -143,7 +143,6 @@ const addRow = async () => {
 
 const getGalGameTierMakerRecord = async () => {
   const res = await getGalGameTierMakerRecordAPI();
-  console.log(res);
   return res.data;
 }
 

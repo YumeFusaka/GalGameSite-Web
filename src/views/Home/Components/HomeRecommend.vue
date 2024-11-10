@@ -107,6 +107,12 @@ const showNumber = () => {
   flex-direction: column;
 }
 
+.box-item:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
+}
+
 img {
   width: 100%;
   height: auto;

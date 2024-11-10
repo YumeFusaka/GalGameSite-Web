@@ -9,7 +9,7 @@ const activityList = [
     end_time: '2024-10-15',
     state: '已结束',
     url: w1,
-    link: '/galGame-twelve-voting/vote'
+    link: '/activity/galGame-twelve-voting/vote'
   },
   {
     name: '湖交GalGame十二交器榜单',
@@ -17,7 +17,7 @@ const activityList = [
     end_time: '永久',
     state: '已结束',
     url: w2,
-    link: '/galGame-twelve-voting/tier'
+    link: '/activity/galGame-twelve-voting/tier'
   },
   {
     name: 'GalGame TierMaker',
@@ -25,7 +25,7 @@ const activityList = [
     end_time: '永久',
     state: '进行中',
     url: w3,
-    link: '/galgame-tier-maker'
+    link: '/activity/galgame-tier-maker'
   },
 ]
 
@@ -92,6 +92,12 @@ const activityList = [
   /* 圆角 */
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   /* 轻微阴影 */
+}
+
+.box-item:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: all 0.3s ease-in-out;
 }
 
 

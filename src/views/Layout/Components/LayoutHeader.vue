@@ -1,10 +1,24 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores';
 import { useRouter } from 'vue-router';
+import { watch, ref, onMounted } from 'vue';
 
 const router = useRouter();
 
 const userStore = useUserStore();
+
+
+
+const mainRouterName = ref<string>('')
+
+watch(() => router.currentRoute.value.path, (newPath, oldPath) => {
+  mainRouterName.value = newPath.split('/')[1];
+  console.log(mainRouterName.value);
+});
+
+onMounted(() => {
+  mainRouterName.value = router.currentRoute.value.path.split('/')[1];
+})
 
 </script>
 
@@ -15,11 +29,24 @@ const userStore = useUserStore();
         Game&Love
       </div>
     </div>
+    <div class="menu-box">
+      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'home' }" @click="router.push('/home')">
+        首 页
+      </div>
+      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'member' }">
+        成 员
+      </div>
+      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'activity' }">
+        活 动
+      </div>
+      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'decision' }">
+        决 议
+      </div>
+    </div>
     <div class="info-box">
       <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
       <div class="info" @click="userStore.clearToken(); router.push('/login')" v-else>Logout</div>
     </div>
-
   </div>
 </template>
 
@@ -30,7 +57,7 @@ div {
 
 .box {
   padding: 0.625rem 2.5rem 0.625rem 2.5rem;
-  height: 2.5rem;
+  height: 2.8rem;
   display: flex;
   box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3);
 }
@@ -41,8 +68,40 @@ div {
 }
 
 .title {
-  font-size: 1.3125rem;
+  font-size: 1.6rem;
   font-weight: 800;
+  color: #e90064;
+}
+
+.menu-box {
+  display: grid;
+  margin-left: 4rem;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 3rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.menu-item {
+  font-size: 1.2rem;
+  text-align: center;
+  transition: text-shadow 0.3s ease-in-out;
+}
+
+.menu-item:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: all 0.1s ease-in-out;
+  color: #e90064;
+}
+
+.menu-item-light {
+  text-shadow: 0 0 0.825rem rgba(255, 20, 147, 0.8),
+    /* 外层粉色光 */
+    0 0 1.25rem rgba(255, 20, 147, 0.3),
+    /* 次层粉色光 */
+    0 0 1.875rem rgba(255, 20, 147, 0.2);
+  /* 最内层粉色光 */
 }
 
 .info-box {
@@ -54,8 +113,14 @@ div {
 
 .info {
   padding: 0.3125rem 1.125rem 0.3125rem;
-
-  font-size: large;
+  font-size: 1.1rem;
   font-weight: 800;
+}
+
+.info:hover {
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: all 0.1s ease-in-out;
+  color: #e90064;
 }
 </style>

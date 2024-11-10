@@ -13,15 +13,15 @@ const router = createRouter({
           component: () => import('../views/Home/HomeView.vue'),
         },
         {
-          path: '/galGame-twelve-voting/vote',
+          path: '/activity/galGame-twelve-voting/vote',
           component: () => import('../views/Activity/GalGameTwelveVoting/Vote/VoteView.vue'),
         },
         {
-          path: '/galGame-twelve-voting/tier',
+          path: '/activity/galGame-twelve-voting/tier',
           component: () => import('../views/Activity/GalGameTwelveVoting/Tier/TierView.vue'),
         },
         {
-          path: '/galgame-tier-maker',
+          path: '/activity/galgame-tier-maker',
           component: () => import('../views/Activity/GalGameTierMaker/TierMakerView.vue'),
         }
       ]
