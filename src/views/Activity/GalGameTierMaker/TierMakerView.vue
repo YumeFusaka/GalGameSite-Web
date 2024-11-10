@@ -2,25 +2,42 @@
 import { onMounted, ref } from 'vue';
 import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
 import type { Page } from '@/types/general/page';
-import type { GalGame } from '@/types/general/galgame';
-import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload } from '@element-plus/icons-vue';
+import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload, Refresh, Plus } from '@element-plus/icons-vue';
 import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
-import download from '@/utils/html2canvas';
+import { getGalGameTierMakerRecordAPI, postGalGameTierMakerRecordAPI } from '@/apis/activity/galGameTierMaker';
+import type { GalGameTierMakerSubject } from '@/types/activity/galGameTierMaker';
+import { ElMessage } from 'element-plus';
 
 const tierRef = ref<HTMLElement>()
 
 const defaultRanks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
-const ranks: string[] = ['EX', 'S', 'A', 'B', 'C', 'D'];
+const ranks = ref<string[]>([]);
 
-const tierList = ref<GalGame[][]>([]);
+const tierList = ref<GalGameTierMakerSubject[][]>([]);
 
-const initTierList = () => {
-  tierList.value = [];
-  for (let i = 0; i < ranks.length; i++) {
-    tierList.value.push([]);
+const tierToolsIndex = ref<number>(0);
+
+const initTierList = async () => {
+  const galGameTierMakerRecord = await getGalGameTierMakerRecord();
+  if (galGameTierMakerRecord == null) {
+    ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
+    tierList.value = [];
+    for (let i = 0; i < ranks.value.length; i++) {
+      tierList.value.push([]);
+    }
+  } else {
+    ranks.value = galGameTierMakerRecord.rankNameList;
+    tierList.value = galGameTierMakerRecord.rankSubjectList;
   }
   isFinishedLoading.value = true;
+}
+
+const resetTier = () => {
+  tierList.value = [];
+  for (let i = 0; i < ranks.value.length; i++) {
+    tierList.value.push([]);
+  }
 }
 
 const isFinishedLoading = ref<boolean>(false);
@@ -52,7 +69,7 @@ const getGalGameSearchByNameTotal = async () => {
   searchTotal.value = res.data;
 }
 
-const galGameList = ref<GalGame[]>([]);
+const galGameList = ref<GalGameTierMakerSubject[]>([]);
 
 const getGalGameSearchByNameList = async () => {
   const res = await getGalGameSearchByNameListAPI({ ...page.value, name: searchName.value });
@@ -80,6 +97,65 @@ const isSelected = () => {
   }
 }
 
+const rowUp = (rowIndex: number) => {
+  if (rowIndex !== 0) {
+    var temp1 = tierList.value[rowIndex];
+    tierList.value[rowIndex] = tierList.value[rowIndex - 1];
+    tierList.value[rowIndex - 1] = temp1;
+    var temp2 = ranks.value[rowIndex];
+    ranks.value[rowIndex] = ranks.value[rowIndex - 1];
+    ranks.value[rowIndex - 1] = temp2;
+  }
+}
+
+const rowDown = (rowIndex: number) => {
+  if (rowIndex !== tierList.value.length - 1) {
+    var temp1 = tierList.value[rowIndex];
+    tierList.value[rowIndex] = tierList.value[rowIndex + 1];
+    tierList.value[rowIndex + 1] = temp1;
+    var temp2 = ranks.value[rowIndex];
+    ranks.value[rowIndex] = ranks.value[rowIndex + 1];
+    ranks.value[rowIndex + 1] = temp2;
+  }
+}
+
+const toolsDialogVisible = ref<boolean>(false);
+
+const openToolsDialog = (i: number) => {
+  toolsDialogVisible.value = true;
+  tierToolsIndex.value = i - 1;
+}
+
+const clearRow = () => {
+  tierList.value[tierToolsIndex.value] = [];
+}
+
+const deleteRow = () => {
+  tierList.value.splice(tierToolsIndex.value, 1);
+  ranks.value.splice(tierToolsIndex.value, 1);
+}
+
+const addRow = async () => {
+  tierList.value.push([]);
+  await ranks.value.push(defaultRanks[ranks.value.length]);
+  colorForTierRank();
+}
+
+const getGalGameTierMakerRecord = async () => {
+  const res = await getGalGameTierMakerRecordAPI();
+  console.log(res);
+  return res.data;
+}
+
+const postGalGameTierMakerRecord = async () => {
+  await postGalGameTierMakerRecordAPI({
+    rankNameList: ranks.value,
+    rankSubjectList: tierList.value
+  });
+  ElMessage({ message: '保存成功', type: 'success' });
+}
+
+
 onMounted(async () => {
   getGalGameSearchByNameList();
   await initTierList();
@@ -105,40 +181,52 @@ onMounted(async () => {
           </template>
         </TitleComponent>
         <div class="feature-box">
-          <el-button type="primary">
+          <el-button @click="addRow()" :disabled="ranks.length >= 9">
+            AddRow
+            <el-icon>
+              <Plus />
+            </el-icon>
+          </el-button>
+          <el-button @click="resetTier()">
+            Reset
+            <el-icon>
+              <Refresh />
+            </el-icon>
+          </el-button>
+          <el-button @click="postGalGameTierMakerRecord()">
             Save
             <el-icon>
               <Upload />
             </el-icon>
           </el-button>
-          <el-button type="primary" @click="download(tierRef)">
+          <!-- <el-button type="primary" @click="download(tierRef)">
             download
             <el-icon>
               <Download />
             </el-icon>
-          </el-button>
+          </el-button> -->
         </div>
       </div>
       <div class="tier" ref="tierRef">
         <div class="tier-row" v-for="i in ranks.length" :key="i" v-if="isFinishedLoading">
           <div class="tier-rank">{{ ranks[i - 1] }}</div>
-          <VueDraggable class="tier-content" group="galgame" v-model="tierList[i - 1]" :animation="100">
-            <div v-for="galgame in tierList[i - 1]" :key="galgame.subjectId">
-              <img :src="galgame.imgUrl" class="select-img" />
+          <VueDraggable class="tier-content" group="subject" v-model="tierList[i - 1]" :animation="50">
+            <div v-for="subject in tierList[i - 1]" :key="subject.subjectId">
+              <img :src="subject.imgUrl" class="select-img" />
             </div>
           </VueDraggable>
           <div class="tier-btn" data-html2canvas-ignore="true">
-            <div class="btn-tools btn">
+            <div class="btn-tools btn" @click="openToolsDialog(i)">
               <el-icon>
                 <Tools />
               </el-icon>
             </div>
-            <div class="btn-arrow btn">
+            <div class="btn-arrow btn" @click="rowUp(i - 1)">
               <el-icon>
                 <ArrowUpBold />
               </el-icon>
             </div>
-            <div class="btn-arrow btn">
+            <div class="btn-arrow btn" @click="rowDown(i - 1)">
               <el-icon>
                 <ArrowDownBold />
               </el-icon>
@@ -164,7 +252,7 @@ onMounted(async () => {
               </template>
             </el-input>
           </div>
-          <VueDraggable class="select-list" ref="selectBoxRef" group="galgame" v-model="galGameList" :animation="100"
+          <VueDraggable class="select-list" ref="selectBoxRef" group="subject" v-model="galGameList" :animation="50"
             v-if="galGameList.length > 0">
             <div v-for="galgame in galGameList" :key="galgame.subjectId">
               <img :src="galgame.imgUrl" class="select-img" />
@@ -181,6 +269,21 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+
+  <el-dialog v-model="toolsDialogVisible" width="300" align-center>
+    <div class="toolsBox">
+      <div style="grid-column: span 2;">
+        <el-input :rows="1" v-model="ranks[tierToolsIndex]" type="textarea" />
+      </div>
+
+      <el-button @click="clearRow()">
+        Clear Row
+      </el-button>
+      <el-button @click="deleteRow()">
+        Delete Row
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <style scoped>
@@ -201,8 +304,6 @@ onMounted(async () => {
   padding: 2rem 4rem 2rem 4rem;
   box-sizing: border-box;
 }
-
-
 
 .activity {
   text-align: center;
@@ -247,23 +348,25 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: 6rem auto 5rem;
   grid-template-rows: minmax(5rem, auto);
-  border-top: .0938rem solid #999;
-  border-left: .0625rem solid #999;
-  border-right: .0625rem solid #999;
+  border-top: .0625rem solid pink;
+  border-left: .0625rem solid pink;
+  border-right: .0625rem solid pink;
 }
 
 .tier-row:last-of-type {
-  border-bottom: .0938rem solid #999;
+  border-bottom: .0625rem solid pink;
 }
 
 .tier-rank {
   display: grid;
-  align-items: center;
-  justify-items: center;
-  font-size: 1.2rem;
+  padding: 0.1rem 0.2rem 0.1rem 0.2rem;
+  place-items: center;
+  text-align: center;
+  font-size: 1rem;
   font-weight: 400;
   color: #333;
-  border-right: .0625rem solid #999;
+  border-right: .0625rem solid pink;
+  word-break: break-word;
 }
 
 .tier-content {
@@ -272,14 +375,15 @@ onMounted(async () => {
 }
 
 .tier-btn {
-  background-color: #ffdbe6;
+  background-color: #8EC5FC;
+  background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
   padding: 0 0.5rem 0 0.5rem;
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   align-items: center;
-  border-left: .0625rem solid #999;
+  border-left: .0625rem solid pink;
 }
 
 .btn-tools {
@@ -294,10 +398,11 @@ onMounted(async () => {
 
 .btn {
   transition: color 0.1s ease;
+  color: white;
 }
 
 .btn:hover {
-  color: #ff8181;
+  color: #999;
 }
 
 .search-box {
@@ -343,6 +448,18 @@ onMounted(async () => {
   border-radius: 1rem !important;
   height: 0.2rem !important;
 }
+
+
+.toolsBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: 1rem;
+}
+
+
 
 
 :deep(.el-input__wrapper) {

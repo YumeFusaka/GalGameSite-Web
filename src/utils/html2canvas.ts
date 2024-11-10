@@ -13,6 +13,7 @@ const download = (downloadContent: any) => {
   var opts = {
     width: width,
     height: height,
+    allowTaint: true,
     // canvas: canvas,
     // 日志开关，便于查看html2canvas的内部执行流程
     // logging: true,
