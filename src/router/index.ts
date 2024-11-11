@@ -23,9 +23,14 @@ const router = createRouter({
         {
           path: '/activity/galgame-tier-maker',
           component: () => import('../views/Activity/GalGameTierMaker/TierMakerView.vue'),
+        },
+        {
+          path: '/member',
+          component: () => import('../views/Member/MemberView.vue'),
         }
       ]
     },
+
     {
       path: '/login',
       component: () => import('../views/Login/LoginView.vue'),

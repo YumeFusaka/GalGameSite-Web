@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import LayoutHeader from './Components/LayoutHeader.vue';
 import LayoutFooter from './Components/LayoutFooter.vue';
+
 </script>
 
 <template>
-  <div class="Layout">
+  <div class="Layout background">
     <div class="content">
       <div>
         <LayoutHeader />
@@ -26,7 +27,7 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   width: 100%;
 }
 
-.Layout::before {
+.background::before {
   content: '';
   position: fixed;
   top: 0;

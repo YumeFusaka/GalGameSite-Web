@@ -1,25 +1,17 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores';
+import { useUserStore, useRouterStore } from '@/stores';
 import { useRouter } from 'vue-router';
-import { watch, ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const router = useRouter();
 
 const userStore = useUserStore();
 
-
+const routerStore = useRouterStore();
 
 const mainRouterName = ref<string>('');
 
 const pointerIsOnMenu = ref<boolean>(false);
-
-watch(() => router.currentRoute.value.path, (newPath, oldPath) => {
-  mainRouterName.value = newPath.split('/')[1];
-});
-
-onMounted(() => {
-  mainRouterName.value = router.currentRoute.value.path.split('/')[1];
-})
 
 const menuList = [
   {
@@ -59,7 +51,7 @@ const handleMenuClick = (path: string) => {
     <div class="menu-box">
       <div v-for="menu in menuList" :key="menu.name" class="menu-item" @mouseenter="pointerIsOnMenu = true"
         @mouseleave="pointerIsOnMenu = false"
-        :class="{ 'menu-item-light': mainRouterName === menu.name && !pointerIsOnMenu }"
+        :class="{ 'menu-item-light': routerStore.router === menu.name && !pointerIsOnMenu }"
         @click="handleMenuClick(menu.path)">
         {{ menu.title }}
       </div>
