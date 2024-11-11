@@ -1,11 +1,26 @@
 <script setup lang="ts">
 import LayoutHeader from './Components/LayoutHeader.vue';
 import LayoutFooter from './Components/LayoutFooter.vue';
+import { useRouterStore } from '@/stores';
 
+const routerStore = useRouterStore();
+
+const notShowBackgroudList = [
+  'member'
+]
+
+const isShowBackground = () => {
+  for (var i = 0; i < notShowBackgroudList.length; i++) {
+    if (routerStore.router === notShowBackgroudList[i]) {
+      return false;
+    }
+  }
+  return true;
+}
 </script>
 
 <template>
-  <div class="Layout background">
+  <div class="Layout" :class="{ 'background': isShowBackground() }">
     <div class="content">
       <div>
         <LayoutHeader />
