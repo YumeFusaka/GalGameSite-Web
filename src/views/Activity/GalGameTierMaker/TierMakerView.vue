@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
 import type { Page } from '@/types/general/page';
-import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload, Refresh, Plus } from '@element-plus/icons-vue';
+import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload, Refresh, Plus, Delete } from '@element-plus/icons-vue';
 import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
 import { getGalGameTierMakerRecordAPI, postGalGameTierMakerRecordAPI } from '@/apis/activity/galGameTierMaker';
 import type { GalGameTierMakerSubject } from '@/types/activity/galGameTierMaker';
@@ -33,9 +33,19 @@ const initTierList = async () => {
   isFinishedLoading.value = true;
 }
 
-const resetTier = () => {
+const resetTier = async () => {
+  ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
   tierList.value = [];
-  for (let i = 0; i < ranks.value.length; i++) {
+  for (var i = 0; i < ranks.value.length; i++) {
+    await tierList.value.push([]);
+  }
+  colorForTierRank();
+}
+
+const clearAll = () => {
+  console.log(111);
+  tierList.value = [];
+  for (var i = 0; i < ranks.value.length; i++) {
     tierList.value.push([]);
   }
 }
@@ -182,19 +192,25 @@ onMounted(async () => {
         <div class="feature-box">
           <el-button @click="addRow()" :disabled="ranks.length >= 9">
             AddRow
-            <el-icon>
+            <el-icon style="margin-left: .1875rem;">
               <Plus />
             </el-icon>
           </el-button>
           <el-button @click="resetTier()">
             Reset
-            <el-icon>
+            <el-icon style="margin-left: .1875rem;">
               <Refresh />
+            </el-icon>
+          </el-button>
+          <el-button @click="clearAll()">
+            clearAll
+            <el-icon style="margin-left: .1875rem;">
+              <Delete />
             </el-icon>
           </el-button>
           <el-button @click="postGalGameTierMakerRecord()">
             Save
-            <el-icon>
+            <el-icon style="margin-left: .1875rem;">
               <Upload />
             </el-icon>
           </el-button>
