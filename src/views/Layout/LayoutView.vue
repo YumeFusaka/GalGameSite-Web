@@ -38,8 +38,8 @@ import LayoutFooter from './Components/LayoutFooter.vue';
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  filter: blur(12px);
-  opacity: 0.5;
+  /* filter: blur(12px);
+  opacity: 0.8; */
   z-index: -1;
 }
 

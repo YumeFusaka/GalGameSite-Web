@@ -81,6 +81,7 @@ div {
   height: 2.8rem;
   display: flex;
   box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .title-box {
