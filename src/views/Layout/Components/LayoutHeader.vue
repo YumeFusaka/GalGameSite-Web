@@ -9,17 +9,44 @@ const userStore = useUserStore();
 
 
 
-const mainRouterName = ref<string>('')
+const mainRouterName = ref<string>('');
+
+const pointerIsOnMenu = ref<boolean>(false);
 
 watch(() => router.currentRoute.value.path, (newPath, oldPath) => {
   mainRouterName.value = newPath.split('/')[1];
-  console.log(mainRouterName.value);
 });
 
 onMounted(() => {
   mainRouterName.value = router.currentRoute.value.path.split('/')[1];
 })
 
+const menuList = [
+  {
+    name: 'home',
+    title: '首 页',
+    path: '/home',
+  },
+  {
+    name: 'member',
+    title: '成 员',
+    path: '/member',
+  },
+  {
+    name: 'activity',
+    title: '活 动',
+    path: '/activity',
+  },
+  {
+    name: 'decision',
+    title: '决 议',
+    path: '/decision',
+  },
+]
+
+const handleMenuClick = (path: string) => {
+  router.push(path);
+}
 </script>
 
 <template>
@@ -30,17 +57,11 @@ onMounted(() => {
       </div>
     </div>
     <div class="menu-box">
-      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'home' }" @click="router.push('/home')">
-        首 页
-      </div>
-      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'member' }">
-        成 员
-      </div>
-      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'activity' }">
-        活 动
-      </div>
-      <div class="menu-item" :class="{ 'menu-item-light': mainRouterName === 'decision' }">
-        决 议
+      <div v-for="menu in menuList" :key="menu.name" class="menu-item" @mouseenter="pointerIsOnMenu = true"
+        @mouseleave="pointerIsOnMenu = false"
+        :class="{ 'menu-item-light': mainRouterName === menu.name && !pointerIsOnMenu }"
+        @click="handleMenuClick(menu.path)">
+        {{ menu.title }}
       </div>
     </div>
     <div class="info-box">
@@ -85,17 +106,24 @@ div {
 .menu-item {
   font-size: 1.2rem;
   text-align: center;
-  transition: text-shadow 0.3s ease-in-out;
+  transition: text-shadow 0.2s ease-in-out;
 }
 
 .menu-item:hover {
   cursor: pointer;
   transform: scale(1.03);
-  transition: all 0.1s ease-in-out;
+  transition: all 0.2s ease-in-out;
   color: #e90064;
+  text-shadow: 0 0 0.825rem rgba(255, 20, 147, 0.8),
+    /* 外层粉色光 */
+    0 0 1.25rem rgba(255, 20, 147, 0.3),
+    /* 次层粉色光 */
+    0 0 1.875rem rgba(255, 20, 147, 0.2);
+  /* 最内层粉色光 */
 }
 
 .menu-item-light {
+  color: #e90064;
   text-shadow: 0 0 0.825rem rgba(255, 20, 147, 0.8),
     /* 外层粉色光 */
     0 0 1.25rem rgba(255, 20, 147, 0.3),
