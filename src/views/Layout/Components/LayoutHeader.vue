@@ -2,14 +2,14 @@
 import { useUserStore, useRouterStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import { getUserInfoAPI } from '@/apis/user/user';
+import type { UserInfoResponse } from '@/types/user/user';
 
 const router = useRouter();
 
 const userStore = useUserStore();
 
 const routerStore = useRouterStore();
-
-const mainRouterName = ref<string>('');
 
 const pointerIsOnMenu = ref<boolean>(false);
 
@@ -39,6 +39,17 @@ const menuList = [
 const handleMenuClick = (path: string) => {
   router.push(path);
 }
+
+const userInfo = ref<UserInfoResponse>();
+
+const getUserInfo = async () => {
+  const res = await getUserInfoAPI();
+  userInfo.value = res.data;
+}
+
+onMounted(() => {
+  getUserInfo();
+})
 </script>
 
 <template>
@@ -57,6 +68,8 @@ const handleMenuClick = (path: string) => {
       </div>
     </div>
     <div class="info-box">
+      <el-avatar v-if="userStore.token !== ''" :size="40"
+        :src="`https://q.qlogo.cn/g?b=qq&nk=` + userInfo?.uin + `&s=40`" />
       <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
       <div class="info" @click="userStore.clearToken(); router.push('/login')" v-else>Logout</div>
     </div>

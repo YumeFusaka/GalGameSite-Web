@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 
 const baseURL = 'https://galApi.yumefusaka.icu'
 
-// const baseURL = 'https//localhost:8080'
+// const baseURL = 'http://localhost:8080'
 
 const instance = axios.create({
   baseURL,
