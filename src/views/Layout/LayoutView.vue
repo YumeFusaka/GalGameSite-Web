@@ -6,7 +6,9 @@ import { useRouterStore } from '@/stores';
 const routerStore = useRouterStore();
 
 const notShowBackgroudList = [
-  'member'
+  'member',
+  'activity-list',
+  'decision-list'
 ]
 
 const isShowBackground = () => {
@@ -20,26 +22,32 @@ const isShowBackground = () => {
 </script>
 
 <template>
-  <div class="Layout" :class="{ 'background': isShowBackground() }">
-    <div class="content">
-      <div>
-        <LayoutHeader />
-      </div>
-      <div>
-        <RouterView />
-      </div>
-      <div>
-        <LayoutFooter />
-      </div>
-    </div>
+  <div class="layout" :class="{ 'background': isShowBackground() }">
+    <LayoutHeader class="header" />
+    <RouterView class="body" />
+    <!-- <LayoutFooter /> -->
   </div>
 
 </template>
 
 <style scoped>
-.Layout {
+.layout {
   height: 100%;
   width: 100%;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr;
+}
+
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .background::before {
@@ -57,13 +65,5 @@ const isShowBackground = () => {
   /* filter: blur(12px);
   opacity: 0.8; */
   z-index: -1;
-}
-
-.content {
-  height: 100%;
-  width: 100%;
-  display: grid;
-  grid-template-rows: 3.5rem auto 6.25rem;
-  grid-template-columns: 1fr;
 }
 </style>

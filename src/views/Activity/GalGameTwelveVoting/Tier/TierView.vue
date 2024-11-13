@@ -46,6 +46,7 @@ onMounted(() => {
 
 <style scoped>
 .box {
+  margin-top: 3.5rem;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

@@ -20,6 +20,7 @@ import HomeRecommend from './Components/HomeRecommend.vue';
 
 <style scoped>
 .home {
+  margin-top: 3.5rem;
   height: 100%;
   width: 100%;
   display: grid;
@@ -30,6 +31,10 @@ import HomeRecommend from './Components/HomeRecommend.vue';
 
 .space {
   margin: 0 10rem;
+}
+
+.homeBody {
+  margin-bottom: 2rem;
 }
 
 @media (max-width: 1200px) {

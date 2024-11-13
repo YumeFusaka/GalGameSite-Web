@@ -27,6 +27,14 @@ const router = createRouter({
         {
           path: '/member',
           component: () => import('../views/Member/MemberView.vue'),
+        },
+        {
+          path: '/activity-list',
+          component: () => import('../views/Activity/ActivityList/ActivityListView.vue'),
+        },
+        {
+          path: '/decision-list',
+          component: () => import('../views/Decision/DecisionList/DecisionListView.vue'),
         }
       ]
     },

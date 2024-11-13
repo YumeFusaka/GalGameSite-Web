@@ -283,26 +283,28 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-  </div>
 
-  <el-dialog v-model="toolsDialogVisible" width="300" align-center>
-    <div class="toolsBox">
-      <div style="grid-column: span 2;">
-        <el-input :rows="1" v-model="ranks[tierToolsIndex]" type="textarea" />
+
+    <el-dialog v-model="toolsDialogVisible" width="300" align-center>
+      <div class="toolsBox">
+        <div style="grid-column: span 2;">
+          <el-input :rows="1" v-model="ranks[tierToolsIndex]" type="textarea" />
+        </div>
+
+        <el-button @click="clearRow()">
+          Clear Row
+        </el-button>
+        <el-button @click="deleteRow()">
+          Delete Row
+        </el-button>
       </div>
-
-      <el-button @click="clearRow()">
-        Clear Row
-      </el-button>
-      <el-button @click="deleteRow()">
-        Delete Row
-      </el-button>
-    </div>
-  </el-dialog>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped>
 .box {
+  margin-top: 3.5rem;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

@@ -233,39 +233,39 @@ const galGameTwelveVotingInitiateVote = async () => {
           <el-empty :image-size="200" v-else />
         </div>
       </div>
-    </div>
 
-
-    <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
-      <div class="dialog-box">
-        <img :src="galGameVoteDialogInfo?.imgUrl" />
-        <div> Name: <span>{{ galGameVoteDialogInfo?.translatedName }}</span></div>
-        <div v-if="galGameVoteDialogInfo?.originalName"> Nick: <span>{{ galGameVoteDialogInfo?.originalName }}</span>
-        </div>
-        <div> Info: <span>{{ galGameVoteDialogInfo?.info }}</span> </div>
-        <div class="Vote-Rank">
-          <div>Votes: <span>{{ galGameVoteDialogInfo?.totalVotes ? galGameVoteDialogInfo?.totalVotes : 'N/A' }}</span>
+      <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
+        <div class="dialog-box">
+          <img :src="galGameVoteDialogInfo?.imgUrl" />
+          <div> Name: <span>{{ galGameVoteDialogInfo?.translatedName }}</span></div>
+          <div v-if="galGameVoteDialogInfo?.originalName"> Nick: <span>{{ galGameVoteDialogInfo?.originalName }}</span>
           </div>
-          <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.totalRank ?
-            galGameVoteDialogInfo?.totalRank
-            : 'N/A' }}</span> </div>
+          <div> Info: <span>{{ galGameVoteDialogInfo?.info }}</span> </div>
+          <div class="Vote-Rank">
+            <div>Votes: <span>{{ galGameVoteDialogInfo?.totalVotes ? galGameVoteDialogInfo?.totalVotes : 'N/A' }}</span>
+            </div>
+            <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.totalRank ?
+              galGameVoteDialogInfo?.totalRank
+              : 'N/A' }}</span> </div>
+          </div>
+          <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
         </div>
-        <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
-      </div>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="voteDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="galGameTwelveVotingInitiateVote()"
-            :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
-            Confirm
-          </el-button>
-        </div>
-      </template>
-    </el-dialog>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="voteDialogVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="galGameTwelveVotingInitiateVote()"
+              :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
+              Confirm
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
+    </div>
 </template>
 
 <style scoped>
 .box {
+  margin-top: 3.5rem;
   width: 100%;
   height: 100%;
   box-sizing: border-box;

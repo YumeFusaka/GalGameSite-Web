@@ -27,12 +27,12 @@ const menuList = [
   {
     name: 'activity',
     title: '活 动',
-    path: '/activity',
+    path: '/activity-list',
   },
   {
     name: 'decision',
     title: '决 议',
-    path: '/decision',
+    path: '/decision-list',
   },
 ]
 

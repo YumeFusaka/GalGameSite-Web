@@ -49,7 +49,6 @@ const activityList = [
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
