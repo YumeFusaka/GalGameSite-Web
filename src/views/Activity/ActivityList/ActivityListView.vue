@@ -23,7 +23,8 @@
 .latestPreview {
   width: 100%;
   height: 36rem;
-  background-image: url("@/images/Activity/headerBackground.png");
+  background-image: url("@/images/Activity/headerBackground.webp");
+  background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   border-radius: 10px;
