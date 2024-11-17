@@ -68,7 +68,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="info-box">
-      <el-avatar v-if="userStore.token !== ''" :size="40"
+      <el-avatar v-if="userStore.token !== ''" class="avater"
         :src="`https://q.qlogo.cn/g?b=qq&nk=` + userInfo?.uin + `&s=40`" />
       <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
       <div class="info" @click="userStore.clearToken(); router.push('/login')" v-else>Logout</div>
@@ -156,5 +156,25 @@ div {
   transform: scale(1.03);
   transition: all 0.1s ease-in-out;
   color: #e90064;
+}
+
+.avater {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+@media (max-width: 500px) {
+  .menu-box {
+    column-gap: 1.2rem;
+    margin-left: 1.2rem;
+  }
+
+  .box {
+    padding: 0.15rem 0.625rem 0.15rem 0.625rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
 }
 </style>
