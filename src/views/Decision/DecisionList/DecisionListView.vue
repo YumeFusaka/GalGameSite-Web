@@ -58,8 +58,8 @@ const decisionList = [
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: .625rem;
+  box-shadow: 0 0 .625rem rgba(0, 0, 0, 0.1);
 
   padding: 5rem 15rem 2rem;
   box-sizing: border-box;
