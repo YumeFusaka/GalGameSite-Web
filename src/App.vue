@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Live2d />
+  <!-- <Live2d /> -->
   <RouterView class="app" />
 </template>
 

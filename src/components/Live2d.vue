@@ -42,7 +42,6 @@ import '@/assets/live2d/waifu-tips'
 import '@/assets/live2d/live2d'
 import '@/assets/live2d/waifu.css'
 import { initModel } from '@/assets/live2d/waifu-tips'
-import initModelJson from '@/assets/live2d/waifu-tips.json'
 export default {
   name: 'PhyLive2d',
   components: {

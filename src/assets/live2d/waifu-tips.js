@@ -189,7 +189,7 @@ const  initModel = function initModel(waifuPath, type) {
   if (!live2d_settings.modelStorage || modelId == null) {
     var modelId = live2d_settings.modelId;
     var modelTexturesId = live2d_settings.modelTexturesId;
-  } loadModel(6, 4);
+  } loadModel(modelId, modelTexturesId);
 }
 
 export { initModel }
@@ -354,7 +354,7 @@ function loadTipsMessage(result) {
   }
 
   function showHitokotoActed() {
-    if ($(document)[0].visibilityState == 'visible') showHitokoto();
+    // if ($(document)[0].visibilityState == 'visible') showHitokoto();
   }
 
   function showHitokoto() {
