@@ -3,6 +3,7 @@ import LayoutHeader from './Components/LayoutHeader.vue';
 import LayoutFooter from './Components/LayoutFooter.vue';
 import { useRouterStore } from '@/stores';
 
+
 const routerStore = useRouterStore();
 
 const notShowBackgroudList = [

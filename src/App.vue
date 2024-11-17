@@ -2,6 +2,7 @@
 import { onMounted, watch } from 'vue';
 import { useWindowStore, useRouterStore } from './stores';
 import { useRouter } from 'vue-router';
+import Live2d from '@/components/Live2d.vue';
 
 const router = useRouter();
 const windowStore = useWindowStore();
@@ -22,6 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <Live2d />
   <RouterView class="app" />
 </template>
 
