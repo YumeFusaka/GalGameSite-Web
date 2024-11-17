@@ -1,7 +1,20 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const props = defineProps({
+  toRouterName: String
+})
+const toRouter = () => {
+  if (props.toRouterName != undefined) {
+    router.push(props.toRouterName!)
+  }
+}
+</script>
+
 <template>
   <div class="title">
     <span class="logo"></span>
-    <span name="title" class="title-text">
+    <span name="title" class="title-text" @click="toRouter()">
       <slot></slot>
     </span>
   </div>

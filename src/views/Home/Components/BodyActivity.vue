@@ -33,7 +33,7 @@ const activityList = [
 
 <template>
   <div class="activity">
-    <TitleComponent style="">
+    <TitleComponent toRouterName="/activity-list" style="">
       <template v-slot="title">
         社团活动
       </template>
