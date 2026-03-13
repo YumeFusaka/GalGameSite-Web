@@ -9,29 +9,29 @@ import { useWindowStore } from '@/stores';
 const windowStore = useWindowStore();
 const recommondList = [
   {
-    name: "白色相簿2",
+    name: "真红小站",
     url: w1,
-    link: 'https://bangumi.tv/subject/54898'
+    link: 'https://www.shinnku.com'
   },
   {
-    name: "美好的每一天 不连续的存在",
+    name: "TouchGal",
     url: w2,
-    link: 'https://bangumi.tv/subject/259061'
+    link: 'www.touchgal.top'
   },
   {
-    name: "樱花萌放",
+    name: "鲲Galgame",
     url: w3,
-    link: 'https://bangumi.tv/subject/233030'
+    link: 'https://www.kungal.com'
   },
   {
-    name: "甜蜜女友2+",
+    name: "绯月",
     url: w4,
-    link: 'https://mzh.moegirl.org.cn/%E7%94%9C%E8%9C%9C%E5%A5%B3%E5%8F%8B2'
+    link: 'https://bbs.kfpromax.com'
   },
   {
-    name: "樱之诗",
+    name: "初音的青葱",
     url: w5,
-    link: 'https://mzh.moegirl.org.cn/%E6%A8%B1%E4%B9%8B%E8%AF%97'
+    link: 'https://www.fufuko.com'
   },
 ]
 
@@ -51,7 +51,7 @@ const showNumber = () => {
   <div class="recommend">
     <TitleComponent style="">
       <template v-slot="title">
-        佳作推荐
+        资源网站
       </template>
     </TitleComponent>
     <div class="box">

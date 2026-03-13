@@ -5,15 +5,15 @@ import w3 from '@/images/Activity/3.webp'
 const activityList = [
   {
     name: '湖交GalGame十二交器选拔',
-    start_time: '2024-10-8',
-    end_time: '永久',
+    start_time: '2026-03-13',
+    end_time: '2026-03-20',
     state: '进行中',
     url: w1,
     link: '/activity/galGame-twelve-voting/vote'
   },
   {
     name: '湖交GalGame十二交器榜单',
-    start_time: '2024-10-15',
+    start_time: '2026-03-13',
     end_time: '永久',
     state: '进行中',
     url: w2,

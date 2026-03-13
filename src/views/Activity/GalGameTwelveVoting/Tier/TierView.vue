@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { getGalGameTwelveVotingResultListAPI } from '@/apis/activity/galGameTwelveVoting';
-import type { GalGameTwelveVotingResultResponse, Edition } from '@/types/activity/galGameTwelveVoting';
+import type { GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
 import { onMounted, ref } from 'vue';
 
 const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
 
 const edition = ref<number>(1)
 
+// 届数选项
+const editionOptions = ref([
+  { label: '第一届', value: 1 },
+  { label: '第二届', value: 2 }
+])
+
+// 切换届数时刷新榜单
+const changeEdition = (value: number) => {
+  edition.value = value
+  getGalGameTwelveVotingResultList()
+}
 
 const getGalGameTwelveVotingResultList = async () => {
   const res = await getGalGameTwelveVotingResultListAPI(edition.value)
@@ -26,6 +37,14 @@ onMounted(() => {
       </div>
       <div class="time">
         2024-10-8 ~ 2024-10-15
+      </div>
+
+      <!-- 届数选择框 -->
+      <div class="edition-select">
+        <span>选择届数：</span>
+        <el-select v-model="edition" placeholder="请选择届数" @change="changeEdition" style="width: 8rem;">
+          <el-option v-for="item in editionOptions" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
       </div>
       <div class="rank">
         <div class="galGameResult">
@@ -87,6 +106,19 @@ onMounted(() => {
   display: grid;
   align-items: center;
   justify-content: center;
+}
+
+.edition-select {
+  margin: 1rem 0;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.edition-select span {
+  margin-right: 0.5rem;
+  font-weight: 500;
+  color: #eb2f96;
 }
 
 .rank {

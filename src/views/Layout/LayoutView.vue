@@ -7,7 +7,7 @@ import { useRouterStore } from '@/stores';
 const routerStore = useRouterStore();
 
 const notShowBackgroudList = [
-  'member-list',
+  'user-list',
   'activity-list',
   'decision-list'
 ]

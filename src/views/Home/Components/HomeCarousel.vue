@@ -3,6 +3,7 @@ import w1 from '@/images/Carouse/1.webp'
 import w2 from '@/images/Carouse/2.webp'
 import w3 from '@/images/Carouse/3.webp'
 import w4 from '@/images/Carouse/4.webp'
+import w5 from '@/images/Carouse/5.webp'
 import { onMounted, ref } from 'vue';
 import { useWindowStore } from '@/stores';
 
@@ -11,22 +12,27 @@ const carouselItems = [
   {
     id: 1,
     url: w1,
-    link: 'https://mzh.moegirl.org.cn/%E9%81%A5%E3%81%8B%E3%81%AA%E3%82%8B%E3%83%8B%E3%83%A9%E3%82%A4%E3%82%AB%E3%83%8A%E3%82%A4'
+    link: 'https://www.yuanshen.com'
   },
   {
     id: 2,
     url: w2,
-    link: 'https://metalogiq.jp/'
+    link: 'https://www.yuanshen.com'
   },
   {
     id: 3,
     url: w3,
-    link: 'https://www.purplesoftware.jp/products/mg/'
+    link: 'https://www.yuanshen.com'
   },
   {
     id: 4,
     url: w4,
-    link: 'https://mzh.moegirl.org.cn/%E5%B0%91%E5%A5%B3%E4%B8%96%E7%95%8C%E7%9A%84%E7%94%9F%E5%AD%98%E4%B9%8B%E9%81%93'
+    link: 'https://www.yuanshen.com'
+  },
+  {
+    id: 5,
+    url: w5,
+    link: 'https://www.yuanshen.com'
   }
 ]
 

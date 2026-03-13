@@ -8,7 +8,7 @@
       <div>欢迎来到Game&Love</div>
     </div>
     <div class="info-content">
-      Ciallo～(∠・ω< )⌒☆ 这里是湖北交通大学的Galgame同好会 </div>
+      Ciallo～(∠・ω< )⌒☆ 这里是湖北交通大学的Galgame同好会。可爱喵，举手喵，地球喵，海胆喵！关注永雏塔菲喵，关注永雏塔菲谢谢喵! </div>
     </div>
 </template>
 

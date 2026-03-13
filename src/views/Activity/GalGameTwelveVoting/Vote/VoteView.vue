@@ -138,6 +138,28 @@ const submitVote = async () => {
   refreshAll()
 }
 
+const editionOptions = ref([
+  { label: '第一届', value: 1 },
+  { label: '第二届', value: 2 }
+  // 根据需要继续添加
+])
+
+const timeShow = ref([
+  '2024-10-8 ~ 2024-10-15',
+  '2026-03-13 ~ 2026-03-20',
+])
+
+const tipShow = ref([
+  ' 活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。 每人拥有30张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。投票截止时间为2024年10月15日，最终排名以投票结果为准。',
+  ' 测试 '
+])
+
+const changeEdition = (value: number) => {
+  edition.value = value
+  page.value.pageNo = 1
+  refreshAll()
+}
+
 /* ---------------- 轮播 ---------------- */
 
 const changeScroll = (current: number) => {
@@ -159,7 +181,15 @@ onMounted(() => {
           湖北交通大学十二交器选拔
         </div>
         <div class="time">
-          2024-10-8 ~ 2024-10-15
+          {{ timeShow[edition - 1] }}
+        </div>
+
+        <!-- 届数选择 -->
+        <div class="edition-select">
+          <span>选择届数：</span>
+          <el-select v-model="edition" placeholder="请选择届数" @change="changeEdition" style="width: 8rem">
+            <el-option v-for="item in editionOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </div>
       </div>
       <div class="rank">
@@ -185,9 +215,7 @@ onMounted(() => {
             </div>
 
             <div class="tip">
-              活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。
-              每人拥有30张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。
-              投票截止时间为2024年10月15日，最终排名以投票结果为准。
+              {{ tipShow[edition - 1] }}
             </div>
           </div>
 
@@ -349,6 +377,19 @@ onMounted(() => {
   .time {
     margin-top: .5rem;
     font-size: 1.2rem;
+  }
+
+  .edition-select {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #444;
+  }
+
+  .edition-select span {
+    margin-right: 0.5rem;
+    font-weight: 500;
+    color: #eb2f96;
   }
 }
 
