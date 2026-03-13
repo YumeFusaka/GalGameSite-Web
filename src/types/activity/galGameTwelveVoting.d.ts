@@ -30,3 +30,7 @@ export type GalGameTwelveVotingInitiateVoteRequest = {
   subjectId: number,
   votesCastCount: number
 }
+
+export type Edition = {
+  edition: number
+}

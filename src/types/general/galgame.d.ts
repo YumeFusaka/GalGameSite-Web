@@ -21,5 +21,6 @@ export type GalGameSearchBySubjectIdRequest = {
 }
 
 export type GalGameSearchByNameRequest = Page & {
-  name: string
+  name: string,
 }
+

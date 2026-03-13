@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { getGalGameTwelveVotingResultListAPI } from '@/apis/activity/galGameTwelveVoting';
-import type { GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
+import type { GalGameTwelveVotingResultResponse, Edition } from '@/types/activity/galGameTwelveVoting';
 import { onMounted, ref } from 'vue';
 
 const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
 
+const edition = ref<number>(1)
+
+
 const getGalGameTwelveVotingResultList = async () => {
-  const res = await getGalGameTwelveVotingResultListAPI()
+  const res = await getGalGameTwelveVotingResultListAPI(edition.value)
   galGameTwelveVotingResultList.value = res.data
 }
 

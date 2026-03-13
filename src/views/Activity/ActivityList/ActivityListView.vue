@@ -6,8 +6,8 @@ const activityList = [
   {
     name: '湖交GalGame十二交器选拔',
     start_time: '2024-10-8',
-    end_time: '2024-10-15',
-    state: '已结束',
+    end_time: '永久',
+    state: '进行中',
     url: w1,
     link: '/activity/galGame-twelve-voting/vote'
   },
@@ -15,7 +15,7 @@ const activityList = [
     name: '湖交GalGame十二交器榜单',
     start_time: '2024-10-15',
     end_time: '永久',
-    state: '已结束',
+    state: '进行中',
     url: w2,
     link: '/activity/galGame-twelve-voting/tier'
   },

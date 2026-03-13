@@ -1,107 +1,154 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 import {
-  getGalGameTwelveVotingResultListAPI, getGalGameTwelveVotingGameInfoListAPI,
-  getGalGameTwelveVotingVotesCastCountTotalAPI, getGalGameTwelveVotingHistoryListAPI,
-  getGalGameTwelveVotingGameInfoByMyselfAPI, postGalGameTwelveVotingInitiateVoteAPI
-} from '@/apis/activity/galGameTwelveVoting';
-import TitleComponent from '@/components/TitleComponent.vue';
-import { Search } from '@element-plus/icons-vue';
-import type { Page } from '@/types/general/page';
-import { useWindowStore } from '@/stores';
-import { getGalGameSearchByTranslatedNameTotalAPI } from '@/apis/general/galgame';
-import type { GalGameTwelveVotingGameInfoByMyselfResponse, GalGameTwelveVotingGameInfoResponse, GalGameTwelveVotingHistoryResponse, GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
+  getGalGameTwelveVotingResultListAPI,
+  getGalGameTwelveVotingGameInfoListAPI,
+  getGalGameTwelveVotingVotesCastCountTotalAPI,
+  getGalGameTwelveVotingHistoryListAPI,
+  getGalGameTwelveVotingGameInfoByMyselfAPI,
+  postGalGameTwelveVotingInitiateVoteAPI
+} from '@/apis/activity/galGameTwelveVoting'
+
+import TitleComponent from '@/components/TitleComponent.vue'
+import { Search } from '@element-plus/icons-vue'
+import { useWindowStore } from '@/stores'
+
+import type { Page } from '@/types/general/page'
+import type {
+  Edition,
+  GalGameTwelveVotingGameInfoByMyselfResponse,
+  GalGameTwelveVotingGameInfoResponse,
+  GalGameTwelveVotingHistoryResponse,
+  GalGameTwelveVotingResultResponse
+} from '@/types/activity/galGameTwelveVoting'
+
+import { getGalGameSearchByTranslatedNameTotalAPI } from '@/apis/general/galgame'
 
 const windowStore = useWindowStore()
 
-const galGameTwelveVotingGameInfoList = ref<GalGameTwelveVotingGameInfoResponse[]>([]);
+/* ---------------- edition ---------------- */
 
-const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([]);
+const edition = ref<number>(1)
 
-const srcollIndex = ref<number>(0);
+/* ---------------- 数据 ---------------- */
 
-const votesCastCountTotal = ref<number>(0);
+const galGameTwelveVotingGameInfoList = ref<GalGameTwelveVotingGameInfoResponse[]>([])
+const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
+const galGameTwelveVotingHistoryList = ref<GalGameTwelveVotingHistoryResponse[]>([])
 
-const searchTotal = ref<number>(0);
+const votesCastCountTotal = ref(0)
+const searchTotal = ref(0)
+
+const srcollIndex = ref(0)
+
+const searchName = ref('')
 
 const page = ref<Page>({
   pageNo: 1,
   pageSize: 20
-});
-
-const searchName = ref<string>('');
-
-
-const galGameTwelveVotingGameInfoListChange = async () => {
-  page.value.pageNo = 1;
-  getGalGameTwelveVotingGameInfoList();
-}
-
-const getGalGameTwelveVotingGameInfoList = async () => {
-  const res = await getGalGameTwelveVotingGameInfoListAPI({ ...page.value, translatedName: searchName.value });
-  galGameTwelveVotingGameInfoList.value = res.data;
-  getGalGameSearchByTranslatedNameTotal();
-}
-
-const getGalGameTwelveVotingResultList = async () => {
-  const res = await getGalGameTwelveVotingResultListAPI();
-  galGameTwelveVotingResultList.value = res.data;
-}
-
-const getGalGameTwelveVotingVotesCastCountTotal = async () => {
-  const res = await getGalGameTwelveVotingVotesCastCountTotalAPI();
-  votesCastCountTotal.value = res.data;
-}
-
-const changeScroll = (current: number, prev: number) => {
-  srcollIndex.value = current;
-}
-
-const getGalGameSearchByTranslatedNameTotal = async () => {
-  const res = await getGalGameSearchByTranslatedNameTotalAPI({ ...page.value, translatedName: searchName.value });
-  searchTotal.value = res.data;
-}
-
-const galGameTwelveVotingHistoryList = ref<GalGameTwelveVotingHistoryResponse[]>([]);
-
-const getGalGameTwelveVotingHistoryList = async () => {
-  const res = await getGalGameTwelveVotingHistoryListAPI();
-  galGameTwelveVotingHistoryList.value = res.data;
-}
-
-const voteDialogVisible = ref<boolean>(false);
-
-onMounted(() => {
-  getGalGameTwelveVotingGameInfoList();
-  getGalGameTwelveVotingVotesCastCountTotal();
-  getGalGameTwelveVotingHistoryList();
-  getGalGameTwelveVotingResultList();
 })
 
-const galGameVoteDialogInfo = ref<GalGameTwelveVotingGameInfoByMyselfResponse>();
-const setVote = ref<number>(0);
+/* ---------------- 投票弹窗 ---------------- */
 
-const openGalGameVoteDialog = async (subjectId: number) => {
-  const res = await getGalGameTwelveVotingGameInfoByMyselfAPI({ subjectId });
-  galGameVoteDialogInfo.value = res.data;
-  if (galGameVoteDialogInfo.value.votesCastCount == null) {
-    galGameVoteDialogInfo.value.votesCastCount = 0;
-  }
-  setVote.value = galGameVoteDialogInfo.value.votesCastCount;
-  voteDialogVisible.value = true;
+const voteDialogVisible = ref(false)
+
+const galGameVoteDialogInfo = ref<GalGameTwelveVotingGameInfoByMyselfResponse | null>(null)
+
+const setVote = ref(0)
+
+/* ---------------- 数据请求 ---------------- */
+
+const getGameList = async () => {
+  const res = await getGalGameTwelveVotingGameInfoListAPI(
+    { ...page.value, translatedName: searchName.value },
+    edition.value
+  )
+
+  galGameTwelveVotingGameInfoList.value = res.data
+
+  const totalRes = await getGalGameSearchByTranslatedNameTotalAPI({
+    ...page.value,
+    translatedName: searchName.value
+  })
+
+  searchTotal.value = totalRes.data
 }
 
-const galGameTwelveVotingInitiateVote = async () => {
-  await postGalGameTwelveVotingInitiateVoteAPI({
-    subjectId: galGameVoteDialogInfo!.value!.subjectId,
-    votesCastCount: setVote.value
-  });
-  getGalGameTwelveVotingHistoryList();
-  getGalGameTwelveVotingResultList();
-  getGalGameTwelveVotingGameInfoList();
-  getGalGameTwelveVotingVotesCastCountTotal();
-  voteDialogVisible.value = false;
+const getResultList = async () => {
+  const res = await getGalGameTwelveVotingResultListAPI(edition.value)
+  galGameTwelveVotingResultList.value = res.data
 }
+
+const getVotesTotal = async () => {
+  const res = await getGalGameTwelveVotingVotesCastCountTotalAPI(edition.value)
+  votesCastCountTotal.value = res.data
+}
+
+const getHistoryList = async () => {
+  const res = await getGalGameTwelveVotingHistoryListAPI(edition.value)
+  galGameTwelveVotingHistoryList.value = res.data
+}
+
+/* ---------------- 刷新所有数据 ---------------- */
+
+const refreshAll = () => {
+  getGameList()
+  getResultList()
+  getVotesTotal()
+  getHistoryList()
+}
+
+/* ---------------- 搜索 ---------------- */
+
+const searchGame = () => {
+  page.value.pageNo = 1
+  getGameList()
+}
+
+/* ---------------- 投票弹窗 ---------------- */
+
+const openVoteDialog = async (subjectId: number) => {
+  const res = await getGalGameTwelveVotingGameInfoByMyselfAPI(
+    { subjectId },
+    edition.value
+  )
+
+  galGameVoteDialogInfo.value = res.data
+
+  setVote.value = res.data.votesCastCount ?? 0
+
+  voteDialogVisible.value = true
+}
+
+/* ---------------- 投票 ---------------- */
+
+const submitVote = async () => {
+  if (!galGameVoteDialogInfo.value) return
+
+  await postGalGameTwelveVotingInitiateVoteAPI(
+    {
+      subjectId: galGameVoteDialogInfo.value.subjectId,
+      votesCastCount: setVote.value
+    },
+    edition.value
+  )
+
+  voteDialogVisible.value = false
+
+  refreshAll()
+}
+
+/* ---------------- 轮播 ---------------- */
+
+const changeScroll = (current: number) => {
+  srcollIndex.value = current
+}
+
+/* ---------------- 生命周期 ---------------- */
+
+onMounted(() => {
+  refreshAll()
+})
 </script>
 
 <template>
@@ -172,10 +219,9 @@ const galGameTwelveVotingInitiateVote = async () => {
                 }}</span>
               票喵～(∠・ω< )⌒★</div>
                 <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-                  @keyup.enter.native="galGameTwelveVotingGameInfoListChange()" style="margin-left: .3125rem;"
-                  clearable>
+                  @keyup.enter.native="searchGame()" style="margin-left: .3125rem;" clearable>
                   <template #suffix>
-                    <el-icon @click="galGameTwelveVotingGameInfoListChange()">
+                    <el-icon @click="searchGame()">
                       <search />
                     </el-icon>
                   </template>
@@ -192,7 +238,7 @@ const galGameTwelveVotingInitiateVote = async () => {
                 <template #footer>
                   <div class="vote-footer">
                     <el-button type="danger" style="background-color: #ff9ab5;"
-                      @click="openGalGameVoteDialog(galgame.subjectId)">投票</el-button>
+                      @click="openVoteDialog(galgame.subjectId)">投票</el-button>
                     <span>{{ galgame.totalVotes }} votes</span>
                   </div>
                 </template>
@@ -203,8 +249,7 @@ const galGameTwelveVotingInitiateVote = async () => {
             </div>
             <div class="page" v-if="galGameTwelveVotingGameInfoList.length > 0">
               <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-                v-model:current-page="page.pageNo" @current-change="getGalGameTwelveVotingGameInfoList()"
-                class="pagination" />
+                v-model:current-page="page.pageNo" @current-change="getGameList()" class="pagination" />
             </div>
           </div>
         </div>
@@ -253,7 +298,7 @@ const galGameTwelveVotingInitiateVote = async () => {
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="voteDialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="galGameTwelveVotingInitiateVote()"
+            <el-button type="primary" @click="submitVote()"
               :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
               Confirm
             </el-button>
