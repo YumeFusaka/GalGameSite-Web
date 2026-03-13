@@ -17,3 +17,14 @@ export type UserInfoResponse = {
   generation: string;
   role: string;
 }
+
+export type User = {
+  id: number,
+  uin: string,
+  gender: string,
+  nick: string,
+  card: string,
+  joinTime: string,
+  generation: number,
+  role: string
+}

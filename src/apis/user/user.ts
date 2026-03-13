@@ -1,5 +1,5 @@
 
-import type { LoginParams, LoginResult, UserInfoResponse } from '@/types/user/user'
+import type { LoginParams, LoginResult, UserInfoResponse, User } from '@/types/user/user'
 import request from '@/utils/axios'
 import type { Data } from '@/utils/axios'
 
@@ -16,4 +16,11 @@ export const getUserInfoAPI = (): Promise<Data<UserInfoResponse>> => {
     url: '/user/info',
     method: 'GET'
   }).then(res => res.data as Data<UserInfoResponse>)
+}
+
+export const getUserListAPI = (): Promise<Data<User[]>> => {
+  return request({
+    url: '/user/list',
+    method: 'GET',
+  }).then(res => res.data as Data<User[]>)
 }

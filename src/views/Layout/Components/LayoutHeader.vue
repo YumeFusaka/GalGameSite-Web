@@ -20,9 +20,9 @@ const menuList = [
     path: '/home',
   },
   {
-    name: 'member-list',
+    name: 'user-list',
     title: '成 员',
-    path: '/member-list',
+    path: '/user-list',
   },
   {
     name: 'activity-list',

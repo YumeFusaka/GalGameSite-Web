@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { getMemberListAPI } from '@/apis/general/member'
+import { getUserListAPI } from '@/apis/user/user'
 import { onMounted, ref } from 'vue';
-import type { Member } from '@/types/general/member'
+import type { User } from '@/types/user/user'
 
-const memberList = ref<Member[]>();
+const userList = ref<User[]>();
 
-const getMemberList = async () => {
-  const res = await getMemberListAPI();
-  memberList.value = res.data;
+const getUserList = async () => {
+  const res = await getUserListAPI();
+  userList.value = res.data;
 }
 
 onMounted(() => {
-  getMemberList();
+  getUserList();
 })
 </script>
 
@@ -31,8 +31,8 @@ onMounted(() => {
         <div>梦浮羽</div>
       </div> -->
     </div>
-    <div class="member-list">
-      <div class="member-item">
+    <div class="user-list">
+      <div class="user-item">
         <div>
         </div>
         <div>
@@ -54,7 +54,7 @@ onMounted(() => {
           职位
         </div>
       </div>
-      <div class="member-item" v-for="item in memberList" :key="item.id">
+      <div class="user-item" v-for="item in userList" :key="item.id">
         <div>
           <el-avatar :size="40" :src="`https://q.qlogo.cn/g?b=qq&nk=` + item.uin + `&s=40`" />
         </div>
@@ -122,7 +122,7 @@ onMounted(() => {
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
 }
 
-.member-list {
+.user-list {
   margin: 3rem 15rem;
   padding: 2rem 0;
   background-color: #ffffff;
@@ -132,7 +132,7 @@ onMounted(() => {
   row-gap: 1rem;
 }
 
-.member-item {
+.user-item {
   margin: 0 2rem;
   border-radius: 0.5rem;
   background-color: #FAFBFC;

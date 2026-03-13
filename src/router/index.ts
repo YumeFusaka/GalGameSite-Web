@@ -25,8 +25,8 @@ const router = createRouter({
           component: () => import('../views/Activity/GalGameTierMaker/TierMakerView.vue'),
         },
         {
-          path: '/member-list',
-          component: () => import('../views/Member/MemberListView/MemberListView.vue'),
+          path: '/user-list',
+          component: () => import('../views/User/UserListView/UserListView.vue'),
         },
         {
           path: '/activity-list',
