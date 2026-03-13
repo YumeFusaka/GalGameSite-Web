@@ -16,7 +16,7 @@ const recommondList = [
   {
     name: "TouchGal",
     url: w2,
-    link: 'www.touchgal.top'
+    link: 'https://www.touchgal.top'
   },
   {
     name: "鲲Galgame",
