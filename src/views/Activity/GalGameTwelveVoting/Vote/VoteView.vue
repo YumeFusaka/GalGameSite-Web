@@ -9,6 +9,8 @@ import {
   postGalGameTwelveVotingInitiateVoteAPI
 } from '@/apis/activity/galGameTwelveVoting'
 
+import { getMyVoteNumberAPI, setMyVoteNumberAPI } from '@/apis/activity/galGameTwelveVoteNumber'
+
 import TitleComponent from '@/components/TitleComponent.vue'
 import { Search } from '@element-plus/icons-vue'
 import { useWindowStore } from '@/stores'
@@ -28,7 +30,7 @@ const windowStore = useWindowStore()
 
 /* ---------------- edition ---------------- */
 
-const edition = ref<number>(1)
+const edition = ref<number>(2)
 
 /* ---------------- 数据 ---------------- */
 
@@ -38,6 +40,8 @@ const galGameTwelveVotingHistoryList = ref<GalGameTwelveVotingHistoryResponse[]>
 
 const votesCastCountTotal = ref(0)
 const searchTotal = ref(0)
+
+const voteNumTotal = ref(0)
 
 const srcollIndex = ref(0)
 
@@ -55,6 +59,12 @@ const voteDialogVisible = ref(false)
 const galGameVoteDialogInfo = ref<GalGameTwelveVotingGameInfoByMyselfResponse | null>(null)
 
 const setVote = ref(0)
+
+/* ---------------- 票数设置弹窗 ---------------- */
+
+const voteNumberDialogVisible = ref(false)
+
+const galgameCount = ref(0)
 
 /* ---------------- 数据请求 ---------------- */
 
@@ -138,6 +148,16 @@ const submitVote = async () => {
   refreshAll()
 }
 
+/* ---------------- 设置票数 ---------------- */
+
+const submitVoteNumber = async () => {
+  const calculatedVotes = Math.floor(20 + galgameCount.value / 2)
+  await setMyVoteNumberAPI(edition.value, calculatedVotes)
+  voteNumTotal.value = calculatedVotes
+  voteNumberDialogVisible.value = false
+  refreshAll()
+}
+
 const editionOptions = ref([
   { label: '第一届', value: 1 },
   { label: '第二届', value: 2 }
@@ -151,12 +171,20 @@ const timeShow = ref([
 
 const tipShow = ref([
   ' 活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。 每人拥有30张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。投票截止时间为2024年10月15日，最终排名以投票结果为准。',
-  ' 测试 '
+  ' 活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。 每人拥有20+X/2张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。投票截止时间为2026年3月20日，最终排名以投票结果为准。 '
 ])
 
-const changeEdition = (value: number) => {
+const changeEdition = async (value: number) => {
   edition.value = value
   page.value.pageNo = 1
+
+  // 获取当前用户的票数
+  const res = await getMyVoteNumberAPI(value)
+  voteNumTotal.value = res.data
+
+  if (voteNumTotal.value === 0) {
+    voteNumberDialogVisible.value = true
+  } 
   refreshAll()
 }
 
@@ -168,7 +196,14 @@ const changeScroll = (current: number) => {
 
 /* ---------------- 生命周期 ---------------- */
 
-onMounted(() => {
+onMounted(async () => {
+  // 获取当前用户的票数
+  const res = await getMyVoteNumberAPI(edition.value)
+  voteNumTotal.value = res.data
+
+  if (voteNumTotal.value === 0) {
+    voteNumberDialogVisible.value = true
+  }
   refreshAll()
 })
 </script>
@@ -242,7 +277,7 @@ onMounted(() => {
         </TitleComponent>
         <div class="vote-content">
           <div class="search-box">
-            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">{{ 30 -
+            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">{{ voteNumTotal -
               votesCastCountTotal
                 }}</span>
               票喵～(∠・ω< )⌒★</div>
@@ -330,6 +365,20 @@ onMounted(() => {
               :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
               Confirm
             </el-button>
+          </div>
+        </template>
+      </el-dialog>
+
+      <el-dialog v-model="voteNumberDialogVisible" title="票前提问" width="auto" align-center>
+        <div class="dialog-box">
+          <p>请输入你玩过的GalGame数量：</p>
+          <el-input-number v-model="galgameCount" :min="0" :max="1000" style="width: 20rem" />
+          <p style="color: red; margin-top: 1rem;">确定后不可变更</p>
+        </div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="voteNumberDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitVoteNumber()">确认</el-button>
           </div>
         </template>
       </el-dialog>
