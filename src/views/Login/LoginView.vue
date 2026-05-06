@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { loginAPI } from '@/apis/user/user';
-import type { LoginParams } from '@/types/user/user';
+import { createSession } from '@/apis/user/users';
+import type { LoginRequest } from '@/types/domain/user';
 import { ref } from 'vue';
 import { useUserStore } from '@/stores';
 import { ElMessage } from 'element-plus';
@@ -10,14 +10,14 @@ const router = useRouter();
 
 const userStore = useUserStore();
 
-const loginParams = ref<LoginParams>({
+const loginParams = ref<LoginRequest>({
   uin: '',
 })
 
 const login = async () => {
-  const res = await loginAPI(loginParams.value);
-  userStore.setToken(res.data.token);
-  ElMessage({ message: '欢迎 ' + res.data.nick + ' 喵~', type: 'success' });
+  const session = await createSession(loginParams.value);
+  userStore.setToken(session.token);
+  ElMessage({ message: '欢迎 ' + session.nick + ' 喵~', type: 'success' });
   router.go(-1);
 }
 </script>

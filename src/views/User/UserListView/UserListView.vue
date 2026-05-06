@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { getUserListAPI } from '@/apis/user/user'
+import { listUsers } from '@/apis/user/users'
 import { onMounted, ref } from 'vue';
-import type { User } from '@/types/user/user'
+import type { UserProfile } from '@/types/domain/user'
 
-const userList = ref<User[]>();
+const userList = ref<UserProfile[]>();
 
 const getUserList = async () => {
-  const res = await getUserListAPI();
-  userList.value = res.data;
+  userList.value = await listUsers();
 }
 
 onMounted(() => {

@@ -1,30 +1,26 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import {
-  getGalGameTwelveVotingResultListAPI,
-  getGalGameTwelveVotingGameInfoListAPI,
-  getGalGameTwelveVotingVotesCastCountTotalAPI,
-  getGalGameTwelveVotingHistoryListAPI,
-  getGalGameTwelveVotingGameInfoByMyselfAPI,
-  postGalGameTwelveVotingInitiateVoteAPI
-} from '@/apis/activity/galGameTwelveVoting'
-
-import { getMyVoteNumberAPI, setMyVoteNumberAPI } from '@/apis/activity/galGameTwelveVoteNumber'
+  getCurrentUserBallot,
+  getCurrentUserVoteSummary,
+  listCurrentUserVotingRecords,
+  listVotingGames,
+  listVotingResults,
+  submitVote as submitVoteRequest
+} from '@/apis/activity/twelve-voting'
+import { getCurrentVoteQuota, updateCurrentVoteQuota } from '@/apis/activity/vote-quota'
 
 import TitleComponent from '@/components/TitleComponent.vue'
 import { Search } from '@element-plus/icons-vue'
 import { useWindowStore } from '@/stores'
 
-import type { Page } from '@/types/general/page'
 import type {
-  Edition,
-  GalGameTwelveVotingGameInfoByMyselfResponse,
-  GalGameTwelveVotingGameInfoResponse,
-  GalGameTwelveVotingHistoryResponse,
-  GalGameTwelveVotingResultResponse
-} from '@/types/activity/galGameTwelveVoting'
-
-import { getGalGameSearchByTranslatedNameTotalAPI } from '@/apis/general/galgame'
+  VoteBallot,
+  VotingGameListItem,
+  VotingRecord,
+  VotingResult
+} from '@/types/domain/voting'
+import type { PageRequest } from '@/types/common/api'
 
 const windowStore = useWindowStore()
 
@@ -34,9 +30,9 @@ const edition = ref<number>(2)
 
 /* ---------------- 数据 ---------------- */
 
-const galGameTwelveVotingGameInfoList = ref<GalGameTwelveVotingGameInfoResponse[]>([])
-const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
-const galGameTwelveVotingHistoryList = ref<GalGameTwelveVotingHistoryResponse[]>([])
+const galGameTwelveVotingGameInfoList = ref<VotingGameListItem[]>([])
+const galGameTwelveVotingResultList = ref<VotingResult[]>([])
+const galGameTwelveVotingHistoryList = ref<VotingRecord[]>([])
 
 const votesCastCountTotal = ref(0)
 const searchTotal = ref(0)
@@ -47,7 +43,7 @@ const srcollIndex = ref(0)
 
 const searchName = ref('')
 
-const page = ref<Page>({
+const page = ref<PageRequest>({
   pageNo: 1,
   pageSize: 20
 })
@@ -56,7 +52,7 @@ const page = ref<Page>({
 
 const voteDialogVisible = ref(false)
 
-const galGameVoteDialogInfo = ref<GalGameTwelveVotingGameInfoByMyselfResponse | null>(null)
+const galGameVoteDialogInfo = ref<VoteBallot | null>(null)
 
 const setVote = ref(0)
 
@@ -69,34 +65,26 @@ const galgameCount = ref(0)
 /* ---------------- 数据请求 ---------------- */
 
 const getGameList = async () => {
-  const res = await getGalGameTwelveVotingGameInfoListAPI(
+  const response = await listVotingGames(
     { ...page.value, translatedName: searchName.value },
     edition.value
   )
 
-  galGameTwelveVotingGameInfoList.value = res.data
-
-  const totalRes = await getGalGameSearchByTranslatedNameTotalAPI({
-    ...page.value,
-    translatedName: searchName.value
-  })
-
-  searchTotal.value = totalRes.data
+  galGameTwelveVotingGameInfoList.value = response.items
+  searchTotal.value = response.total
 }
 
 const getResultList = async () => {
-  const res = await getGalGameTwelveVotingResultListAPI(edition.value)
-  galGameTwelveVotingResultList.value = res.data
+  galGameTwelveVotingResultList.value = await listVotingResults(edition.value)
 }
 
 const getVotesTotal = async () => {
-  const res = await getGalGameTwelveVotingVotesCastCountTotalAPI(edition.value)
-  votesCastCountTotal.value = res.data
+  const summary = await getCurrentUserVoteSummary(edition.value)
+  votesCastCountTotal.value = summary.usedVotes
 }
 
 const getHistoryList = async () => {
-  const res = await getGalGameTwelveVotingHistoryListAPI(edition.value)
-  galGameTwelveVotingHistoryList.value = res.data
+  galGameTwelveVotingHistoryList.value = await listCurrentUserVotingRecords(edition.value)
 }
 
 /* ---------------- 刷新所有数据 ---------------- */
@@ -118,14 +106,9 @@ const searchGame = () => {
 /* ---------------- 投票弹窗 ---------------- */
 
 const openVoteDialog = async (subjectId: number) => {
-  const res = await getGalGameTwelveVotingGameInfoByMyselfAPI(
-    { subjectId },
-    edition.value
-  )
-
-  galGameVoteDialogInfo.value = res.data
-
-  setVote.value = res.data.votesCastCount ?? 0
+  const ballot = await getCurrentUserBallot(subjectId, edition.value)
+  galGameVoteDialogInfo.value = ballot
+  setVote.value = ballot.votesCastCount ?? 0
 
   voteDialogVisible.value = true
 }
@@ -135,12 +118,13 @@ const openVoteDialog = async (subjectId: number) => {
 const submitVote = async () => {
   if (!galGameVoteDialogInfo.value) return
 
-  await postGalGameTwelveVotingInitiateVoteAPI(
+  await submitVoteRequest(
+    galGameVoteDialogInfo.value.subjectId,
+    edition.value,
     {
       subjectId: galGameVoteDialogInfo.value.subjectId,
       votesCastCount: setVote.value
-    },
-    edition.value
+    }
   )
 
   voteDialogVisible.value = false
@@ -152,7 +136,7 @@ const submitVote = async () => {
 
 const submitVoteNumber = async () => {
   const calculatedVotes = Math.floor(20 + galgameCount.value / 2)
-  await setMyVoteNumberAPI(edition.value, calculatedVotes)
+  await updateCurrentVoteQuota({ edition: edition.value, totalVotes: calculatedVotes })
   voteNumTotal.value = calculatedVotes
   voteNumberDialogVisible.value = false
   refreshAll()
@@ -178,9 +162,8 @@ const changeEdition = async (value: number) => {
   edition.value = value
   page.value.pageNo = 1
 
-  // 获取当前用户的票数
-  const res = await getMyVoteNumberAPI(value)
-  voteNumTotal.value = res.data
+  const quota = await getCurrentVoteQuota(value)
+  voteNumTotal.value = quota.totalVotes
 
   if (voteNumTotal.value === 0) {
     voteNumberDialogVisible.value = true
@@ -197,9 +180,8 @@ const changeScroll = (current: number) => {
 /* ---------------- 生命周期 ---------------- */
 
 onMounted(async () => {
-  // 获取当前用户的票数
-  const res = await getMyVoteNumberAPI(edition.value)
-  voteNumTotal.value = res.data
+  const quota = await getCurrentVoteQuota(edition.value)
+  voteNumTotal.value = quota.totalVotes
 
   if (voteNumTotal.value === 0) {
     voteNumberDialogVisible.value = true

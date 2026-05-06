@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getGalGameSearchByNameTotalAPI, getGalGameSearchByNameListAPI } from '@/apis/general/galgame';
-import type { Page } from '@/types/general/page';
+import { listGames } from '@/apis/general/games';
+import type { PageRequest } from '@/types/common/api';
 import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload, Refresh, Plus, Delete } from '@element-plus/icons-vue';
 import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
-import { getGalGameTierMakerRecordAPI, postGalGameTierMakerRecordAPI } from '@/apis/activity/galGameTierMaker';
-import type { GalGameTierMakerSubject } from '@/types/activity/galGameTierMaker';
+import { getCurrentTierMakerRecord, saveCurrentTierMakerRecord } from '@/apis/activity/tier-maker';
+import type { TierMakerSubject } from '@/types/domain/tier-maker';
 import { ElMessage } from 'element-plus';
 
 const tierRef = ref<HTMLElement>()
@@ -14,21 +14,21 @@ const defaultRanks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
 const ranks = ref<string[]>([]);
 
-const tierList = ref<GalGameTierMakerSubject[][]>([]);
+const tierList = ref<TierMakerSubject[][]>([]);
 
 const tierToolsIndex = ref<number>(0);
 
 const initTierList = async () => {
-  const galGameTierMakerRecord = await getGalGameTierMakerRecord();
-  if (galGameTierMakerRecord.rankNameList.length == 0) {
+  const currentRecord = await loadCurrentRecord();
+  if (currentRecord.rankNames.length == 0) {
     ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
     tierList.value = [];
     for (let i = 0; i < ranks.value.length; i++) {
       tierList.value.push([]);
     }
   } else {
-    ranks.value = galGameTierMakerRecord.rankNameList;
-    tierList.value = galGameTierMakerRecord.rankSubjectList;
+    ranks.value = currentRecord.rankNames;
+    tierList.value = currentRecord.tiers;
   }
   isFinishedLoading.value = true;
 }
@@ -60,7 +60,7 @@ const colorForTierRank = () => {
   });
 }
 
-const page = ref<Page>({
+const page = ref<PageRequest>({
   pageNo: 1,
   pageSize: 65
 });
@@ -69,23 +69,21 @@ const searchName = ref<string>('');
 
 const searchTotal = ref<number>(0);
 
-const galGameSearchChange = async () => {
+const searchGames = async () => {
   page.value.pageNo = 1;
-  getGalGameSearchByNameList();
+  loadGameOptions();
 }
 
-const getGalGameSearchByNameTotal = async () => {
-  const res = await getGalGameSearchByNameTotalAPI({ ...page.value, name: searchName.value });
-  searchTotal.value = res.data;
-}
+const galGameList = ref<TierMakerSubject[]>([]);
 
-const galGameList = ref<GalGameTierMakerSubject[]>([]);
-
-const getGalGameSearchByNameList = async () => {
-  const res = await getGalGameSearchByNameListAPI({ ...page.value, name: searchName.value });
-  galGameList.value = res.data;
+const loadGameOptions = async () => {
+  const response = await listGames({ ...page.value, keyword: searchName.value });
+  galGameList.value = response.items.map(game => ({
+    subjectId: game.subjectId,
+    imgUrl: game.imgUrl
+  }));
+  searchTotal.value = response.total;
   isSelected();
-  getGalGameSearchByNameTotal();
 }
 
 const isSelected = () => {
@@ -151,22 +149,21 @@ const addRow = async () => {
   colorForTierRank();
 }
 
-const getGalGameTierMakerRecord = async () => {
-  const res = await getGalGameTierMakerRecordAPI();
-  return res.data;
+const loadCurrentRecord = async () => {
+  return getCurrentTierMakerRecord();
 }
 
-const postGalGameTierMakerRecord = async () => {
-  await postGalGameTierMakerRecordAPI({
-    rankNameList: ranks.value,
-    rankSubjectList: tierList.value
+const saveRecord = async () => {
+  await saveCurrentTierMakerRecord({
+    rankNames: ranks.value,
+    tiers: tierList.value
   });
   ElMessage({ message: '保存成功', type: 'success' });
 }
 
 
 onMounted(async () => {
-  await getGalGameSearchByNameList();
+  await loadGameOptions();
   await initTierList();
   await colorForTierRank();
 })
@@ -208,7 +205,7 @@ onMounted(async () => {
               <Delete />
             </el-icon>
           </el-button>
-          <el-button @click="postGalGameTierMakerRecord()">
+          <el-button @click="saveRecord()">
             Save
             <el-icon style="margin-left: .1875rem;">
               <Upload />
@@ -259,9 +256,9 @@ onMounted(async () => {
         <div class="select-content">
           <div class="search-box">
             <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-              @keyup.enter.native="galGameSearchChange()" style="margin-left: .3125rem;" clearable>
+              @keyup.enter.native="searchGames()" style="margin-left: .3125rem;" clearable>
               <template #suffix>
-                <el-icon @click="galGameSearchChange()">
+                <el-icon @click="searchGames()">
                   <search />
                 </el-icon>
               </template>
@@ -278,7 +275,7 @@ onMounted(async () => {
           </div>
           <div class="page" v-if="galGameList.length > 0">
             <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-              v-model:current-page="page.pageNo" @current-change="getGalGameSearchByNameList()" class="pagination" />
+              v-model:current-page="page.pageNo" @current-change="loadGameOptions()" class="pagination" />
           </div>
         </div>
       </div>

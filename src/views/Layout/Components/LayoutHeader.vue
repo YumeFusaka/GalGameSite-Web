@@ -2,8 +2,8 @@
 import { useUserStore, useRouterStore } from '@/stores';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import { getUserInfoAPI } from '@/apis/user/user';
-import type { UserInfoResponse } from '@/types/user/user';
+import { getCurrentUserProfile } from '@/apis/user/users';
+import type { UserProfile } from '@/types/domain/user';
 
 const router = useRouter();
 
@@ -40,11 +40,10 @@ const handleMenuClick = (path: string) => {
   router.push(path);
 }
 
-const userInfo = ref<UserInfoResponse>();
+const userInfo = ref<UserProfile>();
 
 const getUserInfo = async () => {
-  const res = await getUserInfoAPI();
-  userInfo.value = res.data;
+  userInfo.value = await getCurrentUserProfile();
 }
 
 onMounted(() => {

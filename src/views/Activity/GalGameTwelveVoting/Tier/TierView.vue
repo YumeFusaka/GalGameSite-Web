@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { getGalGameTwelveVotingResultListAPI } from '@/apis/activity/galGameTwelveVoting';
-import type { GalGameTwelveVotingResultResponse } from '@/types/activity/galGameTwelveVoting';
+import { listVotingResults } from '@/apis/activity/twelve-voting';
+import type { VotingResult } from '@/types/domain/voting';
 import { onMounted, ref } from 'vue';
 
-const galGameTwelveVotingResultList = ref<GalGameTwelveVotingResultResponse[]>([])
+const votingResults = ref<VotingResult[]>([])
 
 const edition = ref<number>(1)
 
@@ -16,16 +16,15 @@ const editionOptions = ref([
 // 切换届数时刷新榜单
 const changeEdition = (value: number) => {
   edition.value = value
-  getGalGameTwelveVotingResultList()
+  loadVotingResults()
 }
 
-const getGalGameTwelveVotingResultList = async () => {
-  const res = await getGalGameTwelveVotingResultListAPI(edition.value)
-  galGameTwelveVotingResultList.value = res.data
+const loadVotingResults = async () => {
+  votingResults.value = await listVotingResults(edition.value)
 }
 
 onMounted(() => {
-  getGalGameTwelveVotingResultList()
+  loadVotingResults()
 })
 </script>
 
@@ -54,7 +53,7 @@ onMounted(() => {
           <div>信息</div>
           <div>票数</div>
         </div>
-        <div class="galGameResult" v-for="(galGame, index) in galGameTwelveVotingResultList" :key="galGame.subjectId">
+        <div class="galGameResult" v-for="(galGame, index) in votingResults" :key="galGame.subjectId">
           <div> {{ index + 1 }}</div>
           <div> {{ galGame.translatedName }}</div>
           <div> {{ galGame.originalName }}</div>
