@@ -13,6 +13,7 @@ dist
 dist-ssr
 coverage
 *.local
+.worktrees/
 
 /cypress/videos/
 /cypress/screenshots/
