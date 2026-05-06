@@ -33,7 +33,7 @@ const login = async () => {
         <div class="btn" @click="login">Login</div>
       </div>
       <div class="msg">
-        <a>Welcome to Game&Love</a>
+        <a>Welcome to GalGameSite</a>
       </div>
     </div>
   </div>

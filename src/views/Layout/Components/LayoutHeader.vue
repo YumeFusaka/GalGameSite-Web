@@ -56,7 +56,7 @@ onMounted(() => {
   <div class="box">
     <div class="title-box">
       <div class="title" @click="router.push('/')">
-        Game&Love
+        GalGameSite
       </div>
     </div>
     <div class="menu-box">
