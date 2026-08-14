@@ -17,13 +17,12 @@ instance.interceptors.request.use(
   (config) => {
     const userStore = useUserStore()
     if (userStore.token) {
-      config.headers.Authorization = 'bearer ' + userStore.token;
+      config.headers.Authorization = 'bearer ' + userStore.token
     }
     return config
   },
   (err) => Promise.reject(err)
 )
-
 
 instance.interceptors.response.use(
   (res) => {
@@ -34,10 +33,15 @@ instance.interceptors.response.use(
     return Promise.reject(res.data)
   },
   (err) => {
-    ElMessage({ message: err.response.data.data || '服务异常', type: 'error' })
+    // 401 静默跳转登录页，避免未登录时每个页面都弹"请先登录"错误提示
     if (err.response?.status === 401) {
       router.push('/login')
+      return Promise.reject(err)
     }
+    ElMessage({
+      message: err.response?.data?.data || err.message || '服务异常',
+      type: 'error'
+    })
     return Promise.reject(err)
   }
 )
@@ -45,7 +49,9 @@ instance.interceptors.response.use(
 export default instance
 export { baseURL }
 
-export const unwrap = async <T>(promise: Promise<ApiResponse<T>>): Promise<T> => {
+export const unwrap = async <T>(
+  promise: Promise<ApiResponse<T>>
+): Promise<T> => {
   const response = await promise
   return response.data
 }

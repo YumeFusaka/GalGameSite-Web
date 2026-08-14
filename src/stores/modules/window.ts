@@ -1,25 +1,15 @@
-// src/stores/modules/client.ts
+// src/stores/modules/window.ts
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-// 定义 Store
-export const useWindowStore = defineStore(
-  'window',
-  () => {
-    const windowSize = ref<number>(0)
-    const setWindowSize = (val: number) => {
+// 窗口宽度由 App.vue 监听 resize 写入；不持久化（原先每次 resize 都写 localStorage）
+export const useWindowStore = defineStore('window', () => {
+  const windowSize = ref<number>(0)
+
+  return {
+    windowSize,
+    setWindowSize: (val: number) => {
       windowSize.value = val
     }
-    const clearWindowSize = () => {
-      windowSize.value = 0
-    }
-    return {
-      windowSize,
-      setWindowSize,
-      clearWindowSize
-    }
-  },
-  {
-    persist: true
-  },
-)
+  }
+})

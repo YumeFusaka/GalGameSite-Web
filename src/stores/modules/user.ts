@@ -21,5 +21,5 @@ export const useUserStore = defineStore(
   },
   {
     persist: true
-  },
+  }
 )

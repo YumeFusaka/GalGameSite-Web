@@ -8,25 +8,42 @@ const decisionList = [
     state: '已结束',
     url: w1,
     link: ''
-  },
+  }
 ]
 </script>
 
 <template>
   <div class="box">
     <div class="latestPreview">
-      <div v-for="item in decisionList" :key="item.name" class="box-item" @click="$router.push(item.link!)">
-        <img :src="item.url">
+      <div
+        v-for="item in decisionList"
+        :key="item.name"
+        class="box-item"
+        @click="$router.push(item.link!)"
+      >
+        <img :src="item.url" />
         <div class="describe">
           <div class="name">{{ item.name }}</div>
-          <div class="time">活动时间：{{ item.start_time }} - {{ item.end_time }}</div>
-          <div class="state" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">{{ item.state }}</div>
+          <div class="time">
+            活动时间：{{ item.start_time }} - {{ item.end_time }}
+          </div>
+          <div
+            class="state"
+            :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')"
+          >
+            {{ item.state }}
+          </div>
         </div>
       </div>
     </div>
     <div class="decision-list">
-      <div v v-for="item in decisionList" :key="item.name" class="decision-item" @click="$router.push(item.link!)">
-        <img :src="item.url">
+      <div
+        v-for="item in decisionList"
+        :key="item.name"
+        class="decision-item"
+        @click="$router.push(item.link!)"
+      >
+        <img :src="item.url" />
         <div class="decision-info">
           <div class="decision-title">
             {{ item.name }}
@@ -35,7 +52,10 @@ const decisionList = [
             <div class="decision-time">
               {{ item.start_time }} - {{ item.end_time }}
             </div>
-            <div class="decision-status" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">
+            <div
+              class="decision-status"
+              :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')"
+            >
               {{ item.state }}
             </div>
           </div>
@@ -54,12 +74,12 @@ const decisionList = [
 
 .latestPreview {
   width: 100%;
-  background-image: url("@/images/decision/headerBackground.webp");
+  background-image: url('@/images/decision/headerBackground.webp');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  border-radius: .625rem;
-  box-shadow: 0 0 .625rem rgba(0, 0, 0, 0.1);
+  border-radius: 0.625rem;
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
 
   padding: 5rem 15rem 2rem;
   box-sizing: border-box;
@@ -73,7 +93,6 @@ const decisionList = [
   flex-direction: column;
   background: rgba(255, 255, 255, 0.8);
   /* 半透明白色 */
-  backdrop-filter: blur(10px);
   /* 模糊效果 */
   border-radius: 1rem;
   /* 圆角 */
@@ -86,7 +105,6 @@ const decisionList = [
     border-radius: 1rem 1rem 0 0;
     object-fit: cover;
   }
-
 }
 
 .box-item:hover {

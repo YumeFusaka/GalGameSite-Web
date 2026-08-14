@@ -1,76 +1,101 @@
 <script setup lang="ts">
-import { useUserStore, useRouterStore } from '@/stores';
-import { useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { getCurrentUserProfile } from '@/apis/user/users';
-import type { UserProfile } from '@/types/domain/user';
+import { computed } from 'vue'
+import { useUserStore } from '@/stores'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { getCurrentUserProfile } from '@/apis/user/users'
+import type { UserProfile } from '@/types/domain/user'
 
-const router = useRouter();
+const router = useRouter()
+const route = useRoute()
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
-const routerStore = useRouterStore();
+const pointerIsOnMenu = ref<boolean>(false)
 
-const pointerIsOnMenu = ref<boolean>(false);
+// 当前一级路由名（与菜单 name 对应，用于高亮）
+const currentRouteName = computed(() => route.path.split('/')[1])
 
 const menuList = [
   {
     name: 'home',
     title: '首 页',
-    path: '/home',
+    path: '/home'
   },
   {
     name: 'user-list',
     title: '成 员',
-    path: '/user-list',
+    path: '/user-list'
   },
   {
     name: 'activity-list',
     title: '活 动',
-    path: '/activity-list',
+    path: '/activity-list'
   },
   {
     name: 'decision-list',
     title: '决 议',
-    path: '/decision-list',
-  },
+    path: '/decision-list'
+  }
 ]
 
 const handleMenuClick = (path: string) => {
-  router.push(path);
+  router.push(path)
 }
 
-const userInfo = ref<UserProfile>();
+const handleLogout = () => {
+  userStore.clearToken()
+  router.push('/login')
+}
+
+const userInfo = ref<UserProfile>()
 
 const getUserInfo = async () => {
-  userInfo.value = await getCurrentUserProfile();
+  userInfo.value = await getCurrentUserProfile()
 }
 
 onMounted(() => {
-  getUserInfo();
+  // 未登录时不请求用户信息（后端必然 401）
+  if (userStore.token) {
+    getUserInfo()
+  }
 })
 </script>
 
 <template>
   <div class="box">
     <div class="title-box">
-      <div class="title" @click="router.push('/')">
-        GalGameSite
-      </div>
+      <div class="title" @click="router.push('/')">GalGameSite</div>
     </div>
     <div class="menu-box">
-      <div v-for="menu in menuList" :key="menu.name" class="menu-item" @mouseenter="pointerIsOnMenu = true"
+      <div
+        v-for="menu in menuList"
+        :key="menu.name"
+        class="menu-item"
+        @mouseenter="pointerIsOnMenu = true"
         @mouseleave="pointerIsOnMenu = false"
-        :class="{ 'menu-item-light': routerStore.router === menu.name && !pointerIsOnMenu }"
-        @click="handleMenuClick(menu.path)">
+        :class="{
+          'menu-item-light': currentRouteName === menu.name && !pointerIsOnMenu
+        }"
+        @click="handleMenuClick(menu.path)"
+      >
         {{ menu.title }}
       </div>
     </div>
     <div class="info-box">
-      <el-avatar v-if="userStore.token !== ''" class="avater"
-        :src="`https://q.qlogo.cn/g?b=qq&nk=` + userInfo?.uin + `&s=40`" />
-      <div class="info" @click="router.push('/login')" v-if="userStore.token === ''">Login</div>
-      <div class="info" @click="userStore.clearToken(); router.push('/login')" v-else>Logout</div>
+      <el-avatar
+        v-if="userStore.token !== ''"
+        class="avater"
+        :src="`https://q.qlogo.cn/g?b=qq&nk=` + userInfo?.uin + `&s=40`"
+      />
+      <div
+        class="info"
+        @click="router.push('/login')"
+        v-if="userStore.token === ''"
+      >
+        Login
+      </div>
+      <div class="info" @click="handleLogout" v-else>Logout</div>
     </div>
   </div>
 </template>
@@ -85,7 +110,8 @@ div {
   height: 2.8rem;
   display: flex;
   box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  /* 半透明白替代 backdrop-filter（header 固定悬浮，滚动时逐帧模糊代价最高） */
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .title-box {
@@ -119,21 +145,19 @@ div {
   transform: scale(1.03);
   transition: all 0.2s ease-in-out;
   color: #e90064;
-  text-shadow: 0 0 0.825rem rgba(255, 20, 147, 0.8),
-    /* 外层粉色光 */
-    0 0 1.25rem rgba(255, 20, 147, 0.3),
-    /* 次层粉色光 */
-    0 0 1.875rem rgba(255, 20, 147, 0.2);
+  text-shadow:
+    0 0 0.825rem rgba(255, 20, 147, 0.8),
+    /* 外层粉色光 */ 0 0 1.25rem rgba(255, 20, 147, 0.3),
+    /* 次层粉色光 */ 0 0 1.875rem rgba(255, 20, 147, 0.2);
   /* 最内层粉色光 */
 }
 
 .menu-item-light {
   color: #e90064;
-  text-shadow: 0 0 0.825rem rgba(255, 20, 147, 0.8),
-    /* 外层粉色光 */
-    0 0 1.25rem rgba(255, 20, 147, 0.3),
-    /* 次层粉色光 */
-    0 0 1.875rem rgba(255, 20, 147, 0.2);
+  text-shadow:
+    0 0 0.825rem rgba(255, 20, 147, 0.8),
+    /* 外层粉色光 */ 0 0 1.25rem rgba(255, 20, 147, 0.3),
+    /* 次层粉色光 */ 0 0 1.875rem rgba(255, 20, 147, 0.2);
   /* 最内层粉色光 */
 }
 

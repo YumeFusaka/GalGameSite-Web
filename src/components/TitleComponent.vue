@@ -15,7 +15,7 @@ const toRouter = () => {
   <div class="title">
     <span class="logo"></span>
     <span name="title" class="title-text" @click="toRouter()">
-      <slot></slot>
+      <slot name="title"></slot>
     </span>
   </div>
 </template>

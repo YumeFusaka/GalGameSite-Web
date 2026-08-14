@@ -8,7 +8,10 @@ import {
   listVotingResults,
   submitVote as submitVoteRequest
 } from '@/apis/activity/twelve-voting'
-import { getCurrentVoteQuota, updateCurrentVoteQuota } from '@/apis/activity/vote-quota'
+import {
+  getCurrentVoteQuota,
+  updateCurrentVoteQuota
+} from '@/apis/activity/vote-quota'
 
 import TitleComponent from '@/components/TitleComponent.vue'
 import { Search } from '@element-plus/icons-vue'
@@ -39,7 +42,7 @@ const searchTotal = ref(0)
 
 const voteNumTotal = ref(0)
 
-const srcollIndex = ref(0)
+const scrollIndex = ref(0)
 
 const searchName = ref('')
 
@@ -64,27 +67,40 @@ const galgameCount = ref(0)
 
 /* ---------------- 数据请求 ---------------- */
 
+// 请求序号：切换届数/重复刷新时丢弃过期响应，避免旧数据覆盖新届数
+let requestSeq = 0
+
 const getGameList = async () => {
+  const seq = ++requestSeq
   const response = await listVotingGames(
     { ...page.value, translatedName: searchName.value },
     edition.value
   )
+  if (seq !== requestSeq) return
 
   galGameTwelveVotingGameInfoList.value = response.items
   searchTotal.value = response.total
 }
 
 const getResultList = async () => {
-  galGameTwelveVotingResultList.value = await listVotingResults(edition.value)
+  const seq = ++requestSeq
+  const results = await listVotingResults(edition.value)
+  if (seq !== requestSeq) return
+  galGameTwelveVotingResultList.value = results
 }
 
 const getVotesTotal = async () => {
+  const seq = ++requestSeq
   const summary = await getCurrentUserVoteSummary(edition.value)
+  if (seq !== requestSeq) return
   votesCastCountTotal.value = summary.usedVotes
 }
 
 const getHistoryList = async () => {
-  galGameTwelveVotingHistoryList.value = await listCurrentUserVotingRecords(edition.value)
+  const seq = ++requestSeq
+  const records = await listCurrentUserVotingRecords(edition.value)
+  if (seq !== requestSeq) return
+  galGameTwelveVotingHistoryList.value = records
 }
 
 /* ---------------- 刷新所有数据 ---------------- */
@@ -136,7 +152,10 @@ const submitVote = async () => {
 
 const submitVoteNumber = async () => {
   const calculatedVotes = Math.floor(20 + galgameCount.value / 2)
-  await updateCurrentVoteQuota({ edition: edition.value, totalVotes: calculatedVotes })
+  await updateCurrentVoteQuota({
+    edition: edition.value,
+    totalVotes: calculatedVotes
+  })
   voteNumTotal.value = calculatedVotes
   voteNumberDialogVisible.value = false
   refreshAll()
@@ -148,10 +167,7 @@ const editionOptions = ref([
   // 根据需要继续添加
 ])
 
-const timeShow = ref([
-  '2024-10-8 ~ 2024-10-15',
-  '2026-03-13 ~ 2026-03-20',
-])
+const timeShow = ref(['2024-10-8 ~ 2024-10-15', '2026-03-13 ~ 2026-03-20'])
 
 const tipShow = ref([
   ' 活动须知: 投票前请先登录，登录账号已绑定米娜桑的QQ号，只需输入QQ号即可完成登录。 每人拥有30张票，每张票可投给任意一个作品，每个作品最多可以投5票，支持退票重选。投票截止时间为2024年10月15日，最终排名以投票结果为准。',
@@ -167,14 +183,14 @@ const changeEdition = async (value: number) => {
 
   if (voteNumTotal.value === 0) {
     voteNumberDialogVisible.value = true
-  } 
+  }
   refreshAll()
 }
 
 /* ---------------- 轮播 ---------------- */
 
 const changeScroll = (current: number) => {
-  srcollIndex.value = current
+  scrollIndex.value = current
 }
 
 /* ---------------- 生命周期 ---------------- */
@@ -194,9 +210,7 @@ onMounted(async () => {
   <div class="box">
     <div class="box-content">
       <div class="activity">
-        <div class="title">
-          湖北交通大学十二交器选拔
-        </div>
+        <div class="title">湖北交通大学十二交器选拔</div>
         <div class="time">
           {{ timeShow[edition - 1] }}
         </div>
@@ -204,31 +218,58 @@ onMounted(async () => {
         <!-- 届数选择 -->
         <div class="edition-select">
           <span>选择届数：</span>
-          <el-select v-model="edition" placeholder="请选择届数" @change="changeEdition" style="width: 8rem">
-            <el-option v-for="item in editionOptions" :key="item.value" :label="item.label" :value="item.value" />
+          <el-select
+            v-model="edition"
+            placeholder="请选择届数"
+            @change="changeEdition"
+            style="width: 8rem"
+          >
+            <el-option
+              v-for="item in editionOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
           </el-select>
         </div>
       </div>
       <div class="rank">
         <TitleComponent style="">
-          <template v-slot="title">
-            实时排行
-          </template>
+          <template #title> 实时排行 </template>
         </TitleComponent>
-        <div class="rank-content" v-if="galGameTwelveVotingResultList.length > 0">
+        <div
+          class="rank-content"
+          v-if="galGameTwelveVotingResultList.length > 0"
+        >
           <div class="scroll">
             <div class="scroll-image">
-              <el-carousel :interval="4000" :type="windowStore.windowSize >= 900 ? `card` : ` `" height="20rem"
-                @change="changeScroll" indicator-position="none">
-                <el-carousel-item v-for="i in Math.min(12, galGameTwelveVotingResultList.length)" :key="i">
-                  <img :src="galGameTwelveVotingResultList[i - 1].imgUrl" class="image" />
+              <el-carousel
+                :interval="4000"
+                :type="windowStore.windowSize >= 900 ? `card` : ` `"
+                height="20rem"
+                @change="changeScroll"
+                indicator-position="none"
+              >
+                <el-carousel-item
+                  v-for="i in Math.min(
+                    12,
+                    galGameTwelveVotingResultList.length
+                  )"
+                  :key="i"
+                >
+                  <img
+                    :src="galGameTwelveVotingResultList[i - 1].imgUrl"
+                    class="image"
+                  />
                 </el-carousel-item>
               </el-carousel>
             </div>
 
             <div class="scroll-describe">
-              <div class="scroll-name">{{ galGameTwelveVotingResultList[srcollIndex].translatedName }}</div>
-              <div calss="scroll-rank">No.{{ srcollIndex + 1 }}</div>
+              <div class="scroll-name">
+                {{ galGameTwelveVotingResultList[scrollIndex].translatedName }}
+              </div>
+              <div class="scroll-rank">No.{{ scrollIndex + 1 }}</div>
             </div>
 
             <div class="tip">
@@ -242,129 +283,228 @@ onMounted(async () => {
               <div class="static-name">Name</div>
               <div class="static-score">Votes</div>
             </div>
-            <div v-for="i in Math.min(12, galGameTwelveVotingResultList.length)" :key="i" class="static-row">
+            <div
+              v-for="i in Math.min(12, galGameTwelveVotingResultList.length)"
+              :key="i"
+              class="static-row"
+            >
               <div class="static-icon">{{ i }}</div>
-              <div class="static-name">{{ galGameTwelveVotingResultList[i - 1].translatedName }}</div>
-              <div class="static-score"> {{ galGameTwelveVotingResultList[i - 1].totalVotes }}</div>
+              <div class="static-name">
+                {{ galGameTwelveVotingResultList[i - 1].translatedName }}
+              </div>
+              <div class="static-score">
+                {{ galGameTwelveVotingResultList[i - 1].totalVotes }}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <el-divider class="divider" />
       <div class="vote">
-        <TitleComponent style="margin-bottom: 1.25rem;">
-          <template v-slot="title">
-            投票列表
-          </template>
+        <TitleComponent style="margin-bottom: 1.25rem">
+          <template #title> 投票列表 </template>
         </TitleComponent>
         <div class="vote-content">
           <div class="search-box">
-            <div class="remainder">你还有 <span style="color: #ff6600; font-weight: bold;font-size: large;">{{ voteNumTotal -
-              votesCastCountTotal
-                }}</span>
-              票喵～(∠・ω< )⌒★</div>
-                <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-                  @keyup.enter.native="searchGame()" style="margin-left: .3125rem;" clearable>
-                  <template #suffix>
-                    <el-icon @click="searchGame()">
-                      <search />
-                    </el-icon>
-                  </template>
-                </el-input>
+            <div class="remainder">
+              你还有
+              <span
+                style="color: #ff6600; font-weight: bold; font-size: large"
+                >{{ voteNumTotal - votesCastCountTotal }}</span
+              >
+              票喵～(∠・ω&lt; )⌒★
             </div>
-            <div class="vote-list" v-if="galGameTwelveVotingGameInfoList.length > 0">
-              <el-card v-for="galgame in galGameTwelveVotingGameInfoList" :key="galgame.subjectId" class="card"
-                shadow="hover" style="max-width: 30rem">
-                <template #header>
-                  <el-text size="large" line-clamp="1" style="padding: 0 1rem;color: #ff9ab5">{{ galgame.translatedName
-                    }}</el-text>
-                </template>
-                <img :src="galgame.imgUrl" class="vote-img" />
-                <template #footer>
-                  <div class="vote-footer">
-                    <el-button type="danger" style="background-color: #ff9ab5;"
-                      @click="openVoteDialog(galgame.subjectId)">投票</el-button>
-                    <span>{{ galgame.totalVotes }} votes</span>
-                  </div>
-                </template>
-              </el-card>
-            </div>
-            <div v-else>
-              <el-empty :image-size="200" />
-            </div>
-            <div class="page" v-if="galGameTwelveVotingGameInfoList.length > 0">
-              <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-                v-model:current-page="page.pageNo" @current-change="getGameList()" class="pagination" />
-            </div>
-          </div>
-        </div>
-        <el-divider class="divider" />
-        <div class="history">
-          <TitleComponent style="">
-            <template v-slot="title">
-              投票记录
-            </template>
-          </TitleComponent>
-          <div v-if="galGameTwelveVotingHistoryList.length > 0" class="vote-list" style="margin-top: 1.25rem;">
-            <el-card v-for="galgame in galGameTwelveVotingHistoryList" :key="galgame.subjectId" class="card"
-              shadow="hover" style="max-width: 30rem">
-              <template #header>
-                <el-text size="large" line-clamp="1" style="padding: 0 1rem;">{{ galgame.translatedName }}</el-text>
+            <el-input
+              class="search"
+              placeholder="请输入GalGame名称"
+              v-model="searchName"
+              @keyup.enter="searchGame()"
+              style="margin-left: 0.3125rem"
+              clearable
+            >
+              <template #suffix>
+                <el-icon @click="searchGame()">
+                  <search />
+                </el-icon>
               </template>
-              <img :src="galgame.imgUrl" class="vote-img" />
+            </el-input>
+          </div>
+          <div
+            class="vote-list"
+            v-if="galGameTwelveVotingGameInfoList.length > 0"
+          >
+            <el-card
+              v-for="galgame in galGameTwelveVotingGameInfoList"
+              :key="galgame.subjectId"
+              class="card"
+              shadow="hover"
+              style="max-width: 30rem"
+            >
+              <template #header>
+                <el-text
+                  size="large"
+                  line-clamp="1"
+                  style="padding: 0 1rem; color: #ff9ab5"
+                  >{{ galgame.translatedName }}</el-text
+                >
+              </template>
+              <img
+                :src="galgame.imgUrl"
+                class="vote-img"
+                loading="lazy"
+                decoding="async"
+              />
               <template #footer>
                 <div class="vote-footer">
-                  <el-rate v-model="galgame.votesCastCount" size="large" show-score text-color="#ff9900"
-                    score-template="{value} votes" disabled />
+                  <el-button
+                    type="danger"
+                    style="background-color: #ff9ab5"
+                    @click="openVoteDialog(galgame.subjectId)"
+                    >投票</el-button
+                  >
+                  <span>{{ galgame.totalVotes }} votes</span>
                 </div>
               </template>
             </el-card>
           </div>
-          <el-empty :image-size="200" v-else />
+          <div v-else>
+            <el-empty :image-size="200" />
+          </div>
+          <div class="page" v-if="galGameTwelveVotingGameInfoList.length > 0">
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="searchTotal"
+              :page-size="page.pageSize"
+              v-model:current-page="page.pageNo"
+              @current-change="getGameList()"
+              class="pagination"
+            />
+          </div>
         </div>
       </div>
-
-      <el-dialog v-model="voteDialogVisible" title="投票面板" width="auto" align-center class="vote-dialog">
-        <div class="dialog-box">
-          <img :src="galGameVoteDialogInfo?.imgUrl" />
-          <div> Name: <span>{{ galGameVoteDialogInfo?.translatedName }}</span></div>
-          <div v-if="galGameVoteDialogInfo?.originalName"> Nick: <span>{{ galGameVoteDialogInfo?.originalName }}</span>
-          </div>
-          <div> Info: <span>{{ galGameVoteDialogInfo?.info }}</span> </div>
-          <div class="Vote-Rank">
-            <div>Votes: <span>{{ galGameVoteDialogInfo?.totalVotes ? galGameVoteDialogInfo?.totalVotes : 'N/A' }}</span>
-            </div>
-            <div style="margin-left: 4.125rem;"> Rank: <span>{{ galGameVoteDialogInfo?.totalRank ?
-              galGameVoteDialogInfo?.totalRank
-              : 'N/A' }}</span> </div>
-          </div>
-          <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
+      <el-divider class="divider" />
+      <div class="history">
+        <TitleComponent style="">
+          <template #title> 投票记录 </template>
+        </TitleComponent>
+        <div
+          v-if="galGameTwelveVotingHistoryList.length > 0"
+          class="vote-list"
+          style="margin-top: 1.25rem"
+        >
+          <el-card
+            v-for="galgame in galGameTwelveVotingHistoryList"
+            :key="galgame.subjectId"
+            class="card"
+            shadow="hover"
+            style="max-width: 30rem"
+          >
+            <template #header>
+              <el-text size="large" line-clamp="1" style="padding: 0 1rem">{{
+                galgame.translatedName
+              }}</el-text>
+            </template>
+            <img
+              :src="galgame.imgUrl"
+              class="vote-img"
+              loading="lazy"
+              decoding="async"
+            />
+            <template #footer>
+              <div class="vote-footer">
+                <el-rate
+                  v-model="galgame.votesCastCount"
+                  size="large"
+                  show-score
+                  text-color="#ff9900"
+                  score-template="{value} votes"
+                  disabled
+                />
+              </div>
+            </template>
+          </el-card>
         </div>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="voteDialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="submitVote()"
-              :disabled="setVote == galGameVoteDialogInfo?.votesCastCount">
-              Confirm
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-
-      <el-dialog v-model="voteNumberDialogVisible" title="票前提问" width="auto" align-center>
-        <div class="dialog-box">
-          <p>请输入你玩过的GalGame数量：</p>
-          <el-input-number v-model="galgameCount" :min="0" :max="1000" style="width: 20rem" />
-          <p style="color: red; margin-top: 1rem;">确定后不可变更</p>
-        </div>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="voteNumberDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="submitVoteNumber()">确认</el-button>
-          </div>
-        </template>
-      </el-dialog>
+        <el-empty :image-size="200" v-else />
+      </div>
     </div>
+
+    <el-dialog
+      v-model="voteDialogVisible"
+      title="投票面板"
+      width="auto"
+      align-center
+      class="vote-dialog"
+    >
+      <div class="dialog-box">
+        <img :src="galGameVoteDialogInfo?.imgUrl" />
+        <div>
+          Name: <span>{{ galGameVoteDialogInfo?.translatedName }}</span>
+        </div>
+        <div v-if="galGameVoteDialogInfo?.originalName">
+          Nick: <span>{{ galGameVoteDialogInfo?.originalName }}</span>
+        </div>
+        <div>
+          Info: <span>{{ galGameVoteDialogInfo?.info }}</span>
+        </div>
+        <div class="Vote-Rank">
+          <div>
+            Votes:
+            <span>{{
+              galGameVoteDialogInfo?.totalVotes
+                ? galGameVoteDialogInfo?.totalVotes
+                : 'N/A'
+            }}</span>
+          </div>
+          <div style="margin-left: 4.125rem">
+            Rank:
+            <span>{{
+              galGameVoteDialogInfo?.totalRank
+                ? galGameVoteDialogInfo?.totalRank
+                : 'N/A'
+            }}</span>
+          </div>
+        </div>
+        <el-slider v-model="setVote" :min="0" :max="5" style="width: 20rem" />
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="voteDialogVisible = false">Cancel</el-button>
+          <el-button
+            type="primary"
+            @click="submitVote()"
+            :disabled="setVote == galGameVoteDialogInfo?.votesCastCount"
+          >
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="voteNumberDialogVisible"
+      title="票前提问"
+      width="auto"
+      align-center
+    >
+      <div class="dialog-box">
+        <p>请输入你玩过的GalGame数量：</p>
+        <el-input-number
+          v-model="galgameCount"
+          :min="0"
+          :max="1000"
+          style="width: 20rem"
+        />
+        <p style="color: red; margin-top: 1rem">确定后不可变更</p>
+      </div>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="voteNumberDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitVoteNumber()">确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <style scoped>
@@ -380,7 +520,6 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 1rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   padding: 2rem 4rem 2rem 4rem;
@@ -406,7 +545,7 @@ onMounted(async () => {
   }
 
   .time {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     font-size: 1.2rem;
   }
 
@@ -439,7 +578,7 @@ onMounted(async () => {
   width: 100%;
   display: grid;
   grid-template-rows: auto;
-  row-gap: .625rem;
+  row-gap: 0.625rem;
 
   .image {
     height: 100%;
@@ -468,7 +607,6 @@ onMounted(async () => {
 .static {
   padding: 1rem 1rem;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 0.625rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
@@ -493,7 +631,7 @@ onMounted(async () => {
   height: auto;
   width: 100%;
 
-  border-radius: .3125rem;
+  border-radius: 0.3125rem;
   background-color: #f9c6cf46;
   border-left: 0.425rem solid hwb(359 78% 2%);
 
@@ -551,7 +689,7 @@ onMounted(async () => {
   padding: 0.625rem;
   box-sizing: border-box;
   text-align: center;
-  border-radius: .3125rem;
+  border-radius: 0.3125rem;
   background-color: #f9c6cf46;
   border-left: 0.425rem solid hwb(359 78% 2%);
   font-weight: 400;
@@ -570,7 +708,6 @@ onMounted(async () => {
 .el-card :deep(.el-card__body) {
   padding: 0;
 }
-
 
 .el-card :deep(.el-card__header) {
   padding: 0.5rem;
@@ -599,7 +736,7 @@ onMounted(async () => {
   width: 25rem;
   padding: 0 1.25rem;
   box-sizing: border-box;
-  row-gap: .3125rem;
+  row-gap: 0.3125rem;
   grid-template-rows: repeat(auto, 1fr);
   text-align: center;
   justify-items: center;
@@ -629,7 +766,9 @@ onMounted(async () => {
   }
 }
 
-.vote:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+.vote:deep(
+    .el-pagination.is-background .el-pager li:not(.is-disabled).is-active
+  ) {
   background-color: pink !important;
 }
 

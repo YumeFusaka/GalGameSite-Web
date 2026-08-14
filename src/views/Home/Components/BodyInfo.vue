@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="info">
@@ -8,8 +6,10 @@
       <div>欢迎来到GalGameSite</div>
     </div>
     <div class="info-content">
-      Ciallo～(∠・ω< )⌒☆ 这里是湖北交通大学的Galgame同好会。可爱喵，举手喵，地球喵，海胆喵！关注永雏塔菲喵，关注永雏塔菲谢谢喵! </div>
+      Ciallo～(∠・ω&lt; )⌒☆
+      这里是湖北交通大学的Galgame同好会。可爱喵，举手喵，地球喵，海胆喵！关注永雏塔菲喵，关注永雏塔菲谢谢喵!
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -19,7 +19,6 @@
   padding: 1.6rem 1.6rem 1.6rem 1.6rem;
 
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 1rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;

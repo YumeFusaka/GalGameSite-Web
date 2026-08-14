@@ -1,8 +1,14 @@
 import request, { unwrap } from '@/utils/axios'
-import type { UserProfile, LoginRequest, LoginResponse } from '@/types/domain/user'
+import type {
+  UserProfile,
+  LoginRequest,
+  LoginResponse
+} from '@/types/domain/user'
 import type { ApiResponse } from '@/types/common/api'
 
-export const createSession = (payload: LoginRequest): Promise<LoginResponse> => {
+export const createSession = (
+  payload: LoginRequest
+): Promise<LoginResponse> => {
   return unwrap(
     request({
       url: '/users/sessions',

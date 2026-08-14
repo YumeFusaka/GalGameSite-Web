@@ -1,34 +1,21 @@
 <script setup lang="ts">
-import LayoutHeader from './Components/LayoutHeader.vue';
-import LayoutFooter from './Components/LayoutFooter.vue';
-import { useRouterStore } from '@/stores';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import LayoutHeader from './Components/LayoutHeader.vue'
 
+// 列表类页面用纯色背景，其余页面显示全屏背景图
+const plainBackgroundRoutes = ['user-list', 'activity-list', 'decision-list']
 
-const routerStore = useRouterStore();
-
-const notShowBackgroudList = [
-  'user-list',
-  'activity-list',
-  'decision-list'
-]
-
-const isShowBackground = () => {
-  for (var i = 0; i < notShowBackgroudList.length; i++) {
-    if (routerStore.router === notShowBackgroudList[i]) {
-      return false;
-    }
-  }
-  return true;
-}
+const isShowBackground = computed(
+  () => !plainBackgroundRoutes.includes(useRoute().path.split('/')[1])
+)
 </script>
 
 <template>
-  <div class="layout" :class="{ 'background': isShowBackground() }">
+  <div class="layout" :class="{ background: isShowBackground }">
     <LayoutHeader class="header" />
     <RouterView class="body" />
-    <!-- <LayoutFooter /> -->
   </div>
-
 </template>
 
 <style scoped>
@@ -39,7 +26,6 @@ const isShowBackground = () => {
   grid-template-rows: auto;
   grid-template-columns: 1fr;
 }
-
 
 .header {
   position: fixed;
@@ -54,17 +40,16 @@ const isShowBackground = () => {
 .background::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  /* 放大以掩盖 blur 后的边缘透明 */
+  inset: -2rem;
   background-image: url('@/images/background.webp');
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  /* filter: blur(12px);
-  opacity: 0.8; */
+  /* 背景图一次性模糊（GPU 纹理缓存，滚动不重算），
+     替代各组件的 backdrop-filter 逐帧模糊，消除滚动卡顿 */
+  filter: blur(12px);
   z-index: -1;
 }
 </style>

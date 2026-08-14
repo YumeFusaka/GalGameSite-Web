@@ -1,35 +1,45 @@
 <script setup lang="ts">
-import { createSession } from '@/apis/user/users';
-import type { LoginRequest } from '@/types/domain/user';
-import { ref } from 'vue';
-import { useUserStore } from '@/stores';
-import { ElMessage } from 'element-plus';
-import { useRouter } from 'vue-router';
+import { createSession } from '@/apis/user/users'
+import type { LoginRequest } from '@/types/domain/user'
+import { ref } from 'vue'
+import { useUserStore } from '@/stores'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
+const router = useRouter()
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const loginParams = ref<LoginRequest>({
-  uin: '',
+  uin: ''
 })
 
 const login = async () => {
-  const session = await createSession(loginParams.value);
-  userStore.setToken(session.token);
-  ElMessage({ message: '欢迎 ' + session.nick + ' 喵~', type: 'success' });
-  router.go(-1);
+  const session = await createSession(loginParams.value)
+  userStore.setToken(session.token)
+  ElMessage({ message: '欢迎 ' + session.nick + ' 喵~', type: 'success' })
+  router.go(-1)
 }
 </script>
-
 
 <template>
   <div class="container">
     <div class="login-wrapper">
       <div class="header">Login</div>
       <div class="form-wrapper">
-        <input type="text" name="username" v-model="loginParams.uin" placeholder="username" class="input-item">
-        <input type="password" name="password" placeholder="password" class="input-item">
+        <input
+          type="text"
+          name="username"
+          v-model="loginParams.uin"
+          placeholder="username"
+          class="input-item"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="password"
+          class="input-item"
+        />
         <div class="btn" @click="login">Login</div>
       </div>
       <div class="msg">
@@ -37,10 +47,7 @@ const login = async () => {
       </div>
     </div>
   </div>
-
-
 </template>
-
 
 <style scoped>
 * {
@@ -65,7 +72,7 @@ body {
   background-color: #fff;
   width: 22.375rem;
   height: 36.75rem;
-  border-radius: .9375rem;
+  border-radius: 0.9375rem;
   padding: 0 3.125rem;
   position: relative;
   left: 50%;
@@ -85,9 +92,9 @@ body {
   width: 100%;
   margin-bottom: 1.25rem;
   border: 0;
-  padding: .625rem;
-  border-bottom: .0625rem solid rgb(128, 125, 125);
-  font-size: .9375rem;
+  padding: 0.625rem;
+  border-bottom: 0.0625rem solid rgb(128, 125, 125);
+  font-size: 0.9375rem;
   outline: none;
 }
 
@@ -97,7 +104,7 @@ body {
 
 .btn {
   text-align: center;
-  padding: .625rem;
+  padding: 0.625rem;
   width: 100%;
   margin-top: 2.5rem;
   background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);

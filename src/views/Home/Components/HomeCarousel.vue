@@ -4,8 +4,8 @@ import w2 from '@/images/Carouse/2.webp'
 import w3 from '@/images/Carouse/3.webp'
 import w4 from '@/images/Carouse/4.webp'
 import w5 from '@/images/Carouse/5.webp'
-import { onMounted, ref } from 'vue';
-import { useWindowStore } from '@/stores';
+import { ref } from 'vue'
+import { useWindowStore } from '@/stores'
 
 const windowStore = useWindowStore()
 const carouselItems = [
@@ -37,23 +37,33 @@ const carouselItems = [
 ]
 
 const openLink = (link: string, index: number) => {
-  if (nowIndex.value + 1 === index)
-    window.open(link, '_blank')
+  if (nowIndex.value + 1 === index) window.open(link, '_blank')
 }
 
 const nowIndex = ref<number>(0)
 
-function handleChange(currentIndex: number, prevIndex: number) {
-  nowIndex.value = currentIndex;
+function handleChange(currentIndex: number) {
+  nowIndex.value = currentIndex
 }
 </script>
 
 <template>
   <div class="carousel">
-    <el-carousel :interval="4000" :type="windowStore.windowSize >= 768 ? `card` : ''" height="18.75rem"
-      style="margin-top: 1.25rem;" indicator-position="outside" @change="handleChange">
-      <el-carousel-item v-for="item in carouselItems" class="carousel-item" :key="item.id"
-        :style="{ backgroundImage: `url(${item.url})` }" @click="openLink(item.link, item.id)">
+    <el-carousel
+      :interval="4000"
+      :type="windowStore.windowSize >= 768 ? `card` : ''"
+      height="18.75rem"
+      style="margin-top: 1.25rem"
+      indicator-position="outside"
+      @change="handleChange"
+    >
+      <el-carousel-item
+        v-for="item in carouselItems"
+        class="carousel-item"
+        :key="item.id"
+        :style="{ backgroundImage: `url(${item.url})` }"
+        @click="openLink(item.link, item.id)"
+      >
       </el-carousel-item>
     </el-carousel>
   </div>
@@ -65,7 +75,6 @@ function handleChange(currentIndex: number, prevIndex: number) {
 }
 
 :deep(.el-carousel__indicators--horizontal) {
-
   .el-carousel__indicator--horizontal button {
     width: 1rem;
     height: 1rem;
@@ -89,8 +98,7 @@ function handleChange(currentIndex: number, prevIndex: number) {
   background-size: cover;
 }
 
-
 .el-carousel__item.is-animating {
-  transition: opacity .2s ease-in-out !important;
+  transition: opacity 0.2s ease-in-out !important;
 }
 </style>

@@ -26,26 +26,42 @@ const activityList = [
     state: '进行中',
     url: w3,
     link: '/activity/galgame-tier-maker'
-  },
+  }
 ]
-
 </script>
 
 <template>
   <div class="box">
     <div class="latestPreview">
-      <div v-for="item in activityList" :key="item.name" class="box-item" @click="$router.push(item.link!)">
-        <img :src="item.url">
+      <div
+        v-for="item in activityList"
+        :key="item.name"
+        class="box-item"
+        @click="$router.push(item.link!)"
+      >
+        <img :src="item.url" />
         <div class="describe">
           <div class="name">{{ item.name }}</div>
-          <div class="time">活动时间：{{ item.start_time }} - {{ item.end_time }}</div>
-          <div class="state" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">{{ item.state }}</div>
+          <div class="time">
+            活动时间：{{ item.start_time }} - {{ item.end_time }}
+          </div>
+          <div
+            class="state"
+            :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')"
+          >
+            {{ item.state }}
+          </div>
         </div>
       </div>
     </div>
     <div class="activity-list">
-      <div v v-for="item in activityList" :key="item.name" class="activity-item" @click="$router.push(item.link!)">
-        <img :src="item.url">
+      <div
+        v-for="item in activityList"
+        :key="item.name"
+        class="activity-item"
+        @click="$router.push(item.link!)"
+      >
+        <img :src="item.url" />
         <div class="activity-info">
           <div class="activity-title">
             {{ item.name }}
@@ -54,7 +70,10 @@ const activityList = [
             <div class="activity-time">
               {{ item.start_time }} - {{ item.end_time }}
             </div>
-            <div class="activity-status" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">
+            <div
+              class="activity-status"
+              :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')"
+            >
               {{ item.state }}
             </div>
           </div>
@@ -73,7 +92,7 @@ const activityList = [
 
 .latestPreview {
   width: 100%;
-  background-image: url("@/images/Activity/headerBackground.webp");
+  background-image: url('@/images/Activity/headerBackground.webp');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -92,7 +111,6 @@ const activityList = [
   flex-direction: column;
   background: rgba(255, 255, 255, 0.8);
   /* 半透明白色 */
-  backdrop-filter: blur(10px);
   /* 模糊效果 */
   border-radius: 1rem;
   /* 圆角 */
@@ -105,7 +123,6 @@ const activityList = [
     border-radius: 1rem 1rem 0 0;
     object-fit: cover;
   }
-
 }
 
 .box-item:hover {

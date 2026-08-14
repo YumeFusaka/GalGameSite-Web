@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue';
-import { useWindowStore, useRouterStore } from './stores';
-import { useRouter } from 'vue-router';
-import Live2d from '@/components/Live2d.vue';
+import { onMounted, onUnmounted } from 'vue'
+import { useWindowStore } from './stores'
 
-const router = useRouter();
-const windowStore = useWindowStore();
-const routerStore = useRouterStore();
+const windowStore = useWindowStore()
+
+// resize 高频触发，防抖 100ms 避免频繁更新响应式状态
+let resizeTimer: ReturnType<typeof setTimeout> | null = null
 const updateScreenWidth = () => {
-  windowStore.setWindowSize(window.innerWidth)
+  if (resizeTimer) clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(() => {
+    windowStore.setWindowSize(window.innerWidth)
+  }, 100)
 }
-window.addEventListener('resize', updateScreenWidth);
-
-watch(() => router.currentRoute.value.path, (newPath, oldPath) => {
-  routerStore.setRouter(newPath.split('/')[1]);
-});
+window.addEventListener('resize', updateScreenWidth)
 
 onMounted(() => {
-  routerStore.setRouter(router.currentRoute.value.path.split('/')[1]);
-  updateScreenWidth();
+  updateScreenWidth()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateScreenWidth)
+  if (resizeTimer) clearTimeout(resizeTimer)
 })
 </script>
 
 <template>
-  <!-- <Live2d /> -->
   <RouterView class="app" />
 </template>
 

@@ -7,7 +7,7 @@ import type {
   VotingGameListItem,
   VotingGameQuery,
   VotingRecord,
-  VotingResult,
+  VotingResult
 } from '@/types/domain/voting'
 
 export const listVotingGames = (
@@ -33,7 +33,9 @@ export const listVotingResults = (edition: number): Promise<VotingResult[]> => {
   )
 }
 
-export const listCurrentUserVotingRecords = (edition: number): Promise<VotingRecord[]> => {
+export const listCurrentUserVotingRecords = (
+  edition: number
+): Promise<VotingRecord[]> => {
   return unwrap(
     request({
       url: '/activities/twelve-voting/records/me',
@@ -43,7 +45,9 @@ export const listCurrentUserVotingRecords = (edition: number): Promise<VotingRec
   )
 }
 
-export const getCurrentUserVoteSummary = (edition: number): Promise<VoteSummary> => {
+export const getCurrentUserVoteSummary = (
+  edition: number
+): Promise<VoteSummary> => {
   return unwrap(
     request({
       url: '/activities/twelve-voting/summary/me',
@@ -53,7 +57,10 @@ export const getCurrentUserVoteSummary = (edition: number): Promise<VoteSummary>
   )
 }
 
-export const getCurrentUserBallot = (subjectId: number, edition: number): Promise<VoteBallot> => {
+export const getCurrentUserBallot = (
+  subjectId: number,
+  edition: number
+): Promise<VoteBallot> => {
   return unwrap(
     request({
       url: `/activities/twelve-voting/games/${subjectId}/ballot`,

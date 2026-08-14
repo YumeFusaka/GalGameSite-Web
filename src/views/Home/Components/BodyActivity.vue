@@ -26,25 +26,34 @@ const activityList = [
     state: '进行中',
     url: w3,
     link: '/activity/galgame-tier-maker'
-  },
+  }
 ]
-
 </script>
 
 <template>
   <div class="activity">
     <TitleComponent toRouterName="/activity-list" style="">
-      <template v-slot="title">
-        社团活动
-      </template>
+      <template #title> 社团活动 </template>
     </TitleComponent>
     <div class="box">
-      <div v-for="item in activityList" :key="item.name" class="box-item" @click="$router.push(item.link!)">
-        <img :src="item.url">
+      <div
+        v-for="item in activityList"
+        :key="item.name"
+        class="box-item"
+        @click="$router.push(item.link!)"
+      >
+        <img :src="item.url" />
         <div class="describe">
           <div class="name">{{ item.name }}</div>
-          <div class="time">活动时间：{{ item.start_time }} - {{ item.end_time }}</div>
-          <div class="state" :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')">{{ item.state }}</div>
+          <div class="time">
+            活动时间：{{ item.start_time }} - {{ item.end_time }}
+          </div>
+          <div
+            class="state"
+            :style="`color:` + (item.state === '进行中' ? '#009688' : '#999')"
+          >
+            {{ item.state }}
+          </div>
         </div>
       </div>
     </div>
@@ -58,7 +67,6 @@ const activityList = [
   padding: 1.5rem 1.25rem 1.5rem 1.25rem;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 0.625rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
 }
@@ -78,14 +86,11 @@ const activityList = [
   }
 }
 
-
-
 .box-item {
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.8);
   /* 半透明白色 */
-  backdrop-filter: blur(10px);
   /* 模糊效果 */
   border-radius: 1rem;
   /* 圆角 */
@@ -98,7 +103,6 @@ const activityList = [
   transform: scale(1.03);
   transition: all 0.3s ease-in-out;
 }
-
 
 img {
   width: 100%;

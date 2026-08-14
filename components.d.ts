@@ -24,7 +24,6 @@ declare module 'vue' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSlider: typeof import('element-plus/es')['ElSlider']
     ElText: typeof import('element-plus/es')['ElText']
-    Live2d: typeof import('./src/components/Live2d.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TitleComponent: typeof import('./src/components/TitleComponent.vue')['default']

@@ -11,7 +11,9 @@ export const getCurrentTierMakerRecord = (): Promise<TierMakerRecord> => {
   )
 }
 
-export const saveCurrentTierMakerRecord = (payload: TierMakerRecord): Promise<string> => {
+export const saveCurrentTierMakerRecord = (
+  payload: TierMakerRecord
+): Promise<string> => {
   return unwrap(
     request({
       url: '/activities/tier-maker/records/me',

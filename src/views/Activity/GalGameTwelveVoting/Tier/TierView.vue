@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { listVotingResults } from '@/apis/activity/twelve-voting';
-import type { VotingResult } from '@/types/domain/voting';
-import { onMounted, ref } from 'vue';
+import { listVotingResults } from '@/apis/activity/twelve-voting'
+import type { VotingResult } from '@/types/domain/voting'
+import { onMounted, ref } from 'vue'
 
 const votingResults = ref<VotingResult[]>([])
 
@@ -31,18 +31,24 @@ onMounted(() => {
 <template>
   <div class="box">
     <div class="box-content">
-      <div class="title">
-        湖交GalGame十二交器实时榜单
-      </div>
-      <div class="time">
-        2024-10-8 ~ 2024-10-15
-      </div>
+      <div class="title">湖交GalGame十二交器实时榜单</div>
+      <div class="time">2024-10-8 ~ 2024-10-15</div>
 
       <!-- 届数选择框 -->
       <div class="edition-select">
         <span>选择届数：</span>
-        <el-select v-model="edition" placeholder="请选择届数" @change="changeEdition" style="width: 8rem;">
-          <el-option v-for="item in editionOptions" :key="item.value" :label="item.label" :value="item.value" />
+        <el-select
+          v-model="edition"
+          placeholder="请选择届数"
+          @change="changeEdition"
+          style="width: 8rem"
+        >
+          <el-option
+            v-for="item in editionOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
         </el-select>
       </div>
       <div class="rank">
@@ -53,10 +59,14 @@ onMounted(() => {
           <div>信息</div>
           <div>票数</div>
         </div>
-        <div class="galGameResult" v-for="(galGame, index) in votingResults" :key="galGame.subjectId">
-          <div> {{ index + 1 }}</div>
-          <div> {{ galGame.translatedName }}</div>
-          <div> {{ galGame.originalName }}</div>
+        <div
+          class="galGameResult"
+          v-for="(galGame, index) in votingResults"
+          :key="galGame.subjectId"
+        >
+          <div>{{ index + 1 }}</div>
+          <div>{{ galGame.translatedName }}</div>
+          <div>{{ galGame.originalName }}</div>
           <div>{{ galGame.info }}</div>
           <div>{{ galGame.totalVotes }}</div>
         </div>
@@ -78,7 +88,6 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 1rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   padding: 2rem 4rem 2rem 4rem;
@@ -100,7 +109,7 @@ onMounted(() => {
 }
 
 .time {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   font-size: 1.2rem;
   display: grid;
   align-items: center;
@@ -141,13 +150,11 @@ onMounted(() => {
 
 .galGameResult:nth-child(1) {
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
 }
 
 .galGameResult:nth-child(2) {
   background-color: #ffff0a;
 }
-
 
 .galGameResult:nth-child(3) {
   background-color: #f4f4f4;
@@ -157,7 +164,7 @@ onMounted(() => {
   background-color: #e2b796;
 }
 
-.galGameResult:nth-child(n+5):nth-child(-n+13) {
+.galGameResult:nth-child(n + 5):nth-child(-n + 13) {
   background-color: #ffe9f4;
 }
 
@@ -179,8 +186,6 @@ onMounted(() => {
   .box-content {
     padding: 2rem 1.5rem 2rem 1.5rem;
   }
-
-
 }
 
 @media (max-width: 900px) {
@@ -191,7 +196,6 @@ onMounted(() => {
   .box-content {
     padding: 2rem 1rem 2rem 1rem;
   }
-
 }
 
 @media (max-width: 768px) {

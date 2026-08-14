@@ -10,38 +10,43 @@ const router = createRouter({
       children: [
         {
           path: '/home',
-          component: () => import('../views/Home/HomeView.vue'),
+          component: () => import('../views/Home/HomeView.vue')
         },
         {
           path: '/activity/galGame-twelve-voting/vote',
-          component: () => import('../views/Activity/GalGameTwelveVoting/Vote/VoteView.vue'),
+          component: () =>
+            import('../views/Activity/GalGameTwelveVoting/Vote/VoteView.vue')
         },
         {
           path: '/activity/galGame-twelve-voting/tier',
-          component: () => import('../views/Activity/GalGameTwelveVoting/Tier/TierView.vue'),
+          component: () =>
+            import('../views/Activity/GalGameTwelveVoting/Tier/TierView.vue')
         },
         {
           path: '/activity/galgame-tier-maker',
-          component: () => import('../views/Activity/GalGameTierMaker/TierMakerView.vue'),
+          component: () =>
+            import('../views/Activity/GalGameTierMaker/TierMakerView.vue')
         },
         {
           path: '/user-list',
-          component: () => import('../views/User/UserListView/UserListView.vue'),
+          component: () => import('../views/User/UserListView/UserListView.vue')
         },
         {
           path: '/activity-list',
-          component: () => import('../views/Activity/ActivityList/ActivityListView.vue'),
+          component: () =>
+            import('../views/Activity/ActivityList/ActivityListView.vue')
         },
         {
           path: '/decision-list',
-          component: () => import('../views/Decision/DecisionList/DecisionListView.vue'),
+          component: () =>
+            import('../views/Decision/DecisionList/DecisionListView.vue')
         }
       ]
     },
 
     {
       path: '/login',
-      component: () => import('../views/Login/LoginView.vue'),
+      component: () => import('../views/Login/LoginView.vue')
     }
   ]
 })

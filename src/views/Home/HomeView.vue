@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HomeBody from './Components/HomeBody.vue';
-import HomeCarousel from './Components/HomeCarousel.vue';
-import HomeRecommend from './Components/HomeRecommend.vue';
+import HomeBody from './Components/HomeBody.vue'
+import HomeCarousel from './Components/HomeCarousel.vue'
+import HomeRecommend from './Components/HomeRecommend.vue'
 </script>
 
 <template>

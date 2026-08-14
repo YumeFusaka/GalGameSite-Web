@@ -27,9 +27,9 @@ export default defineConfig({
         // Auto import icon components
         // 自动导入图标组件
         IconsResolver({
-          prefix: 'Icon',
-        }),
-      ],
+          prefix: 'Icon'
+        })
+      ]
     }),
 
     Components({
@@ -37,11 +37,11 @@ export default defineConfig({
         // Auto register icon components
         // 自动注册图标组件
         IconsResolver({
-          enabledCollections: ['ep'],
+          enabledCollections: ['ep']
         }),
         // Auto register Element Plus components
         // 自动导入 Element Plus 组件
-        ElementPlusResolver(),
+        ElementPlusResolver()
       ],
       directoryAsNamespace: true
     }),
@@ -53,13 +53,12 @@ export default defineConfig({
 
     // 按需定制主题配置
     ElementPlus({
-      useSource: true,
+      useSource: true
     })
   ],
   css: {
     preprocessorOptions: {
-      scss: {
-      }
+      scss: {}
     }
   },
   resolve: {

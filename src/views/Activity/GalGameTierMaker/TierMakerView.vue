@@ -1,171 +1,171 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { listGames } from '@/apis/general/games';
-import type { PageRequest } from '@/types/common/api';
-import { Search, Tools, ArrowUpBold, ArrowDownBold, Download, Upload, Refresh, Plus, Delete } from '@element-plus/icons-vue';
-import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
-import { getCurrentTierMakerRecord, saveCurrentTierMakerRecord } from '@/apis/activity/tier-maker';
-import type { TierMakerSubject } from '@/types/domain/tier-maker';
-import { ElMessage } from 'element-plus';
+import { onMounted, ref } from 'vue'
+import { listGames } from '@/apis/general/games'
+import type { PageRequest } from '@/types/common/api'
+import {
+  Search,
+  Tools,
+  ArrowUpBold,
+  ArrowDownBold,
+  Upload,
+  Refresh,
+  Plus,
+  Delete
+} from '@element-plus/icons-vue'
+import { VueDraggable } from 'vue-draggable-plus'
+import {
+  getCurrentTierMakerRecord,
+  saveCurrentTierMakerRecord
+} from '@/apis/activity/tier-maker'
+import type { TierMakerSubject } from '@/types/domain/tier-maker'
+import { ElMessage } from 'element-plus'
 
-const tierRef = ref<HTMLElement>()
+const defaultRanks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E', 'F', 'G']
 
-const defaultRanks = ['EX', 'S', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
+// 各层级的背景色（与原先 JS 设置的值一致）
+const tierColors = [
+  '#ff7f7f',
+  '#ffbf7f',
+  '#ffdf7f',
+  '#ffff7f',
+  '#bfff7f',
+  '#7fff7f',
+  '#7fffff',
+  '#7fbfff',
+  '#7f7fff'
+]
 
-const ranks = ref<string[]>([]);
+const ranks = ref<string[]>([])
 
-const tierList = ref<TierMakerSubject[][]>([]);
+const tierList = ref<TierMakerSubject[][]>([])
 
-const tierToolsIndex = ref<number>(0);
+const tierToolsIndex = ref<number>(0)
 
 const initTierList = async () => {
-  const currentRecord = await loadCurrentRecord();
+  const currentRecord = await loadCurrentRecord()
   if (currentRecord.rankNames.length == 0) {
-    ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
-    tierList.value = [];
+    ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E']
+    tierList.value = []
     for (let i = 0; i < ranks.value.length; i++) {
-      tierList.value.push([]);
+      tierList.value.push([])
     }
   } else {
-    ranks.value = currentRecord.rankNames;
-    tierList.value = currentRecord.tiers;
+    ranks.value = currentRecord.rankNames
+    tierList.value = currentRecord.tiers
   }
-  isFinishedLoading.value = true;
+  isFinishedLoading.value = true
 }
 
-const resetTier = async () => {
-  ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E'];
-  tierList.value = [];
-  for (var i = 0; i < ranks.value.length; i++) {
-    await tierList.value.push([]);
-  }
-  colorForTierRank();
+const resetTier = () => {
+  ranks.value = ['EX', 'S', 'A', 'B', 'C', 'D', 'E']
+  tierList.value = ranks.value.map(() => [])
 }
 
 const clearAll = () => {
-  console.log(111);
-  tierList.value = [];
-  for (var i = 0; i < ranks.value.length; i++) {
-    tierList.value.push([]);
-  }
+  tierList.value = ranks.value.map(() => [])
 }
 
-const isFinishedLoading = ref<boolean>(false);
-
-const colorForTierRank = () => {
-  const tierRankElements = tierRef.value?.querySelectorAll('.tier-rank') as NodeListOf<HTMLElement>;
-  const colors = ["#ff7f7f", "#ffbf7f", "#ffdf7f", "#ffff7f", "#bfff7f", "#7fff7f", "#7fffff", "#7fbfff", "#7f7fff"];
-  tierRankElements.forEach((row, index) => {
-    row.style.backgroundColor = colors[index % colors.length];
-  });
-}
+const isFinishedLoading = ref<boolean>(false)
 
 const page = ref<PageRequest>({
   pageNo: 1,
   pageSize: 65
-});
+})
 
-const searchName = ref<string>('');
+const searchName = ref<string>('')
 
-const searchTotal = ref<number>(0);
+const searchTotal = ref<number>(0)
 
-const searchGames = async () => {
-  page.value.pageNo = 1;
-  loadGameOptions();
+// 请求序号：快速翻页/搜索时丢弃过期响应
+let requestSeq = 0
+
+const searchGames = () => {
+  page.value.pageNo = 1
+  loadGameOptions()
 }
 
-const galGameList = ref<TierMakerSubject[]>([]);
+const galGameList = ref<TierMakerSubject[]>([])
 
 const loadGameOptions = async () => {
-  const response = await listGames({ ...page.value, keyword: searchName.value });
-  galGameList.value = response.items.map(game => ({
+  const seq = ++requestSeq
+  const response = await listGames({ ...page.value, keyword: searchName.value })
+  if (seq !== requestSeq) return
+  galGameList.value = response.items.map((game) => ({
     subjectId: game.subjectId,
     imgUrl: game.imgUrl
-  }));
-  searchTotal.value = response.total;
-  isSelected();
+  }))
+  searchTotal.value = response.total
+  isSelected()
 }
 
+// 从候选列表中移除已放入 tier 的作品
 const isSelected = () => {
-  for (let t = 0; t < galGameList.value.length; t++) {
-    var isDelete = false;
-    for (let i = 0; i < tierList.value.length; i++) {
-      if (isDelete)
-        break;
-      for (let j = 0; j < tierList.value[i].length; j++) {
-        if (isDelete)
-          break;
-        if (tierList.value[i][j].subjectId === galGameList.value[t].subjectId) {
-          galGameList.value.splice(t, 1);
-          t--;
-          isDelete = true;
-        }
-      }
-    }
-  }
+  const placedIds = new Set(
+    tierList.value.flat().map((subject) => subject.subjectId)
+  )
+  galGameList.value = galGameList.value.filter(
+    (game) => !placedIds.has(game.subjectId)
+  )
 }
 
 const rowUp = (rowIndex: number) => {
   if (rowIndex !== 0) {
-    var temp1 = tierList.value[rowIndex];
-    tierList.value[rowIndex] = tierList.value[rowIndex - 1];
-    tierList.value[rowIndex - 1] = temp1;
-    var temp2 = ranks.value[rowIndex];
-    ranks.value[rowIndex] = ranks.value[rowIndex - 1];
-    ranks.value[rowIndex - 1] = temp2;
+    var temp1 = tierList.value[rowIndex]
+    tierList.value[rowIndex] = tierList.value[rowIndex - 1]
+    tierList.value[rowIndex - 1] = temp1
+    var temp2 = ranks.value[rowIndex]
+    ranks.value[rowIndex] = ranks.value[rowIndex - 1]
+    ranks.value[rowIndex - 1] = temp2
   }
 }
 
 const rowDown = (rowIndex: number) => {
   if (rowIndex !== tierList.value.length - 1) {
-    var temp1 = tierList.value[rowIndex];
-    tierList.value[rowIndex] = tierList.value[rowIndex + 1];
-    tierList.value[rowIndex + 1] = temp1;
-    var temp2 = ranks.value[rowIndex];
-    ranks.value[rowIndex] = ranks.value[rowIndex + 1];
-    ranks.value[rowIndex + 1] = temp2;
+    var temp1 = tierList.value[rowIndex]
+    tierList.value[rowIndex] = tierList.value[rowIndex + 1]
+    tierList.value[rowIndex + 1] = temp1
+    var temp2 = ranks.value[rowIndex]
+    ranks.value[rowIndex] = ranks.value[rowIndex + 1]
+    ranks.value[rowIndex + 1] = temp2
   }
 }
 
-const toolsDialogVisible = ref<boolean>(false);
+const toolsDialogVisible = ref<boolean>(false)
 
 const openToolsDialog = (i: number) => {
-  toolsDialogVisible.value = true;
-  tierToolsIndex.value = i - 1;
+  toolsDialogVisible.value = true
+  tierToolsIndex.value = i - 1
 }
 
 const clearRow = () => {
-  tierList.value[tierToolsIndex.value] = [];
+  tierList.value[tierToolsIndex.value] = []
 }
 
 const deleteRow = () => {
-  tierList.value.splice(tierToolsIndex.value, 1);
-  ranks.value.splice(tierToolsIndex.value, 1);
+  tierList.value.splice(tierToolsIndex.value, 1)
+  ranks.value.splice(tierToolsIndex.value, 1)
 }
 
-const addRow = async () => {
-  tierList.value.push([]);
-  await ranks.value.push(defaultRanks[ranks.value.length]);
-  colorForTierRank();
+const addRow = () => {
+  tierList.value.push([])
+  ranks.value.push(defaultRanks[ranks.value.length])
 }
 
 const loadCurrentRecord = async () => {
-  return getCurrentTierMakerRecord();
+  return getCurrentTierMakerRecord()
 }
 
 const saveRecord = async () => {
   await saveCurrentTierMakerRecord({
     rankNames: ranks.value,
     tiers: tierList.value
-  });
-  ElMessage({ message: '保存成功', type: 'success' });
+  })
+  ElMessage({ message: '保存成功', type: 'success' })
 }
 
-
-onMounted(async () => {
-  await loadGameOptions();
-  await initTierList();
-  await colorForTierRank();
+onMounted(() => {
+  loadGameOptions()
+  initTierList()
 })
 </script>
 
@@ -173,41 +173,35 @@ onMounted(async () => {
   <div class="box">
     <div class="box-content">
       <div class="activity">
-        <div class="title">
-          GalGame's TierMaker
-        </div>
-        <div class="time">
-          2024-10-16 ~ 永久
-        </div>
+        <div class="title">GalGame's TierMaker</div>
+        <div class="time">2024-10-16 ~ 永久</div>
       </div>
       <div class="feature">
         <TitleComponent>
-          <template v-slot="title">
-            Tier
-          </template>
+          <template #title> Tier </template>
         </TitleComponent>
         <div class="feature-box">
           <el-button @click="addRow()" :disabled="ranks.length >= 9">
             AddRow
-            <el-icon style="margin-left: .1875rem;">
+            <el-icon style="margin-left: 0.1875rem">
               <Plus />
             </el-icon>
           </el-button>
           <el-button @click="resetTier()">
             Reset
-            <el-icon style="margin-left: .1875rem;">
+            <el-icon style="margin-left: 0.1875rem">
               <Refresh />
             </el-icon>
           </el-button>
           <el-button @click="clearAll()">
             clearAll
-            <el-icon style="margin-left: .1875rem;">
+            <el-icon style="margin-left: 0.1875rem">
               <Delete />
             </el-icon>
           </el-button>
           <el-button @click="saveRecord()">
             Save
-            <el-icon style="margin-left: .1875rem;">
+            <el-icon style="margin-left: 0.1875rem">
               <Upload />
             </el-icon>
           </el-button>
@@ -219,12 +213,27 @@ onMounted(async () => {
           </el-button> -->
         </div>
       </div>
-      <div class="tier" ref="tierRef">
-        <div class="tier-row" v-for="i in ranks.length" :key="i" v-if="isFinishedLoading">
-          <div class="tier-rank">{{ ranks[i - 1] }}</div>
-          <VueDraggable class="tier-content" group="subject" v-model="tierList[i - 1]" :animation="50">
+      <div class="tier" v-if="isFinishedLoading">
+        <div class="tier-row" v-for="i in ranks.length" :key="i">
+          <div
+            class="tier-rank"
+            :style="{ backgroundColor: tierColors[i - 1] }"
+          >
+            {{ ranks[i - 1] }}
+          </div>
+          <VueDraggable
+            class="tier-content"
+            group="subject"
+            v-model="tierList[i - 1]"
+            :animation="50"
+          >
             <div v-for="subject in tierList[i - 1]" :key="subject.subjectId">
-              <img :src="subject.imgUrl" class="select-img" />
+              <img
+                :src="subject.imgUrl"
+                class="select-img"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </VueDraggable>
           <div class="tier-btn" data-html2canvas-ignore="true">
@@ -249,14 +258,18 @@ onMounted(async () => {
       <el-divider class="divider" />
       <div class="select">
         <TitleComponent style="">
-          <template v-slot="title">
-            Select
-          </template>
+          <template #title> Select </template>
         </TitleComponent>
         <div class="select-content">
           <div class="search-box">
-            <el-input class="search" placeholder="请输入GalGame名称" v-model="searchName"
-              @keyup.enter.native="searchGames()" style="margin-left: .3125rem;" clearable>
+            <el-input
+              class="search"
+              placeholder="请输入GalGame名称"
+              v-model="searchName"
+              @keyup.enter="searchGames()"
+              style="margin-left: 0.3125rem"
+              clearable
+            >
               <template #suffix>
                 <el-icon @click="searchGames()">
                   <search />
@@ -264,36 +277,48 @@ onMounted(async () => {
               </template>
             </el-input>
           </div>
-          <VueDraggable class="select-list" ref="selectBoxRef" group="subject" v-model="galGameList" :animation="50"
-            v-if="galGameList.length > 0">
+          <VueDraggable
+            class="select-list"
+            group="subject"
+            v-model="galGameList"
+            :animation="50"
+            v-if="galGameList.length > 0"
+          >
             <div v-for="galgame in galGameList" :key="galgame.subjectId">
-              <img :src="galgame.imgUrl" class="select-img" />
+              <img
+                :src="galgame.imgUrl"
+                class="select-img"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
           </VueDraggable>
           <div v-else>
             <el-empty :image-size="200" />
           </div>
           <div class="page" v-if="galGameList.length > 0">
-            <el-pagination background layout="prev, pager, next" :total="searchTotal" :page-size="page.pageSize"
-              v-model:current-page="page.pageNo" @current-change="loadGameOptions()" class="pagination" />
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="searchTotal"
+              :page-size="page.pageSize"
+              v-model:current-page="page.pageNo"
+              @current-change="loadGameOptions()"
+              class="pagination"
+            />
           </div>
         </div>
       </div>
     </div>
 
-
     <el-dialog v-model="toolsDialogVisible" width="300" align-center>
       <div class="toolsBox">
-        <div style="grid-column: span 2;">
+        <div style="grid-column: span 2">
           <el-input :rows="1" v-model="ranks[tierToolsIndex]" type="textarea" />
         </div>
 
-        <el-button @click="clearRow()">
-          Clear Row
-        </el-button>
-        <el-button @click="deleteRow()">
-          Delete Row
-        </el-button>
+        <el-button @click="clearRow()"> Clear Row </el-button>
+        <el-button @click="deleteRow()"> Delete Row </el-button>
       </div>
     </el-dialog>
   </div>
@@ -312,7 +337,6 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-radius: 1rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
   padding: 2rem 4rem 2rem 4rem;
@@ -335,7 +359,7 @@ onMounted(async () => {
   }
 
   .time {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
     font-size: 1.2rem;
   }
 }
@@ -357,18 +381,17 @@ onMounted(async () => {
   grid-auto-rows: auto;
 }
 
-
 .tier-row {
   display: grid;
   grid-template-columns: 6rem auto 5rem;
   grid-template-rows: minmax(5rem, auto);
-  border-top: .0625rem solid pink;
-  border-left: .0625rem solid pink;
-  border-right: .0625rem solid pink;
+  border-top: 0.0625rem solid pink;
+  border-left: 0.0625rem solid pink;
+  border-right: 0.0625rem solid pink;
 }
 
 .tier-row:last-of-type {
-  border-bottom: .0625rem solid pink;
+  border-bottom: 0.0625rem solid pink;
 }
 
 .tier-rank {
@@ -379,7 +402,7 @@ onMounted(async () => {
   font-size: 1rem;
   font-weight: 400;
   color: #333;
-  border-right: .0625rem solid pink;
+  border-right: 0.0625rem solid pink;
   word-break: break-word;
 }
 
@@ -389,15 +412,15 @@ onMounted(async () => {
 }
 
 .tier-btn {
-  background-color: #8EC5FC;
-  background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+  background-color: #8ec5fc;
+  background-image: linear-gradient(62deg, #8ec5fc 0%, #e0c3fc 100%);
   padding: 0 0.5rem 0 0.5rem;
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   align-items: center;
-  border-left: .0625rem solid pink;
+  border-left: 0.0625rem solid pink;
 }
 
 .btn-tools {
@@ -463,7 +486,6 @@ onMounted(async () => {
   height: 0.2rem !important;
 }
 
-
 .toolsBox {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -473,15 +495,14 @@ onMounted(async () => {
   gap: 1rem;
 }
 
-
-
-
 :deep(.el-input__wrapper) {
   outline: 0.125rem solid pink !important;
   border-radius: 1.25rem !important;
 }
 
-.select:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+.select:deep(
+    .el-pagination.is-background .el-pager li:not(.is-disabled).is-active
+  ) {
   background-color: pink !important;
 }
 

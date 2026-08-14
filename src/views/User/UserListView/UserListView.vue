@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { listUsers } from '@/apis/user/users'
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 import type { UserProfile } from '@/types/domain/user'
 
-const userList = ref<UserProfile[]>();
+const userList = ref<UserProfile[]>()
 
 const getUserList = async () => {
-  userList.value = await listUsers();
+  userList.value = await listUsers()
 }
 
 onMounted(() => {
-  getUserList();
+  getUserList()
 })
 </script>
 
@@ -32,30 +32,20 @@ onMounted(() => {
     </div>
     <div class="user-list">
       <div class="user-item">
-        <div>
-        </div>
-        <div>
-          用户名
-        </div>
-        <div>
-          群昵称
-        </div>
-        <div>
-          QQ
-        </div>
-        <div>
-          性别
-        </div>
-        <div>
-          入群时间
-        </div>
-        <div>
-          职位
-        </div>
+        <div></div>
+        <div>用户名</div>
+        <div>群昵称</div>
+        <div>QQ</div>
+        <div>性别</div>
+        <div>入群时间</div>
+        <div>职位</div>
       </div>
       <div class="user-item" v-for="item in userList" :key="item.id">
         <div>
-          <el-avatar :size="40" :src="`https://q.qlogo.cn/g?b=qq&nk=` + item.uin + `&s=40`" />
+          <el-avatar
+            :size="40"
+            :src="`https://q.qlogo.cn/g?b=qq&nk=` + item.uin + `&s=40`"
+          />
         </div>
         <div>
           {{ item.nick }}
@@ -78,8 +68,6 @@ onMounted(() => {
       </div>
     </div>
   </div>
-
-
 </template>
 
 <style scoped>
@@ -92,12 +80,12 @@ onMounted(() => {
 .preview {
   width: 100%;
   height: 3.5rem;
-  background-image: url("@/images/background.webp");
+  background-image: url('@/images/background.webp');
   background-size: cover;
   /* background-position: center center; */
   background-repeat: no-repeat;
-  border-radius: .625rem;
-  box-shadow: 0 0 .625rem rgba(0, 0, 0, 0.1);
+  border-radius: 0.625rem;
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
 
   /* padding: 5rem 10rem 2rem;
   box-sizing: border-box;
@@ -114,9 +102,7 @@ onMounted(() => {
   align-items: center;
   text-align: center;
 
-
   background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
   border-radius: 0.625rem;
   box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
 }
@@ -134,7 +120,7 @@ onMounted(() => {
 .user-item {
   margin: 0 2rem;
   border-radius: 0.5rem;
-  background-color: #FAFBFC;
+  background-color: #fafbfc;
   display: grid;
   text-align: center;
   align-items: center;

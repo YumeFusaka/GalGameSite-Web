@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BodyActivity from './BodyActivity.vue';
-import BodyInfo from './BodyInfo.vue';
+import BodyActivity from './BodyActivity.vue'
+import BodyInfo from './BodyInfo.vue'
 </script>
 
 <template>
